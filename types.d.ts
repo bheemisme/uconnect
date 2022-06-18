@@ -1,9 +1,7 @@
 import * as cdk from 'aws-cdk-lib'
 import * as amplify from '@aws-cdk/aws-amplify-alpha'
 
-export interface UconnectProps extends cdk.StackProps {
-	state: 'DEVELOPMENT' | 'PRODUCTION'
-}
+
 
 export type CustomConstructProps = {
 	account: string,

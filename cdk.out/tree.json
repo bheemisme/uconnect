@@ -12,21 +12,21 @@
           "version": "10.1.42"
         }
       },
-      "UconnectBackendStack": {
-        "id": "UconnectBackendStack",
-        "path": "UconnectBackendStack",
+      "UconnectBackendStackmaster": {
+        "id": "UconnectBackendStackmaster",
+        "path": "UconnectBackendStackmaster",
         "children": {
           "DBConstructmaster": {
             "id": "DBConstructmaster",
-            "path": "UconnectBackendStack/DBConstructmaster",
+            "path": "UconnectBackendStackmaster/DBConstructmaster",
             "children": {
               "UconnectTablemaster": {
                 "id": "UconnectTablemaster",
-                "path": "UconnectBackendStack/DBConstructmaster/UconnectTablemaster",
+                "path": "UconnectBackendStackmaster/DBConstructmaster/UconnectTablemaster",
                 "children": {
                   "Resource": {
                     "id": "Resource",
-                    "path": "UconnectBackendStack/DBConstructmaster/UconnectTablemaster/Resource",
+                    "path": "UconnectBackendStackmaster/DBConstructmaster/UconnectTablemaster/Resource",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::DynamoDB::Table",
                       "aws:cdk:cloudformation:props": {
@@ -61,7 +61,7 @@
                   },
                   "ScalingRole": {
                     "id": "ScalingRole",
-                    "path": "UconnectBackendStack/DBConstructmaster/UconnectTablemaster/ScalingRole",
+                    "path": "UconnectBackendStackmaster/DBConstructmaster/UconnectTablemaster/ScalingRole",
                     "constructInfo": {
                       "fqn": "aws-cdk-lib.Resource",
                       "version": "2.28.1"
@@ -75,7 +75,7 @@
               },
               "UconnectTableArn": {
                 "id": "UconnectTableArn",
-                "path": "UconnectBackendStack/DBConstructmaster/UconnectTableArn",
+                "path": "UconnectBackendStackmaster/DBConstructmaster/UconnectTableArn",
                 "constructInfo": {
                   "fqn": "aws-cdk-lib.CfnOutput",
                   "version": "2.28.1"
@@ -89,15 +89,15 @@
           },
           "SchoolAuthConstructmaster": {
             "id": "SchoolAuthConstructmaster",
-            "path": "UconnectBackendStack/SchoolAuthConstructmaster",
+            "path": "UconnectBackendStackmaster/SchoolAuthConstructmaster",
             "children": {
               "SchoolUserPoolmaster": {
                 "id": "SchoolUserPoolmaster",
-                "path": "UconnectBackendStack/SchoolAuthConstructmaster/SchoolUserPoolmaster",
+                "path": "UconnectBackendStackmaster/SchoolAuthConstructmaster/SchoolUserPoolmaster",
                 "children": {
                   "Resource": {
                     "id": "Resource",
-                    "path": "UconnectBackendStack/SchoolAuthConstructmaster/SchoolUserPoolmaster/Resource",
+                    "path": "UconnectBackendStackmaster/SchoolAuthConstructmaster/SchoolUserPoolmaster/Resource",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::Cognito::UserPool",
                       "aws:cdk:cloudformation:props": {
@@ -157,7 +157,7 @@
               },
               "SchoolUserPoolArnmaster": {
                 "id": "SchoolUserPoolArnmaster",
-                "path": "UconnectBackendStack/SchoolAuthConstructmaster/SchoolUserPoolArnmaster",
+                "path": "UconnectBackendStackmaster/SchoolAuthConstructmaster/SchoolUserPoolArnmaster",
                 "constructInfo": {
                   "fqn": "aws-cdk-lib.CfnOutput",
                   "version": "2.28.1"
@@ -171,15 +171,15 @@
           },
           "UserAuthConstructmaster": {
             "id": "UserAuthConstructmaster",
-            "path": "UconnectBackendStack/UserAuthConstructmaster",
+            "path": "UconnectBackendStackmaster/UserAuthConstructmaster",
             "children": {
               "UserUserPoolmaster": {
                 "id": "UserUserPoolmaster",
-                "path": "UconnectBackendStack/UserAuthConstructmaster/UserUserPoolmaster",
+                "path": "UconnectBackendStackmaster/UserAuthConstructmaster/UserUserPoolmaster",
                 "children": {
                   "Resource": {
                     "id": "Resource",
-                    "path": "UconnectBackendStack/UserAuthConstructmaster/UserUserPoolmaster/Resource",
+                    "path": "UconnectBackendStackmaster/UserAuthConstructmaster/UserUserPoolmaster/Resource",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::Cognito::UserPool",
                       "aws:cdk:cloudformation:props": {
@@ -239,7 +239,7 @@
               },
               "UserUserPoolArnmaster": {
                 "id": "UserUserPoolArnmaster",
-                "path": "UconnectBackendStack/UserAuthConstructmaster/UserUserPoolArnmaster",
+                "path": "UconnectBackendStackmaster/UserAuthConstructmaster/UserUserPoolArnmaster",
                 "constructInfo": {
                   "fqn": "aws-cdk-lib.CfnOutput",
                   "version": "2.28.1"
@@ -253,15 +253,15 @@
           },
           "WorkerAuthConstructmaster": {
             "id": "WorkerAuthConstructmaster",
-            "path": "UconnectBackendStack/WorkerAuthConstructmaster",
+            "path": "UconnectBackendStackmaster/WorkerAuthConstructmaster",
             "children": {
               "WorkerUserPoolmaster": {
                 "id": "WorkerUserPoolmaster",
-                "path": "UconnectBackendStack/WorkerAuthConstructmaster/WorkerUserPoolmaster",
+                "path": "UconnectBackendStackmaster/WorkerAuthConstructmaster/WorkerUserPoolmaster",
                 "children": {
                   "Resource": {
                     "id": "Resource",
-                    "path": "UconnectBackendStack/WorkerAuthConstructmaster/WorkerUserPoolmaster/Resource",
+                    "path": "UconnectBackendStackmaster/WorkerAuthConstructmaster/WorkerUserPoolmaster/Resource",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::Cognito::UserPool",
                       "aws:cdk:cloudformation:props": {
@@ -321,7 +321,7 @@
               },
               "WorkerUserPoolArnmaster": {
                 "id": "WorkerUserPoolArnmaster",
-                "path": "UconnectBackendStack/WorkerAuthConstructmaster/WorkerUserPoolArnmaster",
+                "path": "UconnectBackendStackmaster/WorkerAuthConstructmaster/WorkerUserPoolArnmaster",
                 "constructInfo": {
                   "fqn": "aws-cdk-lib.CfnOutput",
                   "version": "2.28.1"
@@ -335,11 +335,11 @@
           },
           "CDKMetadata": {
             "id": "CDKMetadata",
-            "path": "UconnectBackendStack/CDKMetadata",
+            "path": "UconnectBackendStackmaster/CDKMetadata",
             "children": {
               "Default": {
                 "id": "Default",
-                "path": "UconnectBackendStack/CDKMetadata/Default",
+                "path": "UconnectBackendStackmaster/CDKMetadata/Default",
                 "constructInfo": {
                   "fqn": "aws-cdk-lib.CfnResource",
                   "version": "2.28.1"

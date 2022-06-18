@@ -6,7 +6,7 @@ import UconnectWebStack from '../lib/stacks/uconnect-web-stack';
 const app = new cdk.App()
 import branch from 'git-branch'
 
-new UconnectBackendStack(app, "UconnectBackendStack", {
+new UconnectBackendStack(app, `UconnectBackendStack${branch.sync()}`, {
   env: {
     account: "750330112562",
     region: "ap-south-1",

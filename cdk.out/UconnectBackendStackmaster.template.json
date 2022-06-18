@@ -1,0 +1,266 @@
+{
+ "Resources": {
+  "DBConstructmasterUconnectTablemasterD61E55F5": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "KeySchema": [
+     {
+      "AttributeName": "PK",
+      "KeyType": "HASH"
+     },
+     {
+      "AttributeName": "SK",
+      "KeyType": "RANGE"
+     }
+    ],
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "PK",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "SK",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "TableName": "uconnect-tablemaster"
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "UconnectBackendStackmaster/DBConstructmaster/UconnectTablemaster/Resource"
+   }
+  },
+  "SchoolAuthConstructmasterSchoolUserPoolmaster0A3A3EBD": {
+   "Type": "AWS::Cognito::UserPool",
+   "Properties": {
+    "AccountRecoverySetting": {
+     "RecoveryMechanisms": [
+      {
+       "Name": "verified_phone_number",
+       "Priority": 1
+      },
+      {
+       "Name": "verified_email",
+       "Priority": 2
+      }
+     ]
+    },
+    "AdminCreateUserConfig": {
+     "AllowAdminCreateUserOnly": false
+    },
+    "AutoVerifiedAttributes": [
+     "email"
+    ],
+    "EmailVerificationMessage": "Thanks for signing up to our awesome app! Your Verfication code {####}",
+    "EmailVerificationSubject": "Verify your email for uconnect-school",
+    "Schema": [
+     {
+      "Mutable": false,
+      "Name": "name",
+      "Required": true
+     }
+    ],
+    "SmsVerificationMessage": "The verification code to your new account is {####}",
+    "UsernameAttributes": [
+     "email"
+    ],
+    "UsernameConfiguration": {
+     "CaseSensitive": true
+    },
+    "UserPoolName": "school-user-pool",
+    "VerificationMessageTemplate": {
+     "DefaultEmailOption": "CONFIRM_WITH_CODE",
+     "EmailMessage": "Thanks for signing up to our awesome app! Your Verfication code {####}",
+     "EmailSubject": "Verify your email for uconnect-school",
+     "SmsMessage": "The verification code to your new account is {####}"
+    }
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "UconnectBackendStackmaster/SchoolAuthConstructmaster/SchoolUserPoolmaster/Resource"
+   }
+  },
+  "UserAuthConstructmasterUserUserPoolmaster4FC62998": {
+   "Type": "AWS::Cognito::UserPool",
+   "Properties": {
+    "AccountRecoverySetting": {
+     "RecoveryMechanisms": [
+      {
+       "Name": "verified_phone_number",
+       "Priority": 1
+      },
+      {
+       "Name": "verified_email",
+       "Priority": 2
+      }
+     ]
+    },
+    "AdminCreateUserConfig": {
+     "AllowAdminCreateUserOnly": false
+    },
+    "AutoVerifiedAttributes": [
+     "email"
+    ],
+    "EmailVerificationMessage": "Thanks for signing up to our awesome app! Your Verfication code {####}",
+    "EmailVerificationSubject": "Verify your email for uconnect-user",
+    "Schema": [
+     {
+      "Mutable": false,
+      "Name": "name",
+      "Required": true
+     }
+    ],
+    "SmsVerificationMessage": "The verification code to your new account is {####}",
+    "UsernameAttributes": [
+     "email"
+    ],
+    "UsernameConfiguration": {
+     "CaseSensitive": true
+    },
+    "UserPoolName": "user-user-pool",
+    "VerificationMessageTemplate": {
+     "DefaultEmailOption": "CONFIRM_WITH_CODE",
+     "EmailMessage": "Thanks for signing up to our awesome app! Your Verfication code {####}",
+     "EmailSubject": "Verify your email for uconnect-user",
+     "SmsMessage": "The verification code to your new account is {####}"
+    }
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "UconnectBackendStackmaster/UserAuthConstructmaster/UserUserPoolmaster/Resource"
+   }
+  },
+  "WorkerAuthConstructmasterWorkerUserPoolmasterE2364A99": {
+   "Type": "AWS::Cognito::UserPool",
+   "Properties": {
+    "AccountRecoverySetting": {
+     "RecoveryMechanisms": [
+      {
+       "Name": "verified_phone_number",
+       "Priority": 1
+      },
+      {
+       "Name": "verified_email",
+       "Priority": 2
+      }
+     ]
+    },
+    "AdminCreateUserConfig": {
+     "AllowAdminCreateUserOnly": false
+    },
+    "AutoVerifiedAttributes": [
+     "email"
+    ],
+    "EmailVerificationMessage": "Thanks for signing up to our awesome app! Your Verfication code {####}",
+    "EmailVerificationSubject": "Verify your email for uconnect-worker",
+    "Schema": [
+     {
+      "Mutable": false,
+      "Name": "name",
+      "Required": true
+     }
+    ],
+    "SmsVerificationMessage": "The verification code to your new account is {####}",
+    "UsernameAttributes": [
+     "email"
+    ],
+    "UsernameConfiguration": {
+     "CaseSensitive": true
+    },
+    "UserPoolName": "worker-user-pool",
+    "VerificationMessageTemplate": {
+     "DefaultEmailOption": "CONFIRM_WITH_CODE",
+     "EmailMessage": "Thanks for signing up to our awesome app! Your Verfication code {####}",
+     "EmailSubject": "Verify your email for uconnect-worker",
+     "SmsMessage": "The verification code to your new account is {####}"
+    }
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "UconnectBackendStackmaster/WorkerAuthConstructmaster/WorkerUserPoolmaster/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/zWLwQ7CIBAFv6V3WKWJxrsfoKl6biigoaWsYaHGEP7dtqanN5nJq6E+gajkh7jSA3e2g3yLUg1sVm3WXy9H1LO8y84Zdn76FQpT+PI2IuQHmXBFdEvbuBTWGMIU1Hq5pPhOcaHNFuZRG+hpN4kjiAPsq56s5SH5aEcDzX9/PxNJ4p4AAAA="
+   },
+   "Metadata": {
+    "aws:cdk:path": "UconnectBackendStackmaster/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "DBConstructmasterUconnectTableArn0C80A64A": {
+   "Value": {
+    "Fn::GetAtt": [
+     "DBConstructmasterUconnectTablemasterD61E55F5",
+     "Arn"
+    ]
+   }
+  },
+  "SchoolAuthConstructmasterSchoolUserPoolArnmaster86886D87": {
+   "Value": {
+    "Fn::GetAtt": [
+     "SchoolAuthConstructmasterSchoolUserPoolmaster0A3A3EBD",
+     "Arn"
+    ]
+   }
+  },
+  "UserAuthConstructmasterUserUserPoolArnmaster3D495E95": {
+   "Value": {
+    "Fn::GetAtt": [
+     "UserAuthConstructmasterUserUserPoolmaster4FC62998",
+     "Arn"
+    ]
+   }
+  },
+  "WorkerAuthConstructmasterWorkerUserPoolArnmasterDA2A890A": {
+   "Value": {
+    "Fn::GetAtt": [
+     "WorkerAuthConstructmasterWorkerUserPoolmasterE2364A99",
+     "Arn"
+    ]
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}
