@@ -1,0 +1,50 @@
+version: 1
+applications:
+  - appRoot: apps/school
+    frontend:
+      phases:
+        preBuild:
+          commands:
+            - yarn install
+        build:
+          commands:
+            - yarn run build
+      artifacts:
+        baseDirectory: dist
+        files:
+            - "**/*"
+      cache:
+        paths:
+          - node_modules/**/*
+  - appRoot: apps/user
+    frontend:
+      phases:
+        preBuild:
+          commands:
+            - yarn install
+        build:
+          commands:
+            - yarn run build
+      artifacts:
+        baseDirectory: dist
+        files:
+            - "**/*"
+      cache:
+        paths:
+          - node_modules/**/*
+  - appRoot: apps/worker
+    frontend:
+      phases:
+        preBuild:
+          commands:
+            - yarn install
+        build:
+          commands:
+            - yarn run build
+      artifacts:
+        baseDirectory: dist
+        files:
+            - "**/*"
+      cache:
+        paths:
+          - node_modules/**/*

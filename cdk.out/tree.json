@@ -1,0 +1,366 @@
+{
+  "version": "tree-0.1",
+  "tree": {
+    "id": "App",
+    "path": "",
+    "children": {
+      "Tree": {
+        "id": "Tree",
+        "path": "Tree",
+        "constructInfo": {
+          "fqn": "constructs.Construct",
+          "version": "10.1.42"
+        }
+      },
+      "UconnectBackendStack": {
+        "id": "UconnectBackendStack",
+        "path": "UconnectBackendStack",
+        "children": {
+          "DBConstruct": {
+            "id": "DBConstruct",
+            "path": "UconnectBackendStack/DBConstruct",
+            "children": {
+              "UconnectTable": {
+                "id": "UconnectTable",
+                "path": "UconnectBackendStack/DBConstruct/UconnectTable",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "UconnectBackendStack/DBConstruct/UconnectTable/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::DynamoDB::Table",
+                      "aws:cdk:cloudformation:props": {
+                        "keySchema": [
+                          {
+                            "attributeName": "PK",
+                            "keyType": "HASH"
+                          },
+                          {
+                            "attributeName": "SK",
+                            "keyType": "RANGE"
+                          }
+                        ],
+                        "attributeDefinitions": [
+                          {
+                            "attributeName": "PK",
+                            "attributeType": "S"
+                          },
+                          {
+                            "attributeName": "SK",
+                            "attributeType": "S"
+                          }
+                        ],
+                        "billingMode": "PAY_PER_REQUEST",
+                        "tableName": "uconnect-table"
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_dynamodb.CfnTable",
+                      "version": "2.28.1"
+                    }
+                  },
+                  "ScalingRole": {
+                    "id": "ScalingRole",
+                    "path": "UconnectBackendStack/DBConstruct/UconnectTable/ScalingRole",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.Resource",
+                      "version": "2.28.1"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_dynamodb.Table",
+                  "version": "2.28.1"
+                }
+              },
+              "UconnectTableArn": {
+                "id": "UconnectTableArn",
+                "path": "UconnectBackendStack/DBConstruct/UconnectTableArn",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnOutput",
+                  "version": "2.28.1"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "constructs.Construct",
+              "version": "10.1.42"
+            }
+          },
+          "SchoolAuthConstruct": {
+            "id": "SchoolAuthConstruct",
+            "path": "UconnectBackendStack/SchoolAuthConstruct",
+            "children": {
+              "SchoolUserPool": {
+                "id": "SchoolUserPool",
+                "path": "UconnectBackendStack/SchoolAuthConstruct/SchoolUserPool",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "UconnectBackendStack/SchoolAuthConstruct/SchoolUserPool/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::Cognito::UserPool",
+                      "aws:cdk:cloudformation:props": {
+                        "accountRecoverySetting": {
+                          "recoveryMechanisms": [
+                            {
+                              "name": "verified_phone_number",
+                              "priority": 1
+                            },
+                            {
+                              "name": "verified_email",
+                              "priority": 2
+                            }
+                          ]
+                        },
+                        "adminCreateUserConfig": {
+                          "allowAdminCreateUserOnly": false
+                        },
+                        "autoVerifiedAttributes": [
+                          "email"
+                        ],
+                        "emailVerificationMessage": "Thanks for signing up to our awesome app! Your Verfication code {####}",
+                        "emailVerificationSubject": "Verify your email for uconnect-school",
+                        "schema": [
+                          {
+                            "name": "name",
+                            "mutable": false,
+                            "required": true
+                          }
+                        ],
+                        "smsVerificationMessage": "The verification code to your new account is {####}",
+                        "usernameAttributes": [
+                          "email"
+                        ],
+                        "usernameConfiguration": {
+                          "caseSensitive": true
+                        },
+                        "userPoolName": "school-user-pool",
+                        "verificationMessageTemplate": {
+                          "defaultEmailOption": "CONFIRM_WITH_CODE",
+                          "emailMessage": "Thanks for signing up to our awesome app! Your Verfication code {####}",
+                          "emailSubject": "Verify your email for uconnect-school",
+                          "smsMessage": "The verification code to your new account is {####}"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_cognito.CfnUserPool",
+                      "version": "2.28.1"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_cognito.UserPool",
+                  "version": "2.28.1"
+                }
+              },
+              "SchoolUserPoolArn": {
+                "id": "SchoolUserPoolArn",
+                "path": "UconnectBackendStack/SchoolAuthConstruct/SchoolUserPoolArn",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnOutput",
+                  "version": "2.28.1"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "constructs.Construct",
+              "version": "10.1.42"
+            }
+          },
+          "UserAuthConstruct": {
+            "id": "UserAuthConstruct",
+            "path": "UconnectBackendStack/UserAuthConstruct",
+            "children": {
+              "UserUserPool": {
+                "id": "UserUserPool",
+                "path": "UconnectBackendStack/UserAuthConstruct/UserUserPool",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "UconnectBackendStack/UserAuthConstruct/UserUserPool/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::Cognito::UserPool",
+                      "aws:cdk:cloudformation:props": {
+                        "accountRecoverySetting": {
+                          "recoveryMechanisms": [
+                            {
+                              "name": "verified_phone_number",
+                              "priority": 1
+                            },
+                            {
+                              "name": "verified_email",
+                              "priority": 2
+                            }
+                          ]
+                        },
+                        "adminCreateUserConfig": {
+                          "allowAdminCreateUserOnly": false
+                        },
+                        "autoVerifiedAttributes": [
+                          "email"
+                        ],
+                        "emailVerificationMessage": "Thanks for signing up to our awesome app! Your Verfication code {####}",
+                        "emailVerificationSubject": "Verify your email for uconnect-user",
+                        "schema": [
+                          {
+                            "name": "name",
+                            "mutable": false,
+                            "required": true
+                          }
+                        ],
+                        "smsVerificationMessage": "The verification code to your new account is {####}",
+                        "usernameAttributes": [
+                          "email"
+                        ],
+                        "usernameConfiguration": {
+                          "caseSensitive": true
+                        },
+                        "userPoolName": "user-user-pool",
+                        "verificationMessageTemplate": {
+                          "defaultEmailOption": "CONFIRM_WITH_CODE",
+                          "emailMessage": "Thanks for signing up to our awesome app! Your Verfication code {####}",
+                          "emailSubject": "Verify your email for uconnect-user",
+                          "smsMessage": "The verification code to your new account is {####}"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_cognito.CfnUserPool",
+                      "version": "2.28.1"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_cognito.UserPool",
+                  "version": "2.28.1"
+                }
+              },
+              "UserUserPoolArn": {
+                "id": "UserUserPoolArn",
+                "path": "UconnectBackendStack/UserAuthConstruct/UserUserPoolArn",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnOutput",
+                  "version": "2.28.1"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "constructs.Construct",
+              "version": "10.1.42"
+            }
+          },
+          "WorkerAuthConstruct": {
+            "id": "WorkerAuthConstruct",
+            "path": "UconnectBackendStack/WorkerAuthConstruct",
+            "children": {
+              "WorkerUserPool": {
+                "id": "WorkerUserPool",
+                "path": "UconnectBackendStack/WorkerAuthConstruct/WorkerUserPool",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "UconnectBackendStack/WorkerAuthConstruct/WorkerUserPool/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::Cognito::UserPool",
+                      "aws:cdk:cloudformation:props": {
+                        "accountRecoverySetting": {
+                          "recoveryMechanisms": [
+                            {
+                              "name": "verified_phone_number",
+                              "priority": 1
+                            },
+                            {
+                              "name": "verified_email",
+                              "priority": 2
+                            }
+                          ]
+                        },
+                        "adminCreateUserConfig": {
+                          "allowAdminCreateUserOnly": false
+                        },
+                        "autoVerifiedAttributes": [
+                          "email"
+                        ],
+                        "emailVerificationMessage": "Thanks for signing up to our awesome app! Your Verfication code {####}",
+                        "emailVerificationSubject": "Verify your email for uconnect-worker",
+                        "schema": [
+                          {
+                            "name": "name",
+                            "mutable": false,
+                            "required": true
+                          }
+                        ],
+                        "smsVerificationMessage": "The verification code to your new account is {####}",
+                        "usernameAttributes": [
+                          "email"
+                        ],
+                        "usernameConfiguration": {
+                          "caseSensitive": true
+                        },
+                        "userPoolName": "worker-user-pool",
+                        "verificationMessageTemplate": {
+                          "defaultEmailOption": "CONFIRM_WITH_CODE",
+                          "emailMessage": "Thanks for signing up to our awesome app! Your Verfication code {####}",
+                          "emailSubject": "Verify your email for uconnect-worker",
+                          "smsMessage": "The verification code to your new account is {####}"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_cognito.CfnUserPool",
+                      "version": "2.28.1"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_cognito.UserPool",
+                  "version": "2.28.1"
+                }
+              },
+              "WorkerUserPoolArn": {
+                "id": "WorkerUserPoolArn",
+                "path": "UconnectBackendStack/WorkerAuthConstruct/WorkerUserPoolArn",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnOutput",
+                  "version": "2.28.1"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "constructs.Construct",
+              "version": "10.1.42"
+            }
+          },
+          "CDKMetadata": {
+            "id": "CDKMetadata",
+            "path": "UconnectBackendStack/CDKMetadata",
+            "children": {
+              "Default": {
+                "id": "Default",
+                "path": "UconnectBackendStack/CDKMetadata/Default",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnResource",
+                  "version": "2.28.1"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "constructs.Construct",
+              "version": "10.1.42"
+            }
+          }
+        },
+        "constructInfo": {
+          "fqn": "aws-cdk-lib.Stack",
+          "version": "2.28.1"
+        }
+      }
+    },
+    "constructInfo": {
+      "fqn": "aws-cdk-lib.App",
+      "version": "2.28.1"
+    }
+  }
+}

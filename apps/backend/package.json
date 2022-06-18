@@ -1,0 +1,17 @@
+{
+    "name": "backend",
+    "packageManager": "yarn@3.2.1",
+    "scripts": {
+        "test": "jest"
+    },
+    "dependencies": {
+        "@aws-sdk/client-dynamodb": "^3.113.0"
+    },
+    "devDependencies": {
+        "@types/jest": "^28.1.2",
+        "@types/node": "^18.0.0",
+        "jest": "^28.1.1",
+        "ts-jest": "^28.0.5",
+        "typescript": "^4.7.4"
+    }
+}

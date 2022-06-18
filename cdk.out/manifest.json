@@ -1,0 +1,121 @@
+{
+  "version": "20.0.0",
+  "artifacts": {
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    },
+    "UconnectBackendStack.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "UconnectBackendStack.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "UconnectBackendStack": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://750330112562/ap-south-1",
+      "properties": {
+        "templateFile": "UconnectBackendStack.template.json",
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::750330112562:role/cdk-hnb659fds-deploy-role-750330112562-ap-south-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::750330112562:role/cdk-hnb659fds-cfn-exec-role-750330112562-ap-south-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-750330112562-ap-south-1/2309f24a79f46a69fbfd51f1858e5f678f44ca25dc5913b02caa4eb53287f6b9.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "UconnectBackendStack.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::750330112562:role/cdk-hnb659fds-lookup-role-750330112562-ap-south-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        },
+        "stackName": "uconnect-backend-stack"
+      },
+      "dependencies": [
+        "UconnectBackendStack.assets"
+      ],
+      "metadata": {
+        "/UconnectBackendStack/DBConstruct/UconnectTable": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "DBConstructUconnectTable19F769F1"
+            }
+          }
+        ],
+        "/UconnectBackendStack/DBConstruct/UconnectTable/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DBConstructUconnectTable19F769F1"
+          }
+        ],
+        "/UconnectBackendStack/DBConstruct/UconnectTableArn": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DBConstructUconnectTableArn9093DB56"
+          }
+        ],
+        "/UconnectBackendStack/SchoolAuthConstruct/SchoolUserPool/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SchoolAuthConstructSchoolUserPool062A2D67"
+          }
+        ],
+        "/UconnectBackendStack/SchoolAuthConstruct/SchoolUserPoolArn": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SchoolAuthConstructSchoolUserPoolArn383F73B4"
+          }
+        ],
+        "/UconnectBackendStack/UserAuthConstruct/UserUserPool/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UserAuthConstructUserUserPoolF65DC76F"
+          }
+        ],
+        "/UconnectBackendStack/UserAuthConstruct/UserUserPoolArn": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UserAuthConstructUserUserPoolArn1FF4739F"
+          }
+        ],
+        "/UconnectBackendStack/WorkerAuthConstruct/WorkerUserPool/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WorkerAuthConstructWorkerUserPool44CDCF27"
+          }
+        ],
+        "/UconnectBackendStack/WorkerAuthConstruct/WorkerUserPoolArn": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WorkerAuthConstructWorkerUserPoolArnA26287D8"
+          }
+        ],
+        "/UconnectBackendStack/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/UconnectBackendStack/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/UconnectBackendStack/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "UconnectBackendStack"
+    }
+  }
+}
