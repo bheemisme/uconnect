@@ -12,7 +12,7 @@ export class UserAppConstruct extends Construct {
         super(scope,id)
 
         
-        this.userApp = new amplify.App(this,"SchoolApp",{
+        this.userApp = new amplify.App(this,"UserApp",{
             sourceCodeProvider: props.sourceCodeProvider,
             autoBranchDeletion: true,
             autoBranchCreation: {

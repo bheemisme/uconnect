@@ -1,0 +1,629 @@
+{
+ "Resources": {
+  "DBConstructUconnectTable19F769F1": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "KeySchema": [
+     {
+      "AttributeName": "PK",
+      "KeyType": "HASH"
+     },
+     {
+      "AttributeName": "SK",
+      "KeyType": "RANGE"
+     }
+    ],
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "PK",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "SK",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "TableName": "uconnect-table"
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "UconnectStack/DBConstruct/UconnectTable/Resource"
+   }
+  },
+  "SchoolAuthConstructSchoolUserPool062A2D67": {
+   "Type": "AWS::Cognito::UserPool",
+   "Properties": {
+    "AccountRecoverySetting": {
+     "RecoveryMechanisms": [
+      {
+       "Name": "verified_phone_number",
+       "Priority": 1
+      },
+      {
+       "Name": "verified_email",
+       "Priority": 2
+      }
+     ]
+    },
+    "AdminCreateUserConfig": {
+     "AllowAdminCreateUserOnly": false
+    },
+    "AutoVerifiedAttributes": [
+     "email"
+    ],
+    "EmailVerificationMessage": "Thanks for signing up to our awesome app! Your Verfication code {####}",
+    "EmailVerificationSubject": "Verify your email for uconnect-school",
+    "Schema": [
+     {
+      "Mutable": false,
+      "Name": "name",
+      "Required": true
+     }
+    ],
+    "SmsVerificationMessage": "The verification code to your new account is {####}",
+    "UsernameAttributes": [
+     "email"
+    ],
+    "UsernameConfiguration": {
+     "CaseSensitive": true
+    },
+    "UserPoolName": "school-user-pool",
+    "VerificationMessageTemplate": {
+     "DefaultEmailOption": "CONFIRM_WITH_CODE",
+     "EmailMessage": "Thanks for signing up to our awesome app! Your Verfication code {####}",
+     "EmailSubject": "Verify your email for uconnect-school",
+     "SmsMessage": "The verification code to your new account is {####}"
+    }
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "UconnectStack/SchoolAuthConstruct/SchoolUserPool/Resource"
+   }
+  },
+  "UserAuthConstructUserUserPoolF65DC76F": {
+   "Type": "AWS::Cognito::UserPool",
+   "Properties": {
+    "AccountRecoverySetting": {
+     "RecoveryMechanisms": [
+      {
+       "Name": "verified_phone_number",
+       "Priority": 1
+      },
+      {
+       "Name": "verified_email",
+       "Priority": 2
+      }
+     ]
+    },
+    "AdminCreateUserConfig": {
+     "AllowAdminCreateUserOnly": false
+    },
+    "AutoVerifiedAttributes": [
+     "email"
+    ],
+    "EmailVerificationMessage": "Thanks for signing up to our awesome app! Your Verfication code {####}",
+    "EmailVerificationSubject": "Verify your email for uconnect-user",
+    "Schema": [
+     {
+      "Mutable": false,
+      "Name": "name",
+      "Required": true
+     }
+    ],
+    "SmsVerificationMessage": "The verification code to your new account is {####}",
+    "UsernameAttributes": [
+     "email"
+    ],
+    "UsernameConfiguration": {
+     "CaseSensitive": true
+    },
+    "UserPoolName": "user-user-pool",
+    "VerificationMessageTemplate": {
+     "DefaultEmailOption": "CONFIRM_WITH_CODE",
+     "EmailMessage": "Thanks for signing up to our awesome app! Your Verfication code {####}",
+     "EmailSubject": "Verify your email for uconnect-user",
+     "SmsMessage": "The verification code to your new account is {####}"
+    }
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "UconnectStack/UserAuthConstruct/UserUserPool/Resource"
+   }
+  },
+  "WorkerAuthConstructWorkerUserPool44CDCF27": {
+   "Type": "AWS::Cognito::UserPool",
+   "Properties": {
+    "AccountRecoverySetting": {
+     "RecoveryMechanisms": [
+      {
+       "Name": "verified_phone_number",
+       "Priority": 1
+      },
+      {
+       "Name": "verified_email",
+       "Priority": 2
+      }
+     ]
+    },
+    "AdminCreateUserConfig": {
+     "AllowAdminCreateUserOnly": false
+    },
+    "AutoVerifiedAttributes": [
+     "email"
+    ],
+    "EmailVerificationMessage": "Thanks for signing up to our awesome app! Your Verfication code {####}",
+    "EmailVerificationSubject": "Verify your email for uconnect-worker",
+    "Schema": [
+     {
+      "Mutable": false,
+      "Name": "name",
+      "Required": true
+     }
+    ],
+    "SmsVerificationMessage": "The verification code to your new account is {####}",
+    "UsernameAttributes": [
+     "email"
+    ],
+    "UsernameConfiguration": {
+     "CaseSensitive": true
+    },
+    "UserPoolName": "worker-user-pool",
+    "VerificationMessageTemplate": {
+     "DefaultEmailOption": "CONFIRM_WITH_CODE",
+     "EmailMessage": "Thanks for signing up to our awesome app! Your Verfication code {####}",
+     "EmailSubject": "Verify your email for uconnect-worker",
+     "SmsMessage": "The verification code to your new account is {####}"
+    }
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "UconnectStack/WorkerAuthConstruct/WorkerUserPool/Resource"
+   }
+  },
+  "SchoolAppRoleCE41CB8C": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "amplify.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "UconnectStack/SchoolApp/SchoolApp/Role/Resource"
+   }
+  },
+  "SchoolAppRoleDefaultPolicyBFDCA7B5": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "codecommit:GitPull",
+       "Effect": "Allow",
+       "Resource": "arn:aws:codecommit:ap-south-1:750330112562:uconnect"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "SchoolAppRoleDefaultPolicyBFDCA7B5",
+    "Roles": [
+     {
+      "Ref": "SchoolAppRoleCE41CB8C"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "UconnectStack/SchoolApp/SchoolApp/Role/DefaultPolicy/Resource"
+   }
+  },
+  "SchoolApp0CA008A8": {
+   "Type": "AWS::Amplify::App",
+   "Properties": {
+    "Name": "SchoolApp",
+    "AutoBranchCreationConfig": {
+     "AutoBranchCreationPatterns": [
+      "feature/*"
+     ],
+     "BasicAuthConfig": {
+      "EnableBasicAuth": false
+     },
+     "EnableAutoBranchCreation": true,
+     "EnableAutoBuild": true,
+     "EnablePullRequestPreview": true
+    },
+    "BasicAuthConfig": {
+     "EnableBasicAuth": false
+    },
+    "EnableBranchAutoDeletion": true,
+    "EnvironmentVariables": [
+     {
+      "Name": "AMPLIFY_MONOREPO_APP_ROOT",
+      "Value": "apps/school"
+     },
+     {
+      "Name": "AMPLIFY_DIFF_DEPLOY",
+      "Value": "false"
+     }
+    ],
+    "IAMServiceRole": {
+     "Fn::GetAtt": [
+      "SchoolAppRoleCE41CB8C",
+      "Arn"
+     ]
+    },
+    "Repository": {
+     "Fn::Join": [
+      "",
+      [
+       "https://git-codecommit.ap-south-1.",
+       {
+        "Ref": "AWS::URLSuffix"
+       },
+       "/v1/repos/uconnect"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "UconnectStack/SchoolApp/SchoolApp/Resource"
+   }
+  },
+  "SchoolAppmasterE29A5A1E": {
+   "Type": "AWS::Amplify::Branch",
+   "Properties": {
+    "AppId": {
+     "Fn::GetAtt": [
+      "SchoolApp0CA008A8",
+      "AppId"
+     ]
+    },
+    "BranchName": "master",
+    "EnableAutoBuild": true,
+    "EnablePullRequestPreview": true
+   },
+   "Metadata": {
+    "aws:cdk:path": "UconnectStack/SchoolApp/SchoolApp/master/Resource"
+   }
+  },
+  "UserAppRoleB01DE8E1": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "amplify.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "UconnectStack/UserApp/UserApp/Role/Resource"
+   }
+  },
+  "UserAppRoleDefaultPolicy5D57D388": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "codecommit:GitPull",
+       "Effect": "Allow",
+       "Resource": "arn:aws:codecommit:ap-south-1:750330112562:uconnect"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "UserAppRoleDefaultPolicy5D57D388",
+    "Roles": [
+     {
+      "Ref": "UserAppRoleB01DE8E1"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "UconnectStack/UserApp/UserApp/Role/DefaultPolicy/Resource"
+   }
+  },
+  "UserApp0F48004D": {
+   "Type": "AWS::Amplify::App",
+   "Properties": {
+    "Name": "UserApp",
+    "AutoBranchCreationConfig": {
+     "AutoBranchCreationPatterns": [
+      "feature/*"
+     ],
+     "BasicAuthConfig": {
+      "EnableBasicAuth": false
+     },
+     "EnableAutoBranchCreation": true,
+     "EnableAutoBuild": true,
+     "EnablePullRequestPreview": true
+    },
+    "BasicAuthConfig": {
+     "EnableBasicAuth": false
+    },
+    "EnableBranchAutoDeletion": true,
+    "EnvironmentVariables": [
+     {
+      "Name": "AMPLIFY_MONOREPO_APP_ROOT",
+      "Value": "apps/user"
+     },
+     {
+      "Name": "AMPLIFY_DIFF_DEPLOY",
+      "Value": "false"
+     }
+    ],
+    "IAMServiceRole": {
+     "Fn::GetAtt": [
+      "UserAppRoleB01DE8E1",
+      "Arn"
+     ]
+    },
+    "Repository": {
+     "Fn::Join": [
+      "",
+      [
+       "https://git-codecommit.ap-south-1.",
+       {
+        "Ref": "AWS::URLSuffix"
+       },
+       "/v1/repos/uconnect"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "UconnectStack/UserApp/UserApp/Resource"
+   }
+  },
+  "UserAppmasterC9881C87": {
+   "Type": "AWS::Amplify::Branch",
+   "Properties": {
+    "AppId": {
+     "Fn::GetAtt": [
+      "UserApp0F48004D",
+      "AppId"
+     ]
+    },
+    "BranchName": "master",
+    "EnableAutoBuild": true,
+    "EnablePullRequestPreview": true
+   },
+   "Metadata": {
+    "aws:cdk:path": "UconnectStack/UserApp/UserApp/master/Resource"
+   }
+  },
+  "WorkerAppRole863A1A8F": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "amplify.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "UconnectStack/WorkerApp/WorkerApp/Role/Resource"
+   }
+  },
+  "WorkerAppRoleDefaultPolicyF451B7FE": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "codecommit:GitPull",
+       "Effect": "Allow",
+       "Resource": "arn:aws:codecommit:ap-south-1:750330112562:uconnect"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "WorkerAppRoleDefaultPolicyF451B7FE",
+    "Roles": [
+     {
+      "Ref": "WorkerAppRole863A1A8F"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "UconnectStack/WorkerApp/WorkerApp/Role/DefaultPolicy/Resource"
+   }
+  },
+  "WorkerApp682F2A23": {
+   "Type": "AWS::Amplify::App",
+   "Properties": {
+    "Name": "WorkerApp",
+    "AutoBranchCreationConfig": {
+     "AutoBranchCreationPatterns": [
+      "feature/*"
+     ],
+     "BasicAuthConfig": {
+      "EnableBasicAuth": false
+     },
+     "EnableAutoBranchCreation": true,
+     "EnableAutoBuild": true,
+     "EnablePullRequestPreview": true
+    },
+    "BasicAuthConfig": {
+     "EnableBasicAuth": false
+    },
+    "EnableBranchAutoDeletion": true,
+    "EnvironmentVariables": [
+     {
+      "Name": "AMPLIFY_MONOREPO_APP_ROOT",
+      "Value": "apps/worker"
+     },
+     {
+      "Name": "AMPLIFY_DIFF_DEPLOY",
+      "Value": "false"
+     }
+    ],
+    "IAMServiceRole": {
+     "Fn::GetAtt": [
+      "WorkerAppRole863A1A8F",
+      "Arn"
+     ]
+    },
+    "Repository": {
+     "Fn::Join": [
+      "",
+      [
+       "https://git-codecommit.ap-south-1.",
+       {
+        "Ref": "AWS::URLSuffix"
+       },
+       "/v1/repos/uconnect"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "UconnectStack/WorkerApp/WorkerApp/Resource"
+   }
+  },
+  "WorkerAppmaster5C9E3FF7": {
+   "Type": "AWS::Amplify::Branch",
+   "Properties": {
+    "AppId": {
+     "Fn::GetAtt": [
+      "WorkerApp682F2A23",
+      "AppId"
+     ]
+    },
+    "BranchName": "master",
+    "EnableAutoBuild": true,
+    "EnablePullRequestPreview": true
+   },
+   "Metadata": {
+    "aws:cdk:path": "UconnectStack/WorkerApp/WorkerApp/master/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/z2OzQ6CMBCEn4V7WcVE49GfB9Cgns1aihZKt6FFQ5q+uxTQ08x+k5nsClZb8FmCH5vyok6VfIC/OOQ1G9DdF73GhooBXvGhBDuWejSBcXpq6Qj8zYr2TKRi9vOBSWzA5zRVRj2TkryP5+QCw8YoWfbgB7Y3JkaHFjV/hcByYalr+Vg/dc50bhyaaWBZisq8EJbJbv59EXWenEMfV/+TmgoBlV28sw1k66FZWSnTttNONgLySb9U+Ef5EQEAAA=="
+   },
+   "Metadata": {
+    "aws:cdk:path": "UconnectStack/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "DBConstructUconnectTableArn9093DB56": {
+   "Value": {
+    "Fn::GetAtt": [
+     "DBConstructUconnectTable19F769F1",
+     "Arn"
+    ]
+   }
+  },
+  "SchoolAuthConstructSchoolUserPoolArn383F73B4": {
+   "Value": {
+    "Fn::GetAtt": [
+     "SchoolAuthConstructSchoolUserPool062A2D67",
+     "Arn"
+    ]
+   }
+  },
+  "UserAuthConstructUserUserPoolArn1FF4739F": {
+   "Value": {
+    "Fn::GetAtt": [
+     "UserAuthConstructUserUserPoolF65DC76F",
+     "Arn"
+    ]
+   }
+  },
+  "WorkerAuthConstructWorkerUserPoolArnA26287D8": {
+   "Value": {
+    "Fn::GetAtt": [
+     "WorkerAuthConstructWorkerUserPool44CDCF27",
+     "Arn"
+    ]
+   }
+  },
+  "SchoolAppSchoolAppDomain8117C7B3": {
+   "Value": {
+    "Fn::GetAtt": [
+     "SchoolApp0CA008A8",
+     "DefaultDomain"
+    ]
+   }
+  },
+  "UserAppUserAppDomain63E8A2EF": {
+   "Value": {
+    "Fn::GetAtt": [
+     "UserApp0F48004D",
+     "DefaultDomain"
+    ]
+   }
+  },
+  "WorkerAppWorkerAppDomainA9D627E0": {
+   "Value": {
+    "Fn::GetAtt": [
+     "WorkerApp682F2A23",
+     "DefaultDomain"
+    ]
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

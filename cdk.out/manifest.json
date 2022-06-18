@@ -7,40 +7,40 @@
         "file": "tree.json"
       }
     },
-    "UconnectBackendStack.assets": {
+    "UconnectStack.assets": {
       "type": "cdk:asset-manifest",
       "properties": {
-        "file": "UconnectBackendStack.assets.json",
+        "file": "UconnectStack.assets.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
       }
     },
-    "UconnectBackendStack": {
+    "UconnectStack": {
       "type": "aws:cloudformation:stack",
       "environment": "aws://750330112562/ap-south-1",
       "properties": {
-        "templateFile": "UconnectBackendStack.template.json",
+        "templateFile": "UconnectStack.template.json",
         "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::750330112562:role/cdk-hnb659fds-deploy-role-750330112562-ap-south-1",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::750330112562:role/cdk-hnb659fds-cfn-exec-role-750330112562-ap-south-1",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-750330112562-ap-south-1/2309f24a79f46a69fbfd51f1858e5f678f44ca25dc5913b02caa4eb53287f6b9.json",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-750330112562-ap-south-1/8d612bf4bcb13a31a24baa8bc438a6d79d7dc4df09c7b4485c64594043a6c881.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
-          "UconnectBackendStack.assets"
+          "UconnectStack.assets"
         ],
         "lookupRole": {
           "arn": "arn:${AWS::Partition}:iam::750330112562:role/cdk-hnb659fds-lookup-role-750330112562-ap-south-1",
           "requiresBootstrapStackVersion": 8,
           "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
         },
-        "stackName": "uconnect-backend-stack"
+        "stackName": "uconnect-stack-master"
       },
       "dependencies": [
-        "UconnectBackendStack.assets"
+        "UconnectStack.assets"
       ],
       "metadata": {
-        "/UconnectBackendStack/DBConstruct/UconnectTable": [
+        "/UconnectStack/DBConstruct/UconnectTable": [
           {
             "type": "aws:cdk:hasPhysicalName",
             "data": {
@@ -48,74 +48,164 @@
             }
           }
         ],
-        "/UconnectBackendStack/DBConstruct/UconnectTable/Resource": [
+        "/UconnectStack/DBConstruct/UconnectTable/Resource": [
           {
             "type": "aws:cdk:logicalId",
             "data": "DBConstructUconnectTable19F769F1"
           }
         ],
-        "/UconnectBackendStack/DBConstruct/UconnectTableArn": [
+        "/UconnectStack/DBConstruct/UconnectTableArn": [
           {
             "type": "aws:cdk:logicalId",
             "data": "DBConstructUconnectTableArn9093DB56"
           }
         ],
-        "/UconnectBackendStack/SchoolAuthConstruct/SchoolUserPool/Resource": [
+        "/UconnectStack/SchoolAuthConstruct/SchoolUserPool/Resource": [
           {
             "type": "aws:cdk:logicalId",
             "data": "SchoolAuthConstructSchoolUserPool062A2D67"
           }
         ],
-        "/UconnectBackendStack/SchoolAuthConstruct/SchoolUserPoolArn": [
+        "/UconnectStack/SchoolAuthConstruct/SchoolUserPoolArn": [
           {
             "type": "aws:cdk:logicalId",
             "data": "SchoolAuthConstructSchoolUserPoolArn383F73B4"
           }
         ],
-        "/UconnectBackendStack/UserAuthConstruct/UserUserPool/Resource": [
+        "/UconnectStack/UserAuthConstruct/UserUserPool/Resource": [
           {
             "type": "aws:cdk:logicalId",
             "data": "UserAuthConstructUserUserPoolF65DC76F"
           }
         ],
-        "/UconnectBackendStack/UserAuthConstruct/UserUserPoolArn": [
+        "/UconnectStack/UserAuthConstruct/UserUserPoolArn": [
           {
             "type": "aws:cdk:logicalId",
             "data": "UserAuthConstructUserUserPoolArn1FF4739F"
           }
         ],
-        "/UconnectBackendStack/WorkerAuthConstruct/WorkerUserPool/Resource": [
+        "/UconnectStack/WorkerAuthConstruct/WorkerUserPool/Resource": [
           {
             "type": "aws:cdk:logicalId",
             "data": "WorkerAuthConstructWorkerUserPool44CDCF27"
           }
         ],
-        "/UconnectBackendStack/WorkerAuthConstruct/WorkerUserPoolArn": [
+        "/UconnectStack/WorkerAuthConstruct/WorkerUserPoolArn": [
           {
             "type": "aws:cdk:logicalId",
             "data": "WorkerAuthConstructWorkerUserPoolArnA26287D8"
           }
         ],
-        "/UconnectBackendStack/CDKMetadata/Default": [
+        "/UconnectStack/SchoolApp/SchoolApp/Role/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SchoolAppRoleCE41CB8C"
+          }
+        ],
+        "/UconnectStack/SchoolApp/SchoolApp/Role/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SchoolAppRoleDefaultPolicyBFDCA7B5"
+          }
+        ],
+        "/UconnectStack/SchoolApp/SchoolApp/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SchoolApp0CA008A8"
+          }
+        ],
+        "/UconnectStack/SchoolApp/SchoolApp/master/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SchoolAppmasterE29A5A1E"
+          }
+        ],
+        "/UconnectStack/SchoolApp/SchoolAppDomain": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SchoolAppSchoolAppDomain8117C7B3"
+          }
+        ],
+        "/UconnectStack/UserApp/UserApp/Role/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UserAppRoleB01DE8E1"
+          }
+        ],
+        "/UconnectStack/UserApp/UserApp/Role/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UserAppRoleDefaultPolicy5D57D388"
+          }
+        ],
+        "/UconnectStack/UserApp/UserApp/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UserApp0F48004D"
+          }
+        ],
+        "/UconnectStack/UserApp/UserApp/master/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UserAppmasterC9881C87"
+          }
+        ],
+        "/UconnectStack/UserApp/UserAppDomain": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UserAppUserAppDomain63E8A2EF"
+          }
+        ],
+        "/UconnectStack/WorkerApp/WorkerApp/Role/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WorkerAppRole863A1A8F"
+          }
+        ],
+        "/UconnectStack/WorkerApp/WorkerApp/Role/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WorkerAppRoleDefaultPolicyF451B7FE"
+          }
+        ],
+        "/UconnectStack/WorkerApp/WorkerApp/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WorkerApp682F2A23"
+          }
+        ],
+        "/UconnectStack/WorkerApp/WorkerApp/master/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WorkerAppmaster5C9E3FF7"
+          }
+        ],
+        "/UconnectStack/WorkerApp/WorkerAppDomain": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WorkerAppWorkerAppDomainA9D627E0"
+          }
+        ],
+        "/UconnectStack/CDKMetadata/Default": [
           {
             "type": "aws:cdk:logicalId",
             "data": "CDKMetadata"
           }
         ],
-        "/UconnectBackendStack/BootstrapVersion": [
+        "/UconnectStack/BootstrapVersion": [
           {
             "type": "aws:cdk:logicalId",
             "data": "BootstrapVersion"
           }
         ],
-        "/UconnectBackendStack/CheckBootstrapVersion": [
+        "/UconnectStack/CheckBootstrapVersion": [
           {
             "type": "aws:cdk:logicalId",
             "data": "CheckBootstrapVersion"
           }
         ]
       },
-      "displayName": "UconnectBackendStack"
+      "displayName": "UconnectStack"
     }
   }
 }
