@@ -2,11 +2,12 @@ import { Construct } from "constructs";
 import {UserAuthConstructProps} from '../../types'
 import * as cognito from 'aws-cdk-lib/aws-cognito'
 import * as cdk from 'aws-cdk-lib'
+import branch from 'git-branch'
 export class UserAuthConstruct extends Construct {
     UserUserPool: cognito.UserPool;
     constructor(scope: Construct,id: string,props: UserAuthConstructProps){
         super(scope,id)
-        this.UserUserPool = new cognito.UserPool(this,"UserUserPool",{
+        this.UserUserPool = new cognito.UserPool(this,`UserUserPool${branch.sync()}`,{
             userPoolName: 'user-user-pool',
             selfSignUpEnabled: true,
             signInAliases: {
@@ -26,7 +27,7 @@ export class UserAuthConstruct extends Construct {
         })
 
         
-        new cdk.CfnOutput(this,"UserUserPoolArn",{
+        new cdk.CfnOutput(this,`UserUserPoolArn${branch.sync()}`,{
             value: this.UserUserPool.userPoolArn
         })
     }

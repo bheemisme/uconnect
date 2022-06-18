@@ -1,6 +1,6 @@
 {
  "Resources": {
-  "DBConstructUconnectTable19F769F1": {
+  "DBConstructmasterUconnectTablemasterD61E55F5": {
    "Type": "AWS::DynamoDB::Table",
    "Properties": {
     "KeySchema": [
@@ -24,15 +24,15 @@
      }
     ],
     "BillingMode": "PAY_PER_REQUEST",
-    "TableName": "uconnect-table"
+    "TableName": "uconnect-tablemaster"
    },
-   "UpdateReplacePolicy": "Delete",
-   "DeletionPolicy": "Delete",
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
    "Metadata": {
-    "aws:cdk:path": "UconnectBackendStack/DBConstruct/UconnectTable/Resource"
+    "aws:cdk:path": "UconnectBackendStack/DBConstructmaster/UconnectTablemaster/Resource"
    }
   },
-  "SchoolAuthConstructSchoolUserPool062A2D67": {
+  "SchoolAuthConstructmasterSchoolUserPoolmaster0A3A3EBD": {
    "Type": "AWS::Cognito::UserPool",
    "Properties": {
     "AccountRecoverySetting": {
@@ -80,10 +80,10 @@
    "UpdateReplacePolicy": "Retain",
    "DeletionPolicy": "Retain",
    "Metadata": {
-    "aws:cdk:path": "UconnectBackendStack/SchoolAuthConstruct/SchoolUserPool/Resource"
+    "aws:cdk:path": "UconnectBackendStack/SchoolAuthConstructmaster/SchoolUserPoolmaster/Resource"
    }
   },
-  "UserAuthConstructUserUserPoolF65DC76F": {
+  "UserAuthConstructmasterUserUserPoolmaster4FC62998": {
    "Type": "AWS::Cognito::UserPool",
    "Properties": {
     "AccountRecoverySetting": {
@@ -131,10 +131,10 @@
    "UpdateReplacePolicy": "Retain",
    "DeletionPolicy": "Retain",
    "Metadata": {
-    "aws:cdk:path": "UconnectBackendStack/UserAuthConstruct/UserUserPool/Resource"
+    "aws:cdk:path": "UconnectBackendStack/UserAuthConstructmaster/UserUserPoolmaster/Resource"
    }
   },
-  "WorkerAuthConstructWorkerUserPool44CDCF27": {
+  "WorkerAuthConstructmasterWorkerUserPoolmasterE2364A99": {
    "Type": "AWS::Cognito::UserPool",
    "Properties": {
     "AccountRecoverySetting": {
@@ -182,7 +182,7 @@
    "UpdateReplacePolicy": "Retain",
    "DeletionPolicy": "Retain",
    "Metadata": {
-    "aws:cdk:path": "UconnectBackendStack/WorkerAuthConstruct/WorkerUserPool/Resource"
+    "aws:cdk:path": "UconnectBackendStack/WorkerAuthConstructmaster/WorkerUserPoolmaster/Resource"
    }
   },
   "CDKMetadata": {
@@ -196,34 +196,34 @@
   }
  },
  "Outputs": {
-  "DBConstructUconnectTableArn9093DB56": {
+  "DBConstructmasterUconnectTableArn0C80A64A": {
    "Value": {
     "Fn::GetAtt": [
-     "DBConstructUconnectTable19F769F1",
+     "DBConstructmasterUconnectTablemasterD61E55F5",
      "Arn"
     ]
    }
   },
-  "SchoolAuthConstructSchoolUserPoolArn383F73B4": {
+  "SchoolAuthConstructmasterSchoolUserPoolArnmaster86886D87": {
    "Value": {
     "Fn::GetAtt": [
-     "SchoolAuthConstructSchoolUserPool062A2D67",
+     "SchoolAuthConstructmasterSchoolUserPoolmaster0A3A3EBD",
      "Arn"
     ]
    }
   },
-  "UserAuthConstructUserUserPoolArn1FF4739F": {
+  "UserAuthConstructmasterUserUserPoolArnmaster3D495E95": {
    "Value": {
     "Fn::GetAtt": [
-     "UserAuthConstructUserUserPoolF65DC76F",
+     "UserAuthConstructmasterUserUserPoolmaster4FC62998",
      "Arn"
     ]
    }
   },
-  "WorkerAuthConstructWorkerUserPoolArnA26287D8": {
+  "WorkerAuthConstructmasterWorkerUserPoolArnmasterDA2A890A": {
    "Value": {
     "Fn::GetAtt": [
-     "WorkerAuthConstructWorkerUserPool44CDCF27",
+     "WorkerAuthConstructmasterWorkerUserPoolmasterE2364A99",
      "Arn"
     ]
    }

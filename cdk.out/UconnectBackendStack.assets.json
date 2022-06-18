@@ -1,7 +1,7 @@
 {
   "version": "20.0.0",
   "files": {
-    "2309f24a79f46a69fbfd51f1858e5f678f44ca25dc5913b02caa4eb53287f6b9": {
+    "81c36cf45eb9f4bac092fa75d64049ed1ede506dd65251c56dee1e9139210ff1": {
       "source": {
         "path": "UconnectBackendStack.template.json",
         "packaging": "file"
@@ -9,7 +9,7 @@
       "destinations": {
         "750330112562-ap-south-1": {
           "bucketName": "cdk-hnb659fds-assets-750330112562-ap-south-1",
-          "objectKey": "2309f24a79f46a69fbfd51f1858e5f678f44ca25dc5913b02caa4eb53287f6b9.json",
+          "objectKey": "81c36cf45eb9f4bac092fa75d64049ed1ede506dd65251c56dee1e9139210ff1.json",
           "region": "ap-south-1",
           "assumeRoleArn": "arn:${AWS::Partition}:iam::750330112562:role/cdk-hnb659fds-file-publishing-role-750330112562-ap-south-1"
         }

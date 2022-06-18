@@ -12,21 +12,21 @@
           "version": "10.1.42"
         }
       },
-      "UconnectStack": {
-        "id": "UconnectStack",
-        "path": "UconnectStack",
+      "UconnectBackendStack": {
+        "id": "UconnectBackendStack",
+        "path": "UconnectBackendStack",
         "children": {
-          "DBConstruct": {
-            "id": "DBConstruct",
-            "path": "UconnectStack/DBConstruct",
+          "DBConstructmaster": {
+            "id": "DBConstructmaster",
+            "path": "UconnectBackendStack/DBConstructmaster",
             "children": {
-              "UconnectTable": {
-                "id": "UconnectTable",
-                "path": "UconnectStack/DBConstruct/UconnectTable",
+              "UconnectTablemaster": {
+                "id": "UconnectTablemaster",
+                "path": "UconnectBackendStack/DBConstructmaster/UconnectTablemaster",
                 "children": {
                   "Resource": {
                     "id": "Resource",
-                    "path": "UconnectStack/DBConstruct/UconnectTable/Resource",
+                    "path": "UconnectBackendStack/DBConstructmaster/UconnectTablemaster/Resource",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::DynamoDB::Table",
                       "aws:cdk:cloudformation:props": {
@@ -51,7 +51,7 @@
                           }
                         ],
                         "billingMode": "PAY_PER_REQUEST",
-                        "tableName": "uconnect-table"
+                        "tableName": "uconnect-tablemaster"
                       }
                     },
                     "constructInfo": {
@@ -61,7 +61,7 @@
                   },
                   "ScalingRole": {
                     "id": "ScalingRole",
-                    "path": "UconnectStack/DBConstruct/UconnectTable/ScalingRole",
+                    "path": "UconnectBackendStack/DBConstructmaster/UconnectTablemaster/ScalingRole",
                     "constructInfo": {
                       "fqn": "aws-cdk-lib.Resource",
                       "version": "2.28.1"
@@ -75,7 +75,7 @@
               },
               "UconnectTableArn": {
                 "id": "UconnectTableArn",
-                "path": "UconnectStack/DBConstruct/UconnectTableArn",
+                "path": "UconnectBackendStack/DBConstructmaster/UconnectTableArn",
                 "constructInfo": {
                   "fqn": "aws-cdk-lib.CfnOutput",
                   "version": "2.28.1"
@@ -87,17 +87,17 @@
               "version": "10.1.42"
             }
           },
-          "SchoolAuthConstruct": {
-            "id": "SchoolAuthConstruct",
-            "path": "UconnectStack/SchoolAuthConstruct",
+          "SchoolAuthConstructmaster": {
+            "id": "SchoolAuthConstructmaster",
+            "path": "UconnectBackendStack/SchoolAuthConstructmaster",
             "children": {
-              "SchoolUserPool": {
-                "id": "SchoolUserPool",
-                "path": "UconnectStack/SchoolAuthConstruct/SchoolUserPool",
+              "SchoolUserPoolmaster": {
+                "id": "SchoolUserPoolmaster",
+                "path": "UconnectBackendStack/SchoolAuthConstructmaster/SchoolUserPoolmaster",
                 "children": {
                   "Resource": {
                     "id": "Resource",
-                    "path": "UconnectStack/SchoolAuthConstruct/SchoolUserPool/Resource",
+                    "path": "UconnectBackendStack/SchoolAuthConstructmaster/SchoolUserPoolmaster/Resource",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::Cognito::UserPool",
                       "aws:cdk:cloudformation:props": {
@@ -155,9 +155,9 @@
                   "version": "2.28.1"
                 }
               },
-              "SchoolUserPoolArn": {
-                "id": "SchoolUserPoolArn",
-                "path": "UconnectStack/SchoolAuthConstruct/SchoolUserPoolArn",
+              "SchoolUserPoolArnmaster": {
+                "id": "SchoolUserPoolArnmaster",
+                "path": "UconnectBackendStack/SchoolAuthConstructmaster/SchoolUserPoolArnmaster",
                 "constructInfo": {
                   "fqn": "aws-cdk-lib.CfnOutput",
                   "version": "2.28.1"
@@ -169,17 +169,17 @@
               "version": "10.1.42"
             }
           },
-          "UserAuthConstruct": {
-            "id": "UserAuthConstruct",
-            "path": "UconnectStack/UserAuthConstruct",
+          "UserAuthConstructmaster": {
+            "id": "UserAuthConstructmaster",
+            "path": "UconnectBackendStack/UserAuthConstructmaster",
             "children": {
-              "UserUserPool": {
-                "id": "UserUserPool",
-                "path": "UconnectStack/UserAuthConstruct/UserUserPool",
+              "UserUserPoolmaster": {
+                "id": "UserUserPoolmaster",
+                "path": "UconnectBackendStack/UserAuthConstructmaster/UserUserPoolmaster",
                 "children": {
                   "Resource": {
                     "id": "Resource",
-                    "path": "UconnectStack/UserAuthConstruct/UserUserPool/Resource",
+                    "path": "UconnectBackendStack/UserAuthConstructmaster/UserUserPoolmaster/Resource",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::Cognito::UserPool",
                       "aws:cdk:cloudformation:props": {
@@ -237,9 +237,9 @@
                   "version": "2.28.1"
                 }
               },
-              "UserUserPoolArn": {
-                "id": "UserUserPoolArn",
-                "path": "UconnectStack/UserAuthConstruct/UserUserPoolArn",
+              "UserUserPoolArnmaster": {
+                "id": "UserUserPoolArnmaster",
+                "path": "UconnectBackendStack/UserAuthConstructmaster/UserUserPoolArnmaster",
                 "constructInfo": {
                   "fqn": "aws-cdk-lib.CfnOutput",
                   "version": "2.28.1"
@@ -251,17 +251,17 @@
               "version": "10.1.42"
             }
           },
-          "WorkerAuthConstruct": {
-            "id": "WorkerAuthConstruct",
-            "path": "UconnectStack/WorkerAuthConstruct",
+          "WorkerAuthConstructmaster": {
+            "id": "WorkerAuthConstructmaster",
+            "path": "UconnectBackendStack/WorkerAuthConstructmaster",
             "children": {
-              "WorkerUserPool": {
-                "id": "WorkerUserPool",
-                "path": "UconnectStack/WorkerAuthConstruct/WorkerUserPool",
+              "WorkerUserPoolmaster": {
+                "id": "WorkerUserPoolmaster",
+                "path": "UconnectBackendStack/WorkerAuthConstructmaster/WorkerUserPoolmaster",
                 "children": {
                   "Resource": {
                     "id": "Resource",
-                    "path": "UconnectStack/WorkerAuthConstruct/WorkerUserPool/Resource",
+                    "path": "UconnectBackendStack/WorkerAuthConstructmaster/WorkerUserPoolmaster/Resource",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::Cognito::UserPool",
                       "aws:cdk:cloudformation:props": {
@@ -319,9 +319,9 @@
                   "version": "2.28.1"
                 }
               },
-              "WorkerUserPoolArn": {
-                "id": "WorkerUserPoolArn",
-                "path": "UconnectStack/WorkerAuthConstruct/WorkerUserPoolArn",
+              "WorkerUserPoolArnmaster": {
+                "id": "WorkerUserPoolArnmaster",
+                "path": "UconnectBackendStack/WorkerAuthConstructmaster/WorkerUserPoolArnmaster",
                 "constructInfo": {
                   "fqn": "aws-cdk-lib.CfnOutput",
                   "version": "2.28.1"
@@ -333,9 +333,37 @@
               "version": "10.1.42"
             }
           },
+          "CDKMetadata": {
+            "id": "CDKMetadata",
+            "path": "UconnectBackendStack/CDKMetadata",
+            "children": {
+              "Default": {
+                "id": "Default",
+                "path": "UconnectBackendStack/CDKMetadata/Default",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnResource",
+                  "version": "2.28.1"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "constructs.Construct",
+              "version": "10.1.42"
+            }
+          }
+        },
+        "constructInfo": {
+          "fqn": "aws-cdk-lib.Stack",
+          "version": "2.28.1"
+        }
+      },
+      "UconnectWebStack": {
+        "id": "UconnectWebStack",
+        "path": "UconnectWebStack",
+        "children": {
           "uconnectRepository": {
             "id": "uconnectRepository",
-            "path": "UconnectStack/uconnectRepository",
+            "path": "UconnectWebStack/uconnectRepository",
             "constructInfo": {
               "fqn": "aws-cdk-lib.Resource",
               "version": "2.28.1"
@@ -343,19 +371,19 @@
           },
           "SchoolApp": {
             "id": "SchoolApp",
-            "path": "UconnectStack/SchoolApp",
+            "path": "UconnectWebStack/SchoolApp",
             "children": {
               "SchoolApp": {
                 "id": "SchoolApp",
-                "path": "UconnectStack/SchoolApp/SchoolApp",
+                "path": "UconnectWebStack/SchoolApp/SchoolApp",
                 "children": {
                   "Role": {
                     "id": "Role",
-                    "path": "UconnectStack/SchoolApp/SchoolApp/Role",
+                    "path": "UconnectWebStack/SchoolApp/SchoolApp/Role",
                     "children": {
                       "Resource": {
                         "id": "Resource",
-                        "path": "UconnectStack/SchoolApp/SchoolApp/Role/Resource",
+                        "path": "UconnectWebStack/SchoolApp/SchoolApp/Role/Resource",
                         "attributes": {
                           "aws:cdk:cloudformation:type": "AWS::IAM::Role",
                           "aws:cdk:cloudformation:props": {
@@ -380,11 +408,11 @@
                       },
                       "DefaultPolicy": {
                         "id": "DefaultPolicy",
-                        "path": "UconnectStack/SchoolApp/SchoolApp/Role/DefaultPolicy",
+                        "path": "UconnectWebStack/SchoolApp/SchoolApp/Role/DefaultPolicy",
                         "children": {
                           "Resource": {
                             "id": "Resource",
-                            "path": "UconnectStack/SchoolApp/SchoolApp/Role/DefaultPolicy/Resource",
+                            "path": "UconnectWebStack/SchoolApp/SchoolApp/Role/DefaultPolicy/Resource",
                             "attributes": {
                               "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
                               "aws:cdk:cloudformation:props": {
@@ -425,7 +453,7 @@
                   },
                   "Resource": {
                     "id": "Resource",
-                    "path": "UconnectStack/SchoolApp/SchoolApp/Resource",
+                    "path": "UconnectWebStack/SchoolApp/SchoolApp/Resource",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::Amplify::App",
                       "aws:cdk:cloudformation:props": {
@@ -482,11 +510,11 @@
                   },
                   "master": {
                     "id": "master",
-                    "path": "UconnectStack/SchoolApp/SchoolApp/master",
+                    "path": "UconnectWebStack/SchoolApp/SchoolApp/master",
                     "children": {
                       "Resource": {
                         "id": "Resource",
-                        "path": "UconnectStack/SchoolApp/SchoolApp/master/Resource",
+                        "path": "UconnectWebStack/SchoolApp/SchoolApp/master/Resource",
                         "attributes": {
                           "aws:cdk:cloudformation:type": "AWS::Amplify::Branch",
                           "aws:cdk:cloudformation:props": {
@@ -520,7 +548,7 @@
               },
               "SchoolAppDomain": {
                 "id": "SchoolAppDomain",
-                "path": "UconnectStack/SchoolApp/SchoolAppDomain",
+                "path": "UconnectWebStack/SchoolApp/SchoolAppDomain",
                 "constructInfo": {
                   "fqn": "aws-cdk-lib.CfnOutput",
                   "version": "2.28.1"
@@ -534,19 +562,19 @@
           },
           "UserApp": {
             "id": "UserApp",
-            "path": "UconnectStack/UserApp",
+            "path": "UconnectWebStack/UserApp",
             "children": {
               "UserApp": {
                 "id": "UserApp",
-                "path": "UconnectStack/UserApp/UserApp",
+                "path": "UconnectWebStack/UserApp/UserApp",
                 "children": {
                   "Role": {
                     "id": "Role",
-                    "path": "UconnectStack/UserApp/UserApp/Role",
+                    "path": "UconnectWebStack/UserApp/UserApp/Role",
                     "children": {
                       "Resource": {
                         "id": "Resource",
-                        "path": "UconnectStack/UserApp/UserApp/Role/Resource",
+                        "path": "UconnectWebStack/UserApp/UserApp/Role/Resource",
                         "attributes": {
                           "aws:cdk:cloudformation:type": "AWS::IAM::Role",
                           "aws:cdk:cloudformation:props": {
@@ -571,11 +599,11 @@
                       },
                       "DefaultPolicy": {
                         "id": "DefaultPolicy",
-                        "path": "UconnectStack/UserApp/UserApp/Role/DefaultPolicy",
+                        "path": "UconnectWebStack/UserApp/UserApp/Role/DefaultPolicy",
                         "children": {
                           "Resource": {
                             "id": "Resource",
-                            "path": "UconnectStack/UserApp/UserApp/Role/DefaultPolicy/Resource",
+                            "path": "UconnectWebStack/UserApp/UserApp/Role/DefaultPolicy/Resource",
                             "attributes": {
                               "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
                               "aws:cdk:cloudformation:props": {
@@ -616,7 +644,7 @@
                   },
                   "Resource": {
                     "id": "Resource",
-                    "path": "UconnectStack/UserApp/UserApp/Resource",
+                    "path": "UconnectWebStack/UserApp/UserApp/Resource",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::Amplify::App",
                       "aws:cdk:cloudformation:props": {
@@ -673,11 +701,11 @@
                   },
                   "master": {
                     "id": "master",
-                    "path": "UconnectStack/UserApp/UserApp/master",
+                    "path": "UconnectWebStack/UserApp/UserApp/master",
                     "children": {
                       "Resource": {
                         "id": "Resource",
-                        "path": "UconnectStack/UserApp/UserApp/master/Resource",
+                        "path": "UconnectWebStack/UserApp/UserApp/master/Resource",
                         "attributes": {
                           "aws:cdk:cloudformation:type": "AWS::Amplify::Branch",
                           "aws:cdk:cloudformation:props": {
@@ -711,7 +739,7 @@
               },
               "UserAppDomain": {
                 "id": "UserAppDomain",
-                "path": "UconnectStack/UserApp/UserAppDomain",
+                "path": "UconnectWebStack/UserApp/UserAppDomain",
                 "constructInfo": {
                   "fqn": "aws-cdk-lib.CfnOutput",
                   "version": "2.28.1"
@@ -725,19 +753,19 @@
           },
           "WorkerApp": {
             "id": "WorkerApp",
-            "path": "UconnectStack/WorkerApp",
+            "path": "UconnectWebStack/WorkerApp",
             "children": {
               "WorkerApp": {
                 "id": "WorkerApp",
-                "path": "UconnectStack/WorkerApp/WorkerApp",
+                "path": "UconnectWebStack/WorkerApp/WorkerApp",
                 "children": {
                   "Role": {
                     "id": "Role",
-                    "path": "UconnectStack/WorkerApp/WorkerApp/Role",
+                    "path": "UconnectWebStack/WorkerApp/WorkerApp/Role",
                     "children": {
                       "Resource": {
                         "id": "Resource",
-                        "path": "UconnectStack/WorkerApp/WorkerApp/Role/Resource",
+                        "path": "UconnectWebStack/WorkerApp/WorkerApp/Role/Resource",
                         "attributes": {
                           "aws:cdk:cloudformation:type": "AWS::IAM::Role",
                           "aws:cdk:cloudformation:props": {
@@ -762,11 +790,11 @@
                       },
                       "DefaultPolicy": {
                         "id": "DefaultPolicy",
-                        "path": "UconnectStack/WorkerApp/WorkerApp/Role/DefaultPolicy",
+                        "path": "UconnectWebStack/WorkerApp/WorkerApp/Role/DefaultPolicy",
                         "children": {
                           "Resource": {
                             "id": "Resource",
-                            "path": "UconnectStack/WorkerApp/WorkerApp/Role/DefaultPolicy/Resource",
+                            "path": "UconnectWebStack/WorkerApp/WorkerApp/Role/DefaultPolicy/Resource",
                             "attributes": {
                               "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
                               "aws:cdk:cloudformation:props": {
@@ -807,7 +835,7 @@
                   },
                   "Resource": {
                     "id": "Resource",
-                    "path": "UconnectStack/WorkerApp/WorkerApp/Resource",
+                    "path": "UconnectWebStack/WorkerApp/WorkerApp/Resource",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::Amplify::App",
                       "aws:cdk:cloudformation:props": {
@@ -864,11 +892,11 @@
                   },
                   "master": {
                     "id": "master",
-                    "path": "UconnectStack/WorkerApp/WorkerApp/master",
+                    "path": "UconnectWebStack/WorkerApp/WorkerApp/master",
                     "children": {
                       "Resource": {
                         "id": "Resource",
-                        "path": "UconnectStack/WorkerApp/WorkerApp/master/Resource",
+                        "path": "UconnectWebStack/WorkerApp/WorkerApp/master/Resource",
                         "attributes": {
                           "aws:cdk:cloudformation:type": "AWS::Amplify::Branch",
                           "aws:cdk:cloudformation:props": {
@@ -902,7 +930,7 @@
               },
               "WorkerAppDomain": {
                 "id": "WorkerAppDomain",
-                "path": "UconnectStack/WorkerApp/WorkerAppDomain",
+                "path": "UconnectWebStack/WorkerApp/WorkerAppDomain",
                 "constructInfo": {
                   "fqn": "aws-cdk-lib.CfnOutput",
                   "version": "2.28.1"
@@ -916,13 +944,21 @@
           },
           "CDKMetadata": {
             "id": "CDKMetadata",
-            "path": "UconnectStack/CDKMetadata",
+            "path": "UconnectWebStack/CDKMetadata",
             "children": {
               "Default": {
                 "id": "Default",
-                "path": "UconnectStack/CDKMetadata/Default",
+                "path": "UconnectWebStack/CDKMetadata/Default",
                 "constructInfo": {
                   "fqn": "aws-cdk-lib.CfnResource",
+                  "version": "2.28.1"
+                }
+              },
+              "Condition": {
+                "id": "Condition",
+                "path": "UconnectWebStack/CDKMetadata/Condition",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnCondition",
                   "version": "2.28.1"
                 }
               }

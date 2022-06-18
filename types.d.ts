@@ -8,7 +8,6 @@ export interface UconnectProps extends cdk.StackProps {
 export type CustomConstructProps = {
 	account: string,
 	region: string,
-	state: 'DEVELOPMENT' | 'PRODUCTION'
 }
 
 export type CustomAmplifyAppProps = CustomConstructProps & {
