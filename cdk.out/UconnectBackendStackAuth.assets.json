@@ -1,0 +1,20 @@
+{
+  "version": "20.0.0",
+  "files": {
+    "3346d581fc6edad7199259cb4718c14c1d122804dad4edb29a89642f982c36e1": {
+      "source": {
+        "path": "UconnectBackendStackAuth.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "750330112562-ap-south-1": {
+          "bucketName": "cdk-hnb659fds-assets-750330112562-ap-south-1",
+          "objectKey": "3346d581fc6edad7199259cb4718c14c1d122804dad4edb29a89642f982c36e1.json",
+          "region": "ap-south-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::750330112562:role/cdk-hnb659fds-file-publishing-role-750330112562-ap-south-1"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}

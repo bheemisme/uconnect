@@ -2,12 +2,13 @@ import { Construct } from "constructs";
 import {UserAuthConstructProps} from '../../types'
 import * as cognito from 'aws-cdk-lib/aws-cognito'
 import * as cdk from 'aws-cdk-lib'
-import branch from 'git-branch'
+
 export class UserAuthConstruct extends Construct {
-    UserUserPool: cognito.UserPool;
+    userUserPool: cognito.UserPool;
+    userUserPoolClient: cognito.UserPoolClient;
     constructor(scope: Construct,id: string,props: UserAuthConstructProps){
         super(scope,id)
-        this.UserUserPool = new cognito.UserPool(this,`UserUserPool${branch.sync()}`,{
+        this.userUserPool = new cognito.UserPool(this,`UserUserPool${props.branchName}`,{
             userPoolName: 'user-user-pool',
             selfSignUpEnabled: true,
             signInAliases: {
@@ -23,12 +24,35 @@ export class UserAuthConstruct extends Construct {
                 fullname: {
                     required: true, mutable: false
                 }
-            }
+            },
+            removalPolicy: cdk.RemovalPolicy.DESTROY
         })
 
         
-        new cdk.CfnOutput(this,`UserUserPoolArn${branch.sync()}`,{
-            value: this.UserUserPool.userPoolArn
+        this.userUserPoolClient = this.userUserPool.addClient("userUserPoolWebClient",{
+            authFlows: {
+                userSrp: true,
+            },
+            accessTokenValidity: cdk.Duration.minutes(5),
+            idTokenValidity: cdk.Duration.minutes(5),
+            refreshTokenValidity: cdk.Duration.hours(1),
+            oAuth: {
+                flows: {
+                    authorizationCodeGrant: true,
+                    implicitCodeGrant: false
+                },
+            },
+            userPoolClientName: 'uconnect-user-client'
+        })
+        
+        new cdk.CfnOutput(this,`UserUserPoolArn${props.branchName}`,{
+            value: this.userUserPool.userPoolArn,
+            description: "user's user pool arn"
+        })
+
+        new cdk.CfnOutput(this,`UserUserPoolClientId${props.branchName}`,{
+            value: this.userUserPoolClient.userPoolClientId,
+            description: "worker's usre pool client id"
         })
     }
 }

@@ -1,38 +1,6 @@
 {
  "Resources": {
-  "DBConstructmasterUconnectTablemasterD61E55F5": {
-   "Type": "AWS::DynamoDB::Table",
-   "Properties": {
-    "KeySchema": [
-     {
-      "AttributeName": "PK",
-      "KeyType": "HASH"
-     },
-     {
-      "AttributeName": "SK",
-      "KeyType": "RANGE"
-     }
-    ],
-    "AttributeDefinitions": [
-     {
-      "AttributeName": "PK",
-      "AttributeType": "S"
-     },
-     {
-      "AttributeName": "SK",
-      "AttributeType": "S"
-     }
-    ],
-    "BillingMode": "PAY_PER_REQUEST",
-    "TableName": "uconnect-tablemaster"
-   },
-   "UpdateReplacePolicy": "Retain",
-   "DeletionPolicy": "Retain",
-   "Metadata": {
-    "aws:cdk:path": "UconnectBackendStackmaster/DBConstructmaster/UconnectTablemaster/Resource"
-   }
-  },
-  "SchoolAuthConstructmasterSchoolUserPoolmaster0A3A3EBD": {
+  "SchoolAuthConstructMasterSchoolUserPoolMaster7771BA9E": {
    "Type": "AWS::Cognito::UserPool",
    "Properties": {
     "AccountRecoverySetting": {
@@ -55,13 +23,6 @@
     ],
     "EmailVerificationMessage": "Thanks for signing up to our awesome app! Your Verfication code {####}",
     "EmailVerificationSubject": "Verify your email for uconnect-school",
-    "Schema": [
-     {
-      "Mutable": false,
-      "Name": "name",
-      "Required": true
-     }
-    ],
     "SmsVerificationMessage": "The verification code to your new account is {####}",
     "UsernameAttributes": [
      "email"
@@ -77,13 +38,54 @@
      "SmsMessage": "The verification code to your new account is {####}"
     }
    },
-   "UpdateReplacePolicy": "Retain",
-   "DeletionPolicy": "Retain",
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "UconnectBackendStackmaster/SchoolAuthConstructmaster/SchoolUserPoolmaster/Resource"
+    "aws:cdk:path": "UconnectBackendStackMaster/SchoolAuthConstructMaster/SchoolUserPoolMaster/Resource"
    }
   },
-  "UserAuthConstructmasterUserUserPoolmaster4FC62998": {
+  "SchoolAuthConstructMasterSchoolUserPoolMasterSchoolUserPoolWebClient2B7D6D04": {
+   "Type": "AWS::Cognito::UserPoolClient",
+   "Properties": {
+    "UserPoolId": {
+     "Ref": "SchoolAuthConstructMasterSchoolUserPoolMaster7771BA9E"
+    },
+    "AccessTokenValidity": 5,
+    "AllowedOAuthFlows": [
+     "code"
+    ],
+    "AllowedOAuthFlowsUserPoolClient": true,
+    "AllowedOAuthScopes": [
+     "profile",
+     "phone",
+     "email",
+     "openid",
+     "aws.cognito.signin.user.admin"
+    ],
+    "CallbackURLs": [
+     "https://example.com"
+    ],
+    "ClientName": "uconnect-school-client",
+    "ExplicitAuthFlows": [
+     "ALLOW_USER_SRP_AUTH",
+     "ALLOW_REFRESH_TOKEN_AUTH"
+    ],
+    "IdTokenValidity": 5,
+    "RefreshTokenValidity": 60,
+    "SupportedIdentityProviders": [
+     "COGNITO"
+    ],
+    "TokenValidityUnits": {
+     "AccessToken": "minutes",
+     "IdToken": "minutes",
+     "RefreshToken": "minutes"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "UconnectBackendStackMaster/SchoolAuthConstructMaster/SchoolUserPoolMaster/SchoolUserPoolWebClient/Resource"
+   }
+  },
+  "UserAuthConstructMasterUserUserPoolMasterA2EBFBCC": {
    "Type": "AWS::Cognito::UserPool",
    "Properties": {
     "AccountRecoverySetting": {
@@ -128,13 +130,54 @@
      "SmsMessage": "The verification code to your new account is {####}"
     }
    },
-   "UpdateReplacePolicy": "Retain",
-   "DeletionPolicy": "Retain",
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "UconnectBackendStackmaster/UserAuthConstructmaster/UserUserPoolmaster/Resource"
+    "aws:cdk:path": "UconnectBackendStackMaster/UserAuthConstructMaster/UserUserPoolMaster/Resource"
    }
   },
-  "WorkerAuthConstructmasterWorkerUserPoolmasterE2364A99": {
+  "UserAuthConstructMasterUserUserPoolMasteruserUserPoolWebClient025B3CB6": {
+   "Type": "AWS::Cognito::UserPoolClient",
+   "Properties": {
+    "UserPoolId": {
+     "Ref": "UserAuthConstructMasterUserUserPoolMasterA2EBFBCC"
+    },
+    "AccessTokenValidity": 5,
+    "AllowedOAuthFlows": [
+     "code"
+    ],
+    "AllowedOAuthFlowsUserPoolClient": true,
+    "AllowedOAuthScopes": [
+     "profile",
+     "phone",
+     "email",
+     "openid",
+     "aws.cognito.signin.user.admin"
+    ],
+    "CallbackURLs": [
+     "https://example.com"
+    ],
+    "ClientName": "uconnect-user-client",
+    "ExplicitAuthFlows": [
+     "ALLOW_USER_SRP_AUTH",
+     "ALLOW_REFRESH_TOKEN_AUTH"
+    ],
+    "IdTokenValidity": 5,
+    "RefreshTokenValidity": 60,
+    "SupportedIdentityProviders": [
+     "COGNITO"
+    ],
+    "TokenValidityUnits": {
+     "AccessToken": "minutes",
+     "IdToken": "minutes",
+     "RefreshToken": "minutes"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "UconnectBackendStackMaster/UserAuthConstructMaster/UserUserPoolMaster/userUserPoolWebClient/Resource"
+   }
+  },
+  "WorkerAuthConstructMasterWorkerUserPoolMaster8DBECC39": {
    "Type": "AWS::Cognito::UserPool",
    "Properties": {
     "AccountRecoverySetting": {
@@ -179,53 +222,107 @@
      "SmsMessage": "The verification code to your new account is {####}"
     }
    },
-   "UpdateReplacePolicy": "Retain",
-   "DeletionPolicy": "Retain",
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "UconnectBackendStackmaster/WorkerAuthConstructmaster/WorkerUserPoolmaster/Resource"
+    "aws:cdk:path": "UconnectBackendStackMaster/WorkerAuthConstructMaster/WorkerUserPoolMaster/Resource"
+   }
+  },
+  "WorkerAuthConstructMasterWorkerUserPoolMasterworkerUserPoolClientC0A7A664": {
+   "Type": "AWS::Cognito::UserPoolClient",
+   "Properties": {
+    "UserPoolId": {
+     "Ref": "WorkerAuthConstructMasterWorkerUserPoolMaster8DBECC39"
+    },
+    "AccessTokenValidity": 5,
+    "AllowedOAuthFlows": [
+     "code"
+    ],
+    "AllowedOAuthFlowsUserPoolClient": true,
+    "AllowedOAuthScopes": [
+     "profile",
+     "phone",
+     "email",
+     "openid",
+     "aws.cognito.signin.user.admin"
+    ],
+    "CallbackURLs": [
+     "https://example.com"
+    ],
+    "ClientName": "uconnect-user-client",
+    "ExplicitAuthFlows": [
+     "ALLOW_USER_SRP_AUTH",
+     "ALLOW_REFRESH_TOKEN_AUTH"
+    ],
+    "IdTokenValidity": 5,
+    "RefreshTokenValidity": 60,
+    "SupportedIdentityProviders": [
+     "COGNITO"
+    ],
+    "TokenValidityUnits": {
+     "AccessToken": "minutes",
+     "IdToken": "minutes",
+     "RefreshToken": "minutes"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "UconnectBackendStackMaster/WorkerAuthConstructMaster/WorkerUserPoolMaster/workerUserPoolClient/Resource"
    }
   },
   "CDKMetadata": {
    "Type": "AWS::CDK::Metadata",
    "Properties": {
-    "Analytics": "v2:deflate64:H4sIAAAAAAAA/zWLwQ7CIBAFv6V3WKWJxrsfoKl6biigoaWsYaHGEP7dtqanN5nJq6E+gajkh7jSA3e2g3yLUg1sVm3WXy9H1LO8y84Zdn76FQpT+PI2IuQHmXBFdEvbuBTWGMIU1Hq5pPhOcaHNFuZRG+hpN4kjiAPsq56s5SH5aEcDzX9/PxNJ4p4AAAA="
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/02Jyw6CMBAAv4V7u1oSjXc+QIPxbLCsZqHumm4LB8K/+yAaTzOZKaHcgSuaUa1vexvoAtMxNb43r3T2cmNKAtNJMR5Egqmu/POvVIGQ0/9ayvxO+5we+TNrVMnR42xYWoROV4PbgtvAuuiUyMbMie4I9cInYTGEQpoAAAA="
    },
    "Metadata": {
-    "aws:cdk:path": "UconnectBackendStackmaster/CDKMetadata/Default"
+    "aws:cdk:path": "UconnectBackendStackMaster/CDKMetadata/Default"
    }
   }
  },
  "Outputs": {
-  "DBConstructmasterUconnectTableArn0C80A64A": {
+  "SchoolAuthConstructMasterSchoolUserPoolArnMasterD642318D": {
+   "Description": "school user pool arn",
    "Value": {
     "Fn::GetAtt": [
-     "DBConstructmasterUconnectTablemasterD61E55F5",
+     "SchoolAuthConstructMasterSchoolUserPoolMaster7771BA9E",
      "Arn"
     ]
    }
   },
-  "SchoolAuthConstructmasterSchoolUserPoolArnmaster86886D87": {
+  "SchoolAuthConstructMasterSchoolUserPoolClientIdMaster65C70376": {
+   "Description": "school user pool client id",
+   "Value": {
+    "Ref": "SchoolAuthConstructMasterSchoolUserPoolMasterSchoolUserPoolWebClient2B7D6D04"
+   }
+  },
+  "UserAuthConstructMasterUserUserPoolArnMasterF652C3B5": {
+   "Description": "user's user pool arn",
    "Value": {
     "Fn::GetAtt": [
-     "SchoolAuthConstructmasterSchoolUserPoolmaster0A3A3EBD",
+     "UserAuthConstructMasterUserUserPoolMasterA2EBFBCC",
      "Arn"
     ]
    }
   },
-  "UserAuthConstructmasterUserUserPoolArnmaster3D495E95": {
+  "UserAuthConstructMasterUserUserPoolClientIdMaster96D49C58": {
+   "Description": "worker's usre pool client id",
+   "Value": {
+    "Ref": "UserAuthConstructMasterUserUserPoolMasteruserUserPoolWebClient025B3CB6"
+   }
+  },
+  "WorkerAuthConstructMasterWorkerUserPoolArnMaster4405A5D6": {
+   "Description": "worker's user pool arn",
    "Value": {
     "Fn::GetAtt": [
-     "UserAuthConstructmasterUserUserPoolmaster4FC62998",
+     "WorkerAuthConstructMasterWorkerUserPoolMaster8DBECC39",
      "Arn"
     ]
    }
   },
-  "WorkerAuthConstructmasterWorkerUserPoolArnmasterDA2A890A": {
+  "WorkerAuthConstructMasterWorkerUserPoolClientIDMasterF25CCBA0": {
+   "Description": "worker's user pool client id",
    "Value": {
-    "Fn::GetAtt": [
-     "WorkerAuthConstructmasterWorkerUserPoolmasterE2364A99",
-     "Arn"
-    ]
+    "Ref": "WorkerAuthConstructMasterWorkerUserPoolMasterworkerUserPoolClientC0A7A664"
    }
   }
  },

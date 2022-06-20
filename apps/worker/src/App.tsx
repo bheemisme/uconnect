@@ -1,44 +1,33 @@
-import { useState } from 'react'
-import logo from './logo.svg'
-import './App.css'
-
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
+import Forgot from './components/Forgot'
+import Home from './components/Home'
+import SignIn from './components/SignIn'
+import SignUp from './components/SignUp'
+import PostForgot from './components/postForgot'
+import Confirm from './components/Confirm'
+import Settings from './components/Settings'
+import Dashboard from './components/Dashboard'
+import Threads from './components/Threads'
+import Delete from './components/Delete'
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>Hello Vite + React!</p>
-        <p>
-          <button type="button" onClick={() => setCount((count) => count + 1)}>
-            count is: {count}
-          </button>
-        </p>
-        <p>
-          Edit <code>App.tsx</code> and save to test HMR updates.
-        </p>
-        <p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-          {' | '}
-          <a
-            className="App-link"
-            href="https://vitejs.dev/guide/features.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Vite Docs
-          </a>
-        </p>
-      </header>
-    </div>
+    <Router>
+      <Routes>
+
+        <Route path='signin' element={<SignIn />} />
+        <Route path='signup' element={<SignUp />} />
+        <Route path='forgot' element={<Forgot />} />
+        <Route path='confirm' element={<Confirm />} />
+        <Route path='postforgot' element={<PostForgot />} />
+        <Route path='/' element={<Home />}>
+          <Route index element={<Dashboard />} />
+          <Route path='settings' element={<Settings />} />
+          <Route path='threads' element={<Threads />} />
+          <Route path='delete' element={<Delete />} />
+        </Route>
+      </Routes>
+    </Router>
   )
 }
 

@@ -1,0 +1,363 @@
+{
+ "Resources": {
+  "SchoolAuthConstructAuthSchoolUserPoolAuthD11CA01F": {
+   "Type": "AWS::Cognito::UserPool",
+   "Properties": {
+    "AccountRecoverySetting": {
+     "RecoveryMechanisms": [
+      {
+       "Name": "verified_phone_number",
+       "Priority": 1
+      },
+      {
+       "Name": "verified_email",
+       "Priority": 2
+      }
+     ]
+    },
+    "AdminCreateUserConfig": {
+     "AllowAdminCreateUserOnly": false
+    },
+    "AutoVerifiedAttributes": [
+     "email"
+    ],
+    "EmailVerificationMessage": "Thanks for signing up to our awesome app! Your Verfication code {####}",
+    "EmailVerificationSubject": "Verify your email for uconnect-school",
+    "SmsVerificationMessage": "The verification code to your new account is {####}",
+    "UsernameAttributes": [
+     "email"
+    ],
+    "UsernameConfiguration": {
+     "CaseSensitive": true
+    },
+    "UserPoolName": "school-user-pool",
+    "VerificationMessageTemplate": {
+     "DefaultEmailOption": "CONFIRM_WITH_CODE",
+     "EmailMessage": "Thanks for signing up to our awesome app! Your Verfication code {####}",
+     "EmailSubject": "Verify your email for uconnect-school",
+     "SmsMessage": "The verification code to your new account is {####}"
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "UconnectBackendStackAuth/SchoolAuthConstructAuth/SchoolUserPoolAuth/Resource"
+   }
+  },
+  "SchoolAuthConstructAuthSchoolUserPoolAuthSchoolUserPoolWebClient0368187B": {
+   "Type": "AWS::Cognito::UserPoolClient",
+   "Properties": {
+    "UserPoolId": {
+     "Ref": "SchoolAuthConstructAuthSchoolUserPoolAuthD11CA01F"
+    },
+    "AccessTokenValidity": 5,
+    "AllowedOAuthFlows": [
+     "code"
+    ],
+    "AllowedOAuthFlowsUserPoolClient": true,
+    "AllowedOAuthScopes": [
+     "profile",
+     "phone",
+     "email",
+     "openid",
+     "aws.cognito.signin.user.admin"
+    ],
+    "CallbackURLs": [
+     "https://example.com"
+    ],
+    "ClientName": "uconnect-school-client",
+    "ExplicitAuthFlows": [
+     "ALLOW_USER_SRP_AUTH",
+     "ALLOW_REFRESH_TOKEN_AUTH"
+    ],
+    "IdTokenValidity": 5,
+    "RefreshTokenValidity": 60,
+    "SupportedIdentityProviders": [
+     "COGNITO"
+    ],
+    "TokenValidityUnits": {
+     "AccessToken": "minutes",
+     "IdToken": "minutes",
+     "RefreshToken": "minutes"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "UconnectBackendStackAuth/SchoolAuthConstructAuth/SchoolUserPoolAuth/SchoolUserPoolWebClient/Resource"
+   }
+  },
+  "UserAuthConstructAuthUserUserPoolAuthA7986488": {
+   "Type": "AWS::Cognito::UserPool",
+   "Properties": {
+    "AccountRecoverySetting": {
+     "RecoveryMechanisms": [
+      {
+       "Name": "verified_phone_number",
+       "Priority": 1
+      },
+      {
+       "Name": "verified_email",
+       "Priority": 2
+      }
+     ]
+    },
+    "AdminCreateUserConfig": {
+     "AllowAdminCreateUserOnly": false
+    },
+    "AutoVerifiedAttributes": [
+     "email"
+    ],
+    "EmailVerificationMessage": "Thanks for signing up to our awesome app! Your Verfication code {####}",
+    "EmailVerificationSubject": "Verify your email for uconnect-user",
+    "Schema": [
+     {
+      "Mutable": false,
+      "Name": "name",
+      "Required": true
+     }
+    ],
+    "SmsVerificationMessage": "The verification code to your new account is {####}",
+    "UsernameAttributes": [
+     "email"
+    ],
+    "UsernameConfiguration": {
+     "CaseSensitive": true
+    },
+    "UserPoolName": "user-user-pool",
+    "VerificationMessageTemplate": {
+     "DefaultEmailOption": "CONFIRM_WITH_CODE",
+     "EmailMessage": "Thanks for signing up to our awesome app! Your Verfication code {####}",
+     "EmailSubject": "Verify your email for uconnect-user",
+     "SmsMessage": "The verification code to your new account is {####}"
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "UconnectBackendStackAuth/UserAuthConstructAuth/UserUserPoolAuth/Resource"
+   }
+  },
+  "UserAuthConstructAuthUserUserPoolAuthuserUserPoolWebClient972F2632": {
+   "Type": "AWS::Cognito::UserPoolClient",
+   "Properties": {
+    "UserPoolId": {
+     "Ref": "UserAuthConstructAuthUserUserPoolAuthA7986488"
+    },
+    "AccessTokenValidity": 5,
+    "AllowedOAuthFlows": [
+     "code"
+    ],
+    "AllowedOAuthFlowsUserPoolClient": true,
+    "AllowedOAuthScopes": [
+     "profile",
+     "phone",
+     "email",
+     "openid",
+     "aws.cognito.signin.user.admin"
+    ],
+    "CallbackURLs": [
+     "https://example.com"
+    ],
+    "ClientName": "uconnect-user-client",
+    "ExplicitAuthFlows": [
+     "ALLOW_USER_SRP_AUTH",
+     "ALLOW_REFRESH_TOKEN_AUTH"
+    ],
+    "IdTokenValidity": 5,
+    "RefreshTokenValidity": 60,
+    "SupportedIdentityProviders": [
+     "COGNITO"
+    ],
+    "TokenValidityUnits": {
+     "AccessToken": "minutes",
+     "IdToken": "minutes",
+     "RefreshToken": "minutes"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "UconnectBackendStackAuth/UserAuthConstructAuth/UserUserPoolAuth/userUserPoolWebClient/Resource"
+   }
+  },
+  "WorkerAuthConstructAuthWorkerUserPoolAuthD2C7B4FC": {
+   "Type": "AWS::Cognito::UserPool",
+   "Properties": {
+    "AccountRecoverySetting": {
+     "RecoveryMechanisms": [
+      {
+       "Name": "verified_phone_number",
+       "Priority": 1
+      },
+      {
+       "Name": "verified_email",
+       "Priority": 2
+      }
+     ]
+    },
+    "AdminCreateUserConfig": {
+     "AllowAdminCreateUserOnly": false
+    },
+    "AutoVerifiedAttributes": [
+     "email"
+    ],
+    "EmailVerificationMessage": "Thanks for signing up to our awesome app! Your Verfication code {####}",
+    "EmailVerificationSubject": "Verify your email for uconnect-worker",
+    "Schema": [
+     {
+      "Mutable": false,
+      "Name": "name",
+      "Required": true
+     }
+    ],
+    "SmsVerificationMessage": "The verification code to your new account is {####}",
+    "UsernameAttributes": [
+     "email"
+    ],
+    "UsernameConfiguration": {
+     "CaseSensitive": true
+    },
+    "UserPoolName": "worker-user-pool",
+    "VerificationMessageTemplate": {
+     "DefaultEmailOption": "CONFIRM_WITH_CODE",
+     "EmailMessage": "Thanks for signing up to our awesome app! Your Verfication code {####}",
+     "EmailSubject": "Verify your email for uconnect-worker",
+     "SmsMessage": "The verification code to your new account is {####}"
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "UconnectBackendStackAuth/WorkerAuthConstructAuth/WorkerUserPoolAuth/Resource"
+   }
+  },
+  "WorkerAuthConstructAuthWorkerUserPoolAuthworkerUserPoolClient8A024FAA": {
+   "Type": "AWS::Cognito::UserPoolClient",
+   "Properties": {
+    "UserPoolId": {
+     "Ref": "WorkerAuthConstructAuthWorkerUserPoolAuthD2C7B4FC"
+    },
+    "AccessTokenValidity": 5,
+    "AllowedOAuthFlows": [
+     "code"
+    ],
+    "AllowedOAuthFlowsUserPoolClient": true,
+    "AllowedOAuthScopes": [
+     "profile",
+     "phone",
+     "email",
+     "openid",
+     "aws.cognito.signin.user.admin"
+    ],
+    "CallbackURLs": [
+     "https://example.com"
+    ],
+    "ClientName": "uconnect-user-client",
+    "ExplicitAuthFlows": [
+     "ALLOW_USER_SRP_AUTH",
+     "ALLOW_REFRESH_TOKEN_AUTH"
+    ],
+    "IdTokenValidity": 5,
+    "RefreshTokenValidity": 60,
+    "SupportedIdentityProviders": [
+     "COGNITO"
+    ],
+    "TokenValidityUnits": {
+     "AccessToken": "minutes",
+     "IdToken": "minutes",
+     "RefreshToken": "minutes"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "UconnectBackendStackAuth/WorkerAuthConstructAuth/WorkerUserPoolAuth/workerUserPoolClient/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/02Jyw6CMBAAv4V7u1oSjXc+QIPxbLCsZqHumm4LB8K/+yAaTzOZKaHcgSuaUa1vexvoAtMxNb43r3T2cmNKAtNJMR5Egqmu/POvVIGQ0/9ayvxO+5we+TNrVMnR42xYWoROV4PbgtvAuuiUyMbMie4I9cInYTGEQpoAAAA="
+   },
+   "Metadata": {
+    "aws:cdk:path": "UconnectBackendStackAuth/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "SchoolAuthConstructAuthSchoolUserPoolArnAuthFF826CB3": {
+   "Description": "school user pool arn",
+   "Value": {
+    "Fn::GetAtt": [
+     "SchoolAuthConstructAuthSchoolUserPoolAuthD11CA01F",
+     "Arn"
+    ]
+   }
+  },
+  "SchoolAuthConstructAuthSchoolUserPoolClientIdAuth02D66F24": {
+   "Description": "school user pool client id",
+   "Value": {
+    "Ref": "SchoolAuthConstructAuthSchoolUserPoolAuthSchoolUserPoolWebClient0368187B"
+   }
+  },
+  "UserAuthConstructAuthUserUserPoolArnAuth12396BFE": {
+   "Description": "user's user pool arn",
+   "Value": {
+    "Fn::GetAtt": [
+     "UserAuthConstructAuthUserUserPoolAuthA7986488",
+     "Arn"
+    ]
+   }
+  },
+  "UserAuthConstructAuthUserUserPoolClientIdAuth27D41734": {
+   "Description": "worker's usre pool client id",
+   "Value": {
+    "Ref": "UserAuthConstructAuthUserUserPoolAuthuserUserPoolWebClient972F2632"
+   }
+  },
+  "WorkerAuthConstructAuthWorkerUserPoolArnAuth522A9606": {
+   "Description": "worker's user pool arn",
+   "Value": {
+    "Fn::GetAtt": [
+     "WorkerAuthConstructAuthWorkerUserPoolAuthD2C7B4FC",
+     "Arn"
+    ]
+   }
+  },
+  "WorkerAuthConstructAuthWorkerUserPoolClientIDAuth8439990B": {
+   "Description": "worker's user pool client id",
+   "Value": {
+    "Ref": "WorkerAuthConstructAuthWorkerUserPoolAuthworkerUserPoolClient8A024FAA"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

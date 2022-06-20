@@ -2,22 +2,27 @@ import * as cdk from 'aws-cdk-lib'
 import * as amplify from '@aws-cdk/aws-amplify-alpha'
 
 
-
-export type CustomConstructProps = {
+export interface CustomStackProps extends cdk.StackProps {
+	branchName: string
+}
+export interface CustomConstructProps {
 	account: string,
 	region: string,
+	branchName: string
 }
 
-export type CustomAmplifyAppProps = CustomConstructProps & {
+export interface CustomAmplifyAppProps {
+	account: string,
+	region: string,
 	sourceCodeProvider: amplify.CodeCommitSourceCodeProvider
 }
 
-export type StatelessApiProps = CustomConstructProps
-export type DBConstructProps = CustomConstructProps
-export type SchoolAuthConstructProps = CustomConstructProps
-export type UserAuthConstructProps = CustomConstructProps
-export type WorkerAuthConstructProps = CustomConstructProps
-export type UserAppProps =CustomAmplifyAppProps
-export type SchoolAppProps = CustomAmplifyAppProps
-export type WorkerAppProps = CustomAmplifyAppProps
+export interface StatelessApiProps extends CustomConstructProps{}
+export interface DBConstructProps extends CustomConstructProps{}
+export interface SchoolAuthConstructProps extends CustomConstructProps{}
+export interface UserAuthConstructProps extends CustomConstructProps{}
+export interface WorkerAuthConstructProps extends CustomConstructProps{}
+export interface UserAppProps extends CustomAmplifyAppProps{}
+export interface SchoolAppProps extends CustomAmplifyAppProps{}
+export interface WorkerAppProps extends CustomAmplifyAppProps{}
 
