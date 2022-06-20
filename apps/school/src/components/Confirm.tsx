@@ -2,6 +2,7 @@ import { ChangeEvent, FormEvent, useEffect, useState } from "react"
 import { Auth } from "aws-amplify"
 import { useNavigate, useLocation } from "react-router-dom"
 import { confirmSignUpState } from "../types"
+import ulogo from '/ulogo.jpg'
 export default function Confirm() {
     const [inputs, setInputs] = useState({
         "code": ""
@@ -43,7 +44,7 @@ export default function Confirm() {
 
     return (
         <div className="flex items-center flex-col justify-center min-h-screen bg-gray-100">
-            <img src="/ulogo.jpg" className="w-16" alt="" />
+            <img src={ulogo} className="w-16" alt="" />
             <div className="px-8 py-6 mt-4 text-left bg-white shadow-lg">
                 <p>Please Enter confirmation code sent to your email</p>
                 <form onSubmit={onSubmit} className="mt-4">

@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { NavLink, Outlet, useNavigate } from "react-router-dom"
 import { Auth } from "aws-amplify"
+import ulogo from '/ulogo.jpg'
 export default function Home() {
     const navigate = useNavigate()
     useEffect(() => {
@@ -14,7 +15,7 @@ export default function Home() {
     return (
         <div className="h-screen flex flex-col">
             <div className="font-bold  flex flex-row justify-center border-2 h-[10%]">
-                <img src="/ulogo.jpg" className="w-14" alt="ulogo" />
+                <img src={ulogo} className="w-14" alt="ulogo" />
             </div>
             <div className={`flex flex-row h-full`}>
                 <div className="flex flex-col w-[15%] border-2">

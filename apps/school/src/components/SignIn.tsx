@@ -3,6 +3,8 @@ import { Link, useNavigate } from "react-router-dom"
 import { Auth } from "aws-amplify"
 import { ImCross } from 'react-icons/im'
 import { IconContext } from 'react-icons'
+import ulogo from '/ulogo.jpg'
+
 export default function SignIn() {
     const navigate = useNavigate()
     useEffect(() => {
@@ -37,7 +39,7 @@ export default function SignIn() {
 
     return (
         <div className="flex items-center flex-col justify-center min-h-screen bg-gray-100">
-            <img src="/ulogo.jpg" className="w-16" alt="" />
+            <img src={ulogo} className="w-16" alt="" />
             <p className={`mt-4 p-2 rounded-2xl bg-red-300 text-white ${errorMessage.length == 0 ? 'hidden' : ''}`}>
                 {errorMessage}
                 <IconContext.Provider value={{ className: "inline ml-2 w-3 hover:cursor-pointer" }}>
