@@ -55,7 +55,7 @@ export default function EditProfile() {
                 </IconContext.Provider>
             </p>
             <form onSubmit={onSubmit}>
-                <label htmlFor="username">school name: </label>
+                <label htmlFor="username">username: </label>
                 <input type="text" id="username" name="username" onChange={onInputChange} value={inputs.username} className="border-2 focus:outline-none px-2" />
                 <button className="block border-2 p-2 px-4 rounded-2xl bg-sky-300 text-white">Edit</button>
             </form>

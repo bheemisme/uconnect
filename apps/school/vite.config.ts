@@ -16,8 +16,6 @@ export default defineConfig({
   build: {
     rollupOptions: {
       plugins: [
-        // Enable rollup polyfills plugin
-        // used during production bundling
         rollupNodePolyFill(),
       ],
       output: {

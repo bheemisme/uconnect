@@ -10,8 +10,17 @@ import Dashboard from './components/Dashboard'
 import Schools from './components/Schools'
 import Threads from './components/Threads'
 import Delete from './components/Delete'
-import {Amplify,Auth} from 'aws-amplify'
+import {Amplify} from 'aws-amplify'
+import EditProfile from './components/EditProfile'
 
+Amplify.configure({
+  Auth: {
+    region: import.meta.env.VITE_REGION,
+    userPoolId: import.meta.env.VITE_POOL_ID,
+    userPoolWebClientId: import.meta.env.VITE_CLIENT_ID,
+    authenticationFlowType: import.meta.env.VITE_AUTH_FLOW_TYPE,
+  }
+})
 function App() {
 
   return (
@@ -29,6 +38,7 @@ function App() {
           <Route path='schools' element={<Schools />} />
           <Route path='threads' element={<Threads />} />
           <Route path='delete' element={<Delete />} />
+          <Route path='edit' element={<EditProfile />} />
         </Route>
       </Routes>
     </Router>

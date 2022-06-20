@@ -1,5 +1,6 @@
 import { ChangeEvent, FormEvent, useState,useEffect } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
+import ulogo from '/ulogo.jpg'
 export default function PostForgot() {
     const navigate = useNavigate()
     const location = useLocation()
@@ -27,7 +28,7 @@ export default function PostForgot() {
     }
     return (
         <div className="flex items-center flex-col justify-center min-h-screen bg-gray-100">
-            <img src="../../public/ulogo.jpg" className="w-16" alt="" />
+            <img src={ulogo} className="w-16" alt="" />
             <div className="px-8 py-6 mt-4 text-left bg-white shadow-lg">
                 <h3 className="text-2xl font-bold text-center">Reset Password</h3>
                 <form className="mt-4" onSubmit={onSubmit}>
