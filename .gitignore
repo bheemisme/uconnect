@@ -1,5 +1,4 @@
 node_modules
-./cdk.out
 .yarn
 .editorconfig
 cdk.out/manifest.json
