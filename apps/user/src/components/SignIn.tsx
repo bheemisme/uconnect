@@ -25,7 +25,6 @@ export default function SignIn() {
 
     async function onSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault()
-        console.log(inputs)
         try {
             await Auth.signIn(inputs.email, inputs.password)
             navigate('/', {

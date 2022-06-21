@@ -4,7 +4,7 @@ import process from 'process'
 
 export async function handler(event: APIGatewayProxyEventV2, context: APIGatewayProxyCallbackV2): Promise<APIGatewayProxyResultV2> {
     try {
-
+        console.log(event)
         const client = new CognitoIdentityProviderClient({
             region: process.env.CLIENT_REGION,
         })

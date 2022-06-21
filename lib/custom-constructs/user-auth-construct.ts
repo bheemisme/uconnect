@@ -1,14 +1,13 @@
 import { Construct } from "constructs";
-import {UserAuthConstructProps} from '../../types'
 import * as cognito from 'aws-cdk-lib/aws-cognito'
 import * as cdk from 'aws-cdk-lib'
 
 export class UserAuthConstruct extends Construct {
     userUserPool: cognito.UserPool;
     userUserPoolClient: cognito.UserPoolClient;
-    constructor(scope: Construct,id: string,props: UserAuthConstructProps){
+    constructor(scope: Construct,id: string){
         super(scope,id)
-        this.userUserPool = new cognito.UserPool(this,`UserUserPool${props.branchName}`,{
+        this.userUserPool = new cognito.UserPool(this,`UserUserPool`,{
             selfSignUpEnabled: true,
             signInAliases: {
                 email: true
@@ -18,11 +17,6 @@ export class UserAuthConstruct extends Construct {
                 emailSubject: "Verify your email for uconnect-user",
                 emailBody: 'Thanks for signing up to our awesome app! Your Verfication code {####}',
                 emailStyle: cognito.VerificationEmailStyle.CODE
-            },
-            standardAttributes: {
-                fullname: {
-                    required: true, mutable: false
-                }
             },
             removalPolicy: cdk.RemovalPolicy.DESTROY
         })
@@ -43,12 +37,12 @@ export class UserAuthConstruct extends Construct {
             },
         })
         
-        new cdk.CfnOutput(this,`UserUserPoolArn${props.branchName}`,{
+        new cdk.CfnOutput(this,`UserUserPoolArn`,{
             value: this.userUserPool.userPoolArn,
             description: "user's user pool arn"
         })
 
-        new cdk.CfnOutput(this,`UserUserPoolClientId${props.branchName}`,{
+        new cdk.CfnOutput(this,`UserUserPoolClientId`,{
             value: this.userUserPoolClient.userPoolClientId,
             description: "worker's usre pool client id"
         })

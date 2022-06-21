@@ -6,24 +6,15 @@ import UconnectWebStack from '../lib/stacks/uconnect-web-stack';
 const app = new cdk.App()
 
 
-new UconnectBackendStack(app, `UconnectBackendStackMaster`, {
+new UconnectBackendStack(app, `UconnectBackendStack`, {
   env: {
     account: "750330112562",
     region: "ap-south-1",
   },
-  branchName: 'Master',
-  stackName: `uconnect-backend-stack-master`
+  stackName: `uconnect-backend-stack`
 })
 
 
-new UconnectBackendStack(app, `UconnectBackendStackAuth`, {
-  env: {
-    account: "750330112562",
-    region: "ap-south-1",
-  },
-  branchName: 'Auth',
-  stackName: `uconnect-backend-stack-auth`
-})
 
 new UconnectWebStack(app,"UconnectWebStack",{
   env: {

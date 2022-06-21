@@ -1,5 +1,4 @@
 import { Construct } from "constructs";
-import {SchoolAuthConstructProps} from '../../types'
 import * as cognito from 'aws-cdk-lib/aws-cognito'
 import * as cdk from 'aws-cdk-lib'
 
@@ -7,9 +6,9 @@ export class SchoolAuthConstruct extends Construct {
     schoolUserPool: cognito.UserPool;
     schoolUserPoolClient: cognito.UserPoolClient;
     
-    constructor(scope: Construct,id: string,props: SchoolAuthConstructProps){
+    constructor(scope: Construct,id: string){
         super(scope,id)
-        this.schoolUserPool = new cognito.UserPool(this,`SchoolUserPool${props.branchName}`,{
+        this.schoolUserPool = new cognito.UserPool(this,`SchoolUserPool`,{
             selfSignUpEnabled: true,
             signInAliases: {
                 email: true
@@ -38,12 +37,12 @@ export class SchoolAuthConstruct extends Construct {
             },
         })
 
-        new cdk.CfnOutput(this,`SchoolUserPoolArn${props.branchName}`,{
+        new cdk.CfnOutput(this,`SchoolUserPoolArn`,{
             value: this.schoolUserPool.userPoolArn,
             description: 'school user pool arn'
         })
 
-        new cdk.CfnOutput(this,`SchoolUserPoolClientId${props.branchName}`,{
+        new cdk.CfnOutput(this,`SchoolUserPoolClientId`,{
             value: this.schoolUserPoolClient.userPoolClientId,
             description: 'school user pool client id'
         })

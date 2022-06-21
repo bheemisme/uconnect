@@ -1,16 +1,71 @@
-import { Auth, Amplify } from "aws-amplify"
+import { Auth } from "aws-amplify"
 import { ChangeEvent, FormEvent, useEffect, useState } from "react"
 export default function Dashboard() {
-    let school: any
-    const [sname,setName] = useState("")
 
+    const [school, setSchool] = useState({
+        sname: "",
+        semail: ""
+    })
+    const [workers, addWorkers] = useState([])
 
-    Auth.currentAuthenticatedUser().then(usr => {
-        school = usr
-        setName(school.attributes.name)
+    let worker_items = workers.map((email: string,index:number) => {
+        return (<li key={index}>{email} <button className="mt-4 px-2 text-white bg-sky-400 rounded-xl"  onClick={async (event) => {
+            event.preventDefault()
+            try {
+                const token = (await Auth.currentSession()).getAccessToken().getJwtToken()
+                const res = await fetch('https://9klt3hok77.execute-api.ap-south-1.amazonaws.com/uconnect/deleteworker', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        email
+                    }),
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json'
+                    }
+                })
+                console.log(res)
+    
+            } catch (err) {
+                console.log(err)
+            }
+        }}>Delete</button></li>)
     })
 
-    
+    useEffect(() => {
+
+        Auth.currentAuthenticatedUser().then(scl => {
+            
+            Auth.currentSession().then(session => {
+                fetch(`https://9klt3hok77.execute-api.ap-south-1.amazonaws.com/uconnect/getworkers`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${session.getAccessToken().getJwtToken()}`,
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        'email': scl.attributes.email
+                    })
+                }).then(res => res.json()).then(workers =>{
+                    addWorkers(workers.workers)
+                }).catch(err => {
+                    console.log(err)
+                })
+            })
+
+            setSchool({
+                sname: scl.attributes.name,
+                semail: scl.attributes.email
+            })
+            
+        })
+
+        
+
+    }, [])
+
+
 
     const [inputs, setInputs] = useState({
         wemail: ''
@@ -26,27 +81,29 @@ export default function Dashboard() {
 
     async function onSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault()
-        fetch('https://qqzyfskcae.execute-api.ap-south-1.amazonaws.com/addworker',{
-            method: 'POST',
-            body: JSON.stringify({
-                semail: school.attributes.email,
-                email: inputs.wemail
-            }),
-            headers: {
-                'content-type': 'application/json',
-                'Authorization': `Bearer ${school.signInUserSession.accessToken}`,
-                
-            }
-        }).then(res => {
-            console.log(res)
-        }).catch(err => {
+        try {
+            const token = (await Auth.currentSession()).getAccessToken().getJwtToken()
+            const res = await fetch('https://9klt3hok77.execute-api.ap-south-1.amazonaws.com/uconnect/addworker', {
+                method: 'POST',
+                body: JSON.stringify({
+                    semail: school.semail,
+                    email: inputs.wemail
+                }),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json'
+                }
+            })
+
+        } catch (err) {
             console.log(err)
-        })
+        }
     }
 
     return (
         <div>
-            <h1 className="text-xl font-bold">{sname.toUpperCase()}</h1>
+            <h1 className="text-xl font-bold">{school.sname.toUpperCase()}</h1>
             <div>
                 <h3 className="mt-4 text-lg">Add A Worker</h3>
                 <form onSubmit={onSubmit} >
@@ -57,6 +114,9 @@ export default function Dashboard() {
             </div>
             <div>
                 <h3 className="mt-4 text-sm">Workers list</h3>
+                <ul>
+                    {worker_items}
+                </ul>
             </div>
         </div>
     )

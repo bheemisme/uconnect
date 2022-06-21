@@ -5,45 +5,59 @@ import { SchoolAuthConstruct } from '../custom-constructs/school-auth-construct'
 import { UserAuthConstruct } from '../custom-constructs/user-auth-construct'
 import {WorkerAuthConstruct} from '../custom-constructs/worker-auth-construct'
 import { StatelessApiConstruct } from '../custom-constructs/stateless-api-construct'
-import {CustomStackProps} from '../../types'
+import { DBConstruct } from '../custom-constructs/db-construct'
+import {SchoolAuthorizerConstruct} from '../custom-constructs/school-authorizer-construct'
+import {SchoolWorkerConstruct} from '../custom-constructs/school-worker-construct'
+import {SchoolLambdaConstruct} from '../custom-constructs/school-lambda-construct'
 export default class UconnectBackendStack extends cdk.Stack{
     sourceCodeProvider: amplify.CodeCommitSourceCodeProvider;
     statelessapi: StatelessApiConstruct
-    constructor(scope: Construct,id: string, props: CustomStackProps){
+    uconnectTable: DBConstruct
+    schoolAuth: SchoolAuthConstruct
+    userAuth: UserAuthConstruct
+    workerAuth: WorkerAuthConstruct
+    schoolAuthorizers: SchoolAuthorizerConstruct
+    schoolWorkers: SchoolWorkerConstruct;
+    schoolLambdaConstruct: SchoolLambdaConstruct;
+    constructor(scope: Construct,id: string, props: cdk.StackProps){
         super(scope,id,props)
-        // new DBConstruct(this,`DBConstruct${props.branchName}`,{
-        //     account: this.account,
-        //     region: this.region,
-        //     branchName: props.branchName
-        // })
-
-        new SchoolAuthConstruct(this,`SchoolAuthConstruct${props.branchName}`,{
-            account: this.account,
-            region: this.region,
-            branchName: props.branchName
+        // this.uconnectTable = new DBConstruct(this,`UconnectTable`)
+        this.schoolAuth = new SchoolAuthConstruct(this,`SchoolAuthConstruct`)
+        this.userAuth =  new UserAuthConstruct(this,`UserAuthConstruct`)
+        this.statelessapi = new StatelessApiConstruct(this,`StatelessApiConstruct`)
+        this.workerAuth =  new WorkerAuthConstruct(this,`WorkerAuthConstruct`)
+        
+        this.schoolAuthorizers = new SchoolAuthorizerConstruct(this,`SchoolAuthorizerConstruct`,{
+            api: this.statelessapi.uconnectApi,
+            client: this.schoolAuth.schoolUserPoolClient,
+            school_pool: this.schoolAuth.schoolUserPool,
+            region: this.region
         })
 
-        new UserAuthConstruct(this,`UserAuthConstruct${props.branchName}`,{
-            account: this.account,
+        this.schoolWorkers = new SchoolWorkerConstruct(this,"SchoolWorkerConstruct",{
+            worker_pool: this.workerAuth.workerUserPool,
+            worker_pool_region: this.region,
             region: this.region,
-            branchName: props.branchName
+            account: this.account,
+            api: this.statelessapi.uconnectApi,
+            school_authorizer: this.schoolAuthorizers.schoolAuthorizer
         })
+
+
 
         
+        this.workerAuth.workerUserPool.grant(this.schoolWorkers.addWorker,"cognito-idp:*")
+        this.workerAuth.workerUserPool.grant(this.schoolWorkers.deleteWorker,"cognito-idp:*")
+        this.workerAuth.workerUserPool.grant(this.schoolWorkers.getWorkers,"cognito-idp:*")
 
-        this.statelessapi = new StatelessApiConstruct(this,`StatelessApiConstruct${props.branchName}`,{
-            account: this.account,
-            region: this.region,
-            branchName: props.branchName
-        })
+        // this.schoolLambdaConstruct = new SchoolLambdaConstruct(this,"SchoolLambdaConstruct",{
+        //     account: this.account,
+        //     region: this.region,
+        //     api: this.statelessapi.uconnectApi,
+        //     school_authorizer: this.schoolAuthorizers.schoolAuthorizer
+        // })
 
-        new WorkerAuthConstruct(this,`WorkerAuthConstruct${props.branchName}`,{
-            account: this.account,
-            region: this.region,
-            branchName: props.branchName,
-            api: this.statelessapi.uconnectApi,
-            stage: this.statelessapi.uconnectApiDefaultStage
-        })
 
+        
     }
 }

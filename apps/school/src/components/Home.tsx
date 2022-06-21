@@ -4,21 +4,20 @@ import { Auth } from "aws-amplify"
 import ulogo from '/ulogo.jpg'
 export default function Home() {
     const navigate = useNavigate()
-    useEffect(() => {
-        Auth.currentSession().catch(() => {
-            navigate('/signin',{replace: true})
-        })
-        
-    },[])
+    // useEffect(() => {
+    //     Auth.currentSession().catch(() => {
+    //         navigate('/signin',{replace: true})
+    //     })
+    // },[])
     let inactiveClassName = "p-4 hover:text-white hover:bg-sky-300 hover:cursor-pointer"
     let activeClassName = "p-4 text-white bg-sky-300 cursor-pointer"
     return (
-        <div className="h-screen flex flex-col">
-            <div className="font-bold  flex flex-row justify-center border-2 h-[10%]">
+        <div className="flex flex-col h-full">
+            <div className="font-bold flex flex-row justify-center h-[10%]">
                 <img src={ulogo} className="w-14" alt="ulogo" />
             </div>
-            <div className={`flex flex-row h-full`}>
-                <div className="flex flex-col w-[15%] border-2">
+            <div className={`flex flex-row justify-between h-[90%]`}>
+                <div className="flex flex-col w-[15%] border-2 rounded-3xl">
                     <NavLink to="/" className={({ isActive }) => {
                         return isActive ? activeClassName : inactiveClassName
                     }}>Dashboard</NavLink>
@@ -33,7 +32,7 @@ export default function Home() {
                     }}>Settings</NavLink>
                 </div>
 
-                <div className="p-10 border-2 w-[85%]">
+                <div className="p-4 border-2 w-[85%] rounded-3xl">
                     <Outlet />
                 </div>
             </div>

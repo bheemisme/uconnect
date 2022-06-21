@@ -53,7 +53,7 @@ export default function SignIn() {
                         </div>
                         <div>
                             <label htmlFor="password" className="block">Temperaroy Password</label>
-                            <input type="password" name="temppassword" id="temppassword" placeholder="temperaroy password" className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600" value={inputs.password} onChange={onInputChange} />
+                            <input type="password" name="temppassword" id="temppassword" placeholder="temperaroy password" className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600" value={inputs.temppassword} onChange={onInputChange} />
                         </div>
                         <div>
                             <label htmlFor="password" className="block">New Password</label>

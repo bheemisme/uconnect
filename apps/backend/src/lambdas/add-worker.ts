@@ -1,8 +1,14 @@
-import { APIGatewayProxyEventV2, APIGatewayProxyCallbackV2, APIGatewayProxyResultV2 } from 'aws-lambda'
+import { APIGatewayProxyEventV2, APIGatewayProxyCallbackV2, APIGatewayProxyResultV2, APIGatewayEventRequestContext } from 'aws-lambda'
 import { CognitoIdentityProviderClient, AdminCreateUserCommand } from '@aws-sdk/client-cognito-identity-provider'
 import process from 'process'
-export async function handler(event: APIGatewayProxyEventV2, context: APIGatewayProxyCallbackV2): Promise<APIGatewayProxyResultV2> {
+
+
+
+export async function handler(event: any, context: APIGatewayProxyCallbackV2): Promise<APIGatewayProxyResultV2> {
     try {
+        console.log(context)
+        console.log(event)
+        console.log(event.requestContext.authorizer.jwt.claims)
         const client = new CognitoIdentityProviderClient({
             region: process.env.POOL_REGION,
         })

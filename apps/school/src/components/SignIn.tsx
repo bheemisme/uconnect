@@ -10,7 +10,9 @@ export default function SignIn() {
     useEffect(() => {
         Auth.currentSession().then(() => {
             navigate('/')
-        }).catch(() => { })
+        }).catch(() => {
+            // console.log("please authenticate")
+         })
     }, [])
     const [errorMessage, setErrorMessage] = useState("")
     const [inputs, setInputs] = useState({

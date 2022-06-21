@@ -2,14 +2,14 @@ import * as codecommit from 'aws-cdk-lib/aws-codecommit'
 import * as amplify from '@aws-cdk/aws-amplify-alpha'
 import * as cdk from 'aws-cdk-lib'
 import { Construct } from "constructs";
-import { CustomAmplifyAppProps, CustomStackProps } from "../../types";
-import { SchoolAppConstruct } from "../custom-constructs/school-app-construct";
-import { UserAppConstruct } from "../custom-constructs/user-app-construct";
-import { WorkerAppConstruct } from "../custom-constructs/worker-app-construct";
 
 
 export default class UconnectWebStack extends cdk.Stack{
     sourceCodeProvider: any;
+    schoolApp: amplify.App;
+    userApp: amplify.App;
+    workerApp: amplify.App;
+
     constructor(scope: Construct,id: string,props: cdk.StackProps){
         super(scope,id)
         this.sourceCodeProvider = new amplify.CodeCommitSourceCodeProvider({
@@ -20,18 +20,53 @@ export default class UconnectWebStack extends cdk.Stack{
             )
         })
 
-        const amplifyProps: CustomAmplifyAppProps = {
-            account: this.account,
-            region: this.region,
+        this.schoolApp = new amplify.App(this,"SchoolApp",{
             sourceCodeProvider: this.sourceCodeProvider,
+            autoBranchDeletion: true,
             
-        }
+            environmentVariables: {
+                'AMPLIFY_MONOREPO_APP_ROOT': 'apps/school',
+                'AMPLIFY_DIFF_DEPLOY': 'false'
+            }
+        })
 
-        new SchoolAppConstruct(this,"SchoolApp",amplifyProps)
+        this.schoolApp.addBranch('master')
+        
+        
 
-        new UserAppConstruct(this,"UserApp",amplifyProps)
 
-        new WorkerAppConstruct(this,"WorkerApp",amplifyProps)
+        this.userApp = new amplify.App(this,"UserApp",{
+            sourceCodeProvider: this.sourceCodeProvider,
+            autoBranchDeletion: true,
+            environmentVariables: {
+                'AMPLIFY_MONOREPO_APP_ROOT': 'apps/user',
+                'AMPLIFY_DIFF_DEPLOY': 'false'
+            }
+        })
 
+        this.userApp.addBranch('master')
+        
+        
+
+        this.workerApp = new amplify.App(this,"WorkerApp",{
+            sourceCodeProvider: this.sourceCodeProvider,
+            autoBranchDeletion: true,
+            environmentVariables: {
+                'AMPLIFY_MONOREPO_APP_ROOT': 'apps/worker',
+                'AMPLIFY_DIFF_DEPLOY': 'false'
+            }
+        })
+
+        this.workerApp.addBranch('master')
+        
+        new cdk.CfnOutput(this,"SchoolAppDomain",{
+            value: this.schoolApp.defaultDomain
+        })
+        new cdk.CfnOutput(this,"UserAppDomain",{
+            value: this.userApp.defaultDomain
+        })
+        new cdk.CfnOutput(this,"WorkerAppDomain",{
+            value: this.workerApp.defaultDomain
+        })
     }
 }

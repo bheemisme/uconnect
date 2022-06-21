@@ -26,7 +26,6 @@ function App() {
   return (
     <Router>
       <Routes>
-
         <Route path='signin' element={<SignIn />} />
         <Route path='signup' element={<SignUp />} />
         <Route path='forgot' element={<Forgot />} />
@@ -36,7 +35,9 @@ function App() {
           <Route index element={<Dashboard />} />
           <Route path='settings' element={<Settings />} />
           <Route path='schools' element={<Schools />} />
-          <Route path='threads' element={<Threads />} />
+          <Route path='threads' element={<Threads />} >
+            
+          </Route>
           <Route path='edit' element={<EditProfile />} />
           <Route path='change' element={<Change />} />
         </Route>
