@@ -65,7 +65,7 @@ export default function SignUp() {
                     <div className="mt-4">
                         <div>
                             <label htmlFor="email" className="block">School Email</label>
-                            <input type="email" name="email" placeholder="echool email" id="email" className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600" value={inputs.email} onChange={onInputChange} />
+                            <input type="email" name="email" placeholder="school email" id="email" className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600" value={inputs.email} onChange={onInputChange} />
                         </div>
                         <div>
                             <label htmlFor="username" className="block">School name</label>

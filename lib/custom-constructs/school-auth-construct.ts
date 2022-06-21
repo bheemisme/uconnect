@@ -10,7 +10,6 @@ export class SchoolAuthConstruct extends Construct {
     constructor(scope: Construct,id: string,props: SchoolAuthConstructProps){
         super(scope,id)
         this.schoolUserPool = new cognito.UserPool(this,`SchoolUserPool${props.branchName}`,{
-            userPoolName: 'school-user-pool',
             selfSignUpEnabled: true,
             signInAliases: {
                 email: true
@@ -37,7 +36,6 @@ export class SchoolAuthConstruct extends Construct {
                     implicitCodeGrant: false
                 },
             },
-            userPoolClientName: 'uconnect-school-client',
         })
 
         new cdk.CfnOutput(this,`SchoolUserPoolArn${props.branchName}`,{

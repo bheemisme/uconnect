@@ -26,7 +26,6 @@ function App() {
   return (
     <Router>
       <Routes>
-
         <Route path='signin' element={<SignIn />} />
         <Route path='signup' element={<SignUp />} />
         <Route path='forgot' element={<Forgot />} />

@@ -2,26 +2,33 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import Forgot from './components/Forgot'
 import Home from './components/Home'
 import SignIn from './components/SignIn'
-import SignUp from './components/SignUp'
 import PostForgot from './components/postForgot'
-import Confirm from './components/Confirm'
 import Settings from './components/Settings'
-import Dashboard from './components/Dashboard'
 import Threads from './components/Threads'
 import Delete from './components/Delete'
+import { Amplify } from 'aws-amplify'
+Amplify.configure({
+  Auth: {
+    region: import.meta.env.VITE_REGION,
+    userPoolId: import.meta.env.VITE_POOL_ID,
+    userPoolWebClientId: import.meta.env.VITE_CLIENT_ID,
+    authenticationFlowType: import.meta.env.VITE_AUTH_FLOW_TYPE,
+  }
+})
+
+
 function App() {
+
+
 
   return (
     <Router>
       <Routes>
 
         <Route path='signin' element={<SignIn />} />
-        <Route path='signup' element={<SignUp />} />
         <Route path='forgot' element={<Forgot />} />
-        <Route path='confirm' element={<Confirm />} />
         <Route path='postforgot' element={<PostForgot />} />
         <Route path='/' element={<Home />}>
-          <Route index element={<Dashboard />} />
           <Route path='settings' element={<Settings />} />
           <Route path='threads' element={<Threads />} />
           <Route path='delete' element={<Delete />} />

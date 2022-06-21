@@ -10,9 +10,9 @@ export default function EditProfile() {
     const [inputs, setInputs] = useState({
         "username": ""
     })
-    const [errorMessage, setErrorMessage] = useState({
+    const [msg, setMsg] = useState({
         message: "",
-        isError: false
+        error: false
     })
 
     function onInputChange(event: ChangeEvent<HTMLInputElement>) {
@@ -27,14 +27,14 @@ export default function EditProfile() {
             await Auth.updateUserAttributes(currentUser, {
                 name: inputs.username
             })
-            setErrorMessage({
+            setMsg({
                 message: "Profile Updated",
-                isError: false
+                error: false
             })
         } catch (err) {
-            setErrorMessage({
+            setMsg({
                 message: "Error Updating Profile",
-                isError: true
+                error: true
             })
         }
 
@@ -44,12 +44,12 @@ export default function EditProfile() {
 
     return (
         <div>
-            <p className={`mt-4 p-2 rounded-2xl bg-red-300 text-white  ${errorMessage.message.length == 0 ? 'hidden' : errorMessage.isError ? 'bg-red-300' : 'bg-green-300'}`}>
-                {errorMessage.message}
+            <p className={`mt-4 p-2 rounded-2xl bg-red-300 text-white  ${msg.message.length == 0 ? 'hidden' : msg.error ? 'bg-red-300' : 'bg-green-300'}`}>
+                {msg.message}
                 <IconContext.Provider value={{ className: "inline ml-2 w-3 hover:cursor-pointer" }}>
                     <ImCross onClick={() => {
-                        setErrorMessage({
-                            message: "", isError: false
+                        setMsg({
+                            message: "", error: false
                         })
                     }} />
                 </IconContext.Provider>

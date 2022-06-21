@@ -1,5 +1,6 @@
 import { ChangeEvent, FormEvent, useState } from "react"
 import { useNavigate } from "react-router-dom"
+import { Auth } from "aws-amplify"
 import ulogo from '/ulogo.jpg'
 export default function Forgot() {
     const navigate = useNavigate()
@@ -12,10 +13,10 @@ export default function Forgot() {
         setInputs({ ...inputs, [event.target.name]: event.target.value })
     }
 
-    function onSubmit(event: FormEvent<HTMLFormElement>) {
+    async function onSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault()
+        await Auth.forgotPassword(inputs.email)
         navigate('/postforgot',{replace: true, state: inputs.email})
-
     }
     return (
         <div className="flex items-center flex-col justify-center min-h-screen bg-gray-100">

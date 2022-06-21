@@ -4,9 +4,11 @@ import {Construct} from 'constructs'
 import { SchoolAuthConstruct } from '../custom-constructs/school-auth-construct'
 import { UserAuthConstruct } from '../custom-constructs/user-auth-construct'
 import {WorkerAuthConstruct} from '../custom-constructs/worker-auth-construct'
+import { StatelessApiConstruct } from '../custom-constructs/stateless-api-construct'
 import {CustomStackProps} from '../../types'
 export default class UconnectBackendStack extends cdk.Stack{
     sourceCodeProvider: amplify.CodeCommitSourceCodeProvider;
+    statelessapi: StatelessApiConstruct
     constructor(scope: Construct,id: string, props: CustomStackProps){
         super(scope,id,props)
         // new DBConstruct(this,`DBConstruct${props.branchName}`,{
@@ -27,10 +29,20 @@ export default class UconnectBackendStack extends cdk.Stack{
             branchName: props.branchName
         })
 
-        new WorkerAuthConstruct(this,`WorkerAuthConstruct${props.branchName}`,{
+        
+
+        this.statelessapi = new StatelessApiConstruct(this,`StatelessApiConstruct${props.branchName}`,{
             account: this.account,
             region: this.region,
             branchName: props.branchName
+        })
+
+        new WorkerAuthConstruct(this,`WorkerAuthConstruct${props.branchName}`,{
+            account: this.account,
+            region: this.region,
+            branchName: props.branchName,
+            api: this.statelessapi.uconnectApi,
+            stage: this.statelessapi.uconnectApiDefaultStage
         })
 
     }

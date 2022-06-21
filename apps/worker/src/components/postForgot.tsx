@@ -1,5 +1,7 @@
+import { Auth } from "aws-amplify"
 import { ChangeEvent, FormEvent, useState,useEffect } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
+import ulogo from '/ulogo.jpg'
 export default function PostForgot() {
     const navigate = useNavigate()
     const location = useLocation()
@@ -7,7 +9,6 @@ export default function PostForgot() {
 
     useEffect(() => {
         if(email == 'null'){
-            console.log('true')
             navigate('/signin',{replace: true})
         }    
     },[])
@@ -16,18 +17,21 @@ export default function PostForgot() {
         "password": "",
         "code": "",
     })
+
     function onInputChange(event: ChangeEvent<HTMLInputElement>) {
         event.preventDefault()
         setInputs({ ...inputs, [event.target.name]: event.target.value })
     }
 
-    function onSubmit(event: FormEvent<HTMLFormElement>) {
+    async function onSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault()
-        console.log(inputs)
+        await Auth.forgotPasswordSubmit(email, inputs.code, inputs.password)
+        await Auth.signIn(email,inputs.password)
+        navigate('/',{replace: true})
     }
     return (
         <div className="flex items-center flex-col justify-center min-h-screen bg-gray-100">
-            <img src="../../public/ulogo.jpg" className="w-16" alt="" />
+            <img src={ulogo} className="w-16" alt="" />
             <div className="px-8 py-6 mt-4 text-left bg-white shadow-lg">
                 <h3 className="text-2xl font-bold text-center">Reset Password</h3>
                 <form className="mt-4" onSubmit={onSubmit}>

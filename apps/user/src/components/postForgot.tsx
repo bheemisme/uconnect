@@ -1,3 +1,4 @@
+import { Auth } from "aws-amplify"
 import { ChangeEvent, FormEvent, useState,useEffect } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import ulogo from '/ulogo.jpg'
@@ -22,9 +23,12 @@ export default function PostForgot() {
         setInputs({ ...inputs, [event.target.name]: event.target.value })
     }
 
-    function onSubmit(event: FormEvent<HTMLFormElement>) {
+    
+    async function onSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault()
-        console.log(inputs)
+        await Auth.forgotPasswordSubmit(email, inputs.code, inputs.password)
+        await Auth.signIn(email,inputs.password)
+        navigate('/',{replace: true})
     }
     return (
         <div className="flex items-center flex-col justify-center min-h-screen bg-gray-100">

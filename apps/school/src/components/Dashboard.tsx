@@ -1,36 +1,57 @@
-import { Auth,Amplify } from "aws-amplify"
-import { ChangeEvent, FormEvent, useState } from "react"
-export default function Dashboard(){
-    let user:any
+import { Auth, Amplify } from "aws-amplify"
+import { ChangeEvent, FormEvent, useEffect, useState } from "react"
+export default function Dashboard() {
+    let school: any
+    const [sname,setName] = useState("")
+
+
     Auth.currentAuthenticatedUser().then(usr => {
-        user = user
-        console.log(user)
+        school = usr
+        setName(school.attributes.name)
     })
 
-    const [inputs,setInputs] = useState({
-        wemail: '',
-        
+    
+
+    const [inputs, setInputs] = useState({
+        wemail: ''
     })
 
-    function onInputChange(e: ChangeEvent<HTMLInputElement>){
-        e.preventDefault()
-        setInputs({...inputs,
-            [e.target.name]: e.target.value
+    function onInputChange(event: ChangeEvent<HTMLInputElement>) {
+        event.preventDefault()
+        setInputs({
+            ...inputs,
+            [event.target.name]: event.target.value
         })
     }
-    
-    async function onSubmit(e: FormEvent<HTMLFormElement>){
-        e.preventDefault()
-        console.log(inputs.wemail)
+
+    async function onSubmit(event: FormEvent<HTMLFormElement>) {
+        event.preventDefault()
+        fetch('https://qqzyfskcae.execute-api.ap-south-1.amazonaws.com/addworker',{
+            method: 'POST',
+            body: JSON.stringify({
+                semail: school.attributes.email,
+                email: inputs.wemail
+            }),
+            headers: {
+                'content-type': 'application/json',
+                'Authorization': `Bearer ${school.signInUserSession.accessToken}`,
+                
+            }
+        }).then(res => {
+            console.log(res)
+        }).catch(err => {
+            console.log(err)
+        })
     }
+
     return (
         <div>
-            <h1 className="text-xl">Dashboard</h1>
+            <h1 className="text-xl font-bold">{sname.toUpperCase()}</h1>
             <div>
                 <h3 className="mt-4 text-lg">Add A Worker</h3>
-                <form action="" onSubmit={onSubmit} >
+                <form onSubmit={onSubmit} >
                     <label htmlFor="wemail" className="text-sm">Worker Email: </label>
-                    <input type="email" id="wemail" value={inputs.wemail} className="mt-4 border-2 px-2" name="wemail" onChange={onInputChange}/>
+                    <input type="email" id="wemail" value={inputs.wemail} className="mt-4 border-2 px-2" name="wemail" onChange={onInputChange} />
                     <button className="mt-4 block p-2 bg-sky-400 text-white rounded-3xl">Submit</button>
                 </form>
             </div>

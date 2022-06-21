@@ -11,6 +11,7 @@ import Schools from './components/Schools'
 import Threads from './components/Threads'
 import EditProfile from './components/EditProfile'
 import {Amplify } from 'aws-amplify'
+import Change from './components/Change'
 
 Amplify.configure({
   Auth: {
@@ -37,6 +38,7 @@ function App() {
           <Route path='schools' element={<Schools />} />
           <Route path='threads' element={<Threads />} />
           <Route path='edit' element={<EditProfile />} />
+          <Route path='change' element={<Change />} />
         </Route>
       </Routes>
     </Router>
