@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Routes,Navigate } from 'react-router-dom'
 import Forgot from './components/Forgot'
 import Home from './components/Home'
 import SignIn from './components/SignIn'
@@ -8,7 +8,7 @@ import Confirm from './components/Confirm'
 import Settings from './components/Settings'
 import Dashboard from './components/Dashboard'
 import Schools from './components/Schools'
-import Threads from './components/Threads'
+import {Threads,Chat} from './components/Threads'
 import Delete from './components/Delete'
 import {Amplify} from 'aws-amplify'
 import EditProfile from './components/EditProfile'
@@ -26,6 +26,7 @@ function App() {
   return (
     <Router>
       <Routes>
+        <Route path='' />
         <Route path='signin' element={<SignIn />} />
         <Route path='signup' element={<SignUp />} />
         <Route path='forgot' element={<Forgot />} />
@@ -35,9 +36,12 @@ function App() {
           <Route index element={<Dashboard />} />
           <Route path='settings' element={<Settings />} />
           <Route path='schools' element={<Schools />} />
-          <Route path='threads' element={<Threads />} />
+          <Route path='threads' element={<Threads />} >
+              <Route path=':tid' element={<Chat  />} />
+          </Route>
           <Route path='delete' element={<Delete />} />
           <Route path='edit' element={<EditProfile />} />
+          <Route path='*' element={<Navigate replace to="/"/>} />
         </Route>
       </Routes>
     </Router>

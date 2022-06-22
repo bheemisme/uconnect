@@ -9,6 +9,10 @@ import { DBConstruct } from '../custom-constructs/db-construct'
 import {SchoolAuthorizerConstruct} from '../custom-constructs/school-authorizer-construct'
 import {SchoolWorkerConstruct} from '../custom-constructs/school-worker-construct'
 import {SchoolLambdaConstruct} from '../custom-constructs/school-lambda-construct'
+import {StatefullApiConstruct} from '../custom-constructs/statefull-api-construct'
+import { StatefullLambdaConstruct } from '../custom-constructs/statefull-lambda-construct'
+import { StatefullAuthConstruct } from '../custom-constructs/statefull-auth-construct'
+
 export default class UconnectBackendStack extends cdk.Stack{
     sourceCodeProvider: amplify.CodeCommitSourceCodeProvider;
     statelessapi: StatelessApiConstruct
@@ -19,6 +23,9 @@ export default class UconnectBackendStack extends cdk.Stack{
     schoolAuthorizers: SchoolAuthorizerConstruct
     schoolWorkers: SchoolWorkerConstruct;
     schoolLambdaConstruct: SchoolLambdaConstruct;
+    uconnectSocketApi: StatefullApiConstruct;
+    uconnectSocketLambdas: StatefullLambdaConstruct
+    uconnectSocketAuth: StatefullAuthConstruct
     constructor(scope: Construct,id: string, props: cdk.StackProps){
         super(scope,id,props)
         // this.uconnectTable = new DBConstruct(this,`UconnectTable`)
@@ -49,15 +56,22 @@ export default class UconnectBackendStack extends cdk.Stack{
         this.workerAuth.workerUserPool.grant(this.schoolWorkers.addWorker,"cognito-idp:*")
         this.workerAuth.workerUserPool.grant(this.schoolWorkers.deleteWorker,"cognito-idp:*")
         this.workerAuth.workerUserPool.grant(this.schoolWorkers.getWorkers,"cognito-idp:*")
+        this.uconnectSocketApi = new StatefullApiConstruct(this,"UconnectSocketApiConstruct")
+        
+        this.uconnectSocketAuth = new StatefullAuthConstruct(this,"UconnectSocketAuthConstruct",{
+            api: this.uconnectSocketApi.uconnectSocketApi,
+            stage: this.uconnectSocketApi.uconnectSocketStage
+        })
 
-        // this.schoolLambdaConstruct = new SchoolLambdaConstruct(this,"SchoolLambdaConstruct",{
-        //     account: this.account,
-        //     region: this.region,
-        //     api: this.statelessapi.uconnectApi,
-        //     school_authorizer: this.schoolAuthorizers.schoolAuthorizer
-        // })
+        this.uconnectSocketLambdas = new StatefullLambdaConstruct(this,"UconnectSocketLambdas",{
+            api: this.uconnectSocketApi.uconnectSocketApi,
+            stage: this.uconnectSocketApi.uconnectSocketStage,
+            authorizer: this.uconnectSocketAuth.connectAuthorizer
+        })
 
+        
 
+        
         
     }
 }

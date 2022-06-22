@@ -1,14 +1,16 @@
-import { useEffect } from "react"
+import { useEffect, useRef, useState } from "react"
 import { NavLink, Outlet, useNavigate } from "react-router-dom"
 import { Auth } from "aws-amplify"
 import ulogo from '/ulogo.jpg'
 export default function Home() {
     const navigate = useNavigate()
-    // useEffect(() => {
-    //     Auth.currentSession().catch(() => {
-    //         navigate('/signin',{replace: true})
-    //     })
-    // },[])
+
+
+    Auth.currentSession().catch(() => {
+        navigate('/signin', { replace: true })
+    })
+
+
     let inactiveClassName = "p-4 hover:text-white hover:bg-sky-300 hover:cursor-pointer"
     let activeClassName = "p-4 text-white bg-sky-300 cursor-pointer"
     return (

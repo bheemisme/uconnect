@@ -18,7 +18,10 @@ export class UserAuthConstruct extends Construct {
                 emailBody: 'Thanks for signing up to our awesome app! Your Verfication code {####}',
                 emailStyle: cognito.VerificationEmailStyle.CODE
             },
-            removalPolicy: cdk.RemovalPolicy.DESTROY
+            removalPolicy: cdk.RemovalPolicy.DESTROY,
+            customAttributes: {
+                'type': new cognito.StringAttribute({mutable: false})
+            }
         })
 
         

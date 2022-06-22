@@ -8,7 +8,6 @@ export default function Home() {
         Auth.currentSession().catch(() => {
             navigate('/signin', { replace: true })
         })
-
     }, [])
     let inactiveClassName = "p-4 hover:text-white hover:bg-sky-300 hover:cursor-pointer"
     let activeClassName = "p-4 text-white bg-sky-300 cursor-pointer"

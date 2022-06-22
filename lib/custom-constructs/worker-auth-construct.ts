@@ -30,7 +30,8 @@ export class WorkerAuthConstruct extends Construct {
                 emailStyle: cognito.VerificationEmailStyle.CODE
             },
             customAttributes: {
-                semail: new cognito.StringAttribute({mutable: false})
+                semail: new cognito.StringAttribute({mutable: false}),
+                'type': new cognito.StringAttribute({mutable: false})
             },
             removalPolicy: cdk.RemovalPolicy.DESTROY
         })

@@ -1,10 +1,10 @@
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Routes,Navigate } from 'react-router-dom'
 import Forgot from './components/Forgot'
 import Home from './components/Home'
 import SignIn from './components/SignIn'
 import PostForgot from './components/postForgot'
 import Settings from './components/Settings'
-import Threads from './components/Threads'
+import {Threads,Chat} from './components/Threads'
 import Delete from './components/Delete'
 import { Amplify } from 'aws-amplify'
 Amplify.configure({
@@ -30,8 +30,11 @@ function App() {
         <Route path='postforgot' element={<PostForgot />} />
         <Route path='/' element={<Home />}>
           <Route path='settings' element={<Settings />} />
-          <Route path='threads' element={<Threads />} />
+          <Route path='threads' element={<Threads />} >
+              <Route path=':tid' element={<Chat  />} />
+          </Route>
           <Route path='delete' element={<Delete />} />
+          <Route path='*' element={<Navigate replace to="/"/>} />
         </Route>
       </Routes>
     </Router>

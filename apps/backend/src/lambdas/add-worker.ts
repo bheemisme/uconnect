@@ -38,6 +38,9 @@ export async function handler(event: any, context: APIGatewayProxyCallbackV2): P
             },{
                 Name: 'custom:semail',
                 Value: body.semail
+            },{
+                Name: 'custom:type',
+                Value: 'worker'
             }]
         }))
 

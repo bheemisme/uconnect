@@ -32,7 +32,8 @@ export default function SignUp() {
                 username: inputs.email,
                 password: inputs.password,
                 attributes: {
-                    name: inputs.username
+                    name: inputs.username,
+                    'custom:type': 'school'
                 }
             })
             navigate('/confirm',{
