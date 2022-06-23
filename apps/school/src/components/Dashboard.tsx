@@ -1,22 +1,24 @@
 import { Auth } from "aws-amplify"
 import { ChangeEvent, FormEvent, useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom"
 export default function Dashboard() {
 
+    const navigate = useNavigate()
     const [school, setSchool] = useState({
         sname: "",
         semail: ""
     })
-    const [workers, addWorkers] = useState([])
+    const [workers, addWorkers] = useState<{email: string,status: string}[]>([])
 
-    let worker_items = workers.map((email: string,index:number) => {
-        return (<li key={index}>{email} <button className="mt-4 px-2 text-white bg-sky-400 rounded-xl"  onClick={async (event) => {
+    let worker_items = workers.map((wrk: {email: string,status: string},index:number) => {
+        return (<li key={index}>{wrk.email} {"-->"} {wrk.status === 'CONFIRMED' ? 'CONFIRMED': 'UNCONFIRMED'}<button className="mt-4 px-2 text-white bg-sky-400 rounded-xl"  onClick={async (event) => {
             event.preventDefault()
             try {
                 const token = (await Auth.currentSession()).getAccessToken().getJwtToken()
                 const res = await fetch('https://9klt3hok77.execute-api.ap-south-1.amazonaws.com/uconnect/deleteworker', {
                     method: 'POST',
                     body: JSON.stringify({
-                        email
+                        'email': wrk.email
                     }),
                     headers: {
                         'Content-Type': 'application/json',
@@ -24,10 +26,10 @@ export default function Dashboard() {
                         'Accept': 'application/json'
                     }
                 })
-                console.log(res)
-    
             } catch (err) {
-                console.log(err)
+                
+                    navigate('/signin',{replace: true})
+                
             }
         }}>Delete</button></li>)
     })
@@ -59,6 +61,8 @@ export default function Dashboard() {
                 semail: scl.attributes.email
             })
             
+        }).catch(() => {
+            navigate('/signin',{replace: true})
         })
 
         
@@ -67,7 +71,7 @@ export default function Dashboard() {
 
 
 
-    const [inputs, setInputs] = useState({
+    const [inputs, setInputs] = useState<{wemail: string}>({
         wemail: ''
     })
 
@@ -96,6 +100,8 @@ export default function Dashboard() {
                 }
             })
 
+            workers.push({'email': inputs.wemail,'status': 'UNCONFIRMED'})
+            addWorkers([... workers])
         } catch (err) {
             console.log(err)
         }

@@ -8,10 +8,11 @@ import Confirm from './components/Confirm'
 import Settings from './components/Settings'
 import Dashboard from './components/Dashboard'
 import Schools from './components/Schools'
-import {Threads, Chat} from './components/Threads'
+import { Threads, Chat } from './components/Threads'
 import EditProfile from './components/EditProfile'
-import {Amplify } from 'aws-amplify'
+import { Amplify, Auth } from 'aws-amplify'
 import Change from './components/Change'
+// import { useCallback, useEffect, useRef } from 'react'
 
 Amplify.configure({
   Auth: {
@@ -22,6 +23,23 @@ Amplify.configure({
   }
 })
 function App() {
+
+  // const skt = useRef<WebSocket | null>(null)
+  
+  // const socketOpen = useCallback(() => {
+  //   console.log("connected to socket")
+  // },[])
+  // useEffect(() => {
+
+  //   Auth.currentSession().then(session => {
+  //     if (!skt.current?.OPEN) {
+  //       skt.current = new WebSocket("wss://u011tqobmd.execute-api.ap-south-1.amazonaws.com/uconnect", ['school',session.getAccessToken().getJwtToken()])
+  //       skt.current.onopen = socketOpen
+  //     }
+  //   })
+
+  // }, [])
+
 
   return (
     <Router>
@@ -36,11 +54,11 @@ function App() {
           <Route path='settings' element={<Settings />} />
           <Route path='schools' element={<Schools />} />
           <Route path='threads' element={<Threads />} >
-              <Route path=':tid' element={<Chat  />} />
+            <Route path=':tid' element={<Chat />} />
           </Route>
           <Route path='edit' element={<EditProfile />} />
           <Route path='change' element={<Change />} />
-          <Route path='*' element={<Navigate replace to="/"/>} />
+          <Route path='*' element={<Navigate replace to="/" />} />
         </Route>
       </Routes>
     </Router>

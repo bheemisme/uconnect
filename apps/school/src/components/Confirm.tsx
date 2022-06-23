@@ -24,14 +24,15 @@ export default function Confirm() {
 
     async function onSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault()
-
+        
         if (typeof location.state === 'string') {
             let obj: confirmSignUpState = JSON.parse(location.state)
             try {
                 await Auth.confirmSignUp(obj.email, inputs.code)
                 await Auth.signIn(obj.email, obj.password)
                 navigate('/', { replace: true })
-            } catch (error) {  
+            } catch (error) {
+                console.log(error)
                 navigate('/signup', { replace: true })    
             }
 
