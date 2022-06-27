@@ -11,7 +11,7 @@ import * as dynamodb from '@aws-sdk/client-dynamodb'
         },
         UpdateExpression: 'DELETE CONNECTIONS :conid',
         ExpressionAttributeValues: {
-            ':conid': {'SS':['asdofuo=']}
+            ':conid': {'SS':['asdofuo=','asdfojo=']}
         },
         ReturnValues: 'ALL_NEW'
     }))

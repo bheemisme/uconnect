@@ -1,13 +1,16 @@
-import { useNavigate } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 import { useStore } from "../store"
 import shallow from 'zustand/shallow'
 import { useEffect } from "react"
-
+import useWebSocket,{ReadyState} from 'react-use-websocket'
 export default function Schools() {
-    // fetch all schools
-    // 
+
     const navigate = useNavigate()
-    const [schools, getSchools] = useStore((state) => [state.schools, state.getSchools])
+    const location = useLocation()
+    
+    const [schools, getSchools] = useStore((state) => [state.schools, state.getSchools],shallow)
+
+    
     useEffect(() => {
         getSchools()
     }, [])
@@ -28,7 +31,8 @@ export default function Schools() {
                     return (
                         <button key={index} onClick={(e) => {
                             e.preventDefault()
-                            // add the new thread from our school to this school
+                            // console.log(wsurl)
+                            // socket.sendJsonMessage({'action': 'newthread','payload': {semail: scl.email,tname: 'fee'}})
                         }} className="border-2 rounded-2xl p-2 ml-4 mb-4 w-30 hover:cursor-pointer hover:text-white hover:bg-sky-400">
                             {scl.name}
                         </button>

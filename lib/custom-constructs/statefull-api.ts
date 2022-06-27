@@ -169,7 +169,8 @@ export class StatefullApi extends Construct {
             timeout: cdk.Duration.seconds(25),
             environment: {
                 'TABLE_REGION': this.props.table.tableArn.split(':')[3],
-                'TABLE_NAME': this.props.table.tableName
+                'TABLE_NAME': this.props.table.tableName,
+                'POOL_REGION': 'ap-south-1'
             },
             bundling: {
                 externalModules: ['aws-sdk'],

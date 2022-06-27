@@ -17,6 +17,31 @@ export class UconnectTable extends Construct {
             removalPolicy: cdk.RemovalPolicy.DESTROY,
             timeToLiveAttribute: 'TTL'
         })
+
+        this.uconnectTable.addGlobalSecondaryIndex({
+            indexName: 'from_threads',
+            'partitionKey' : {
+                'name': 'FROM',
+                'type': dynamodb.AttributeType.STRING
+            },
+            'sortKey' : {
+                'name': 'TID',
+                'type' : dynamodb.AttributeType.STRING
+            }
+        })
+
+        this.uconnectTable.addGlobalSecondaryIndex({
+            indexName: 'to_threads',
+            'partitionKey' : {
+                'name': 'TO',
+                'type': dynamodb.AttributeType.STRING
+            },
+            'sortKey' : {
+                'name': 'TID',
+                'type' : dynamodb.AttributeType.STRING
+            }
+        })
+        
         new cdk.CfnOutput(this,"UconnectTableArn",{value: this.uconnectTable.tableArn})
     }
 }

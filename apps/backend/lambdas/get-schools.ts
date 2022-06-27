@@ -30,7 +30,11 @@ export async function handler(event: any): Promise<any> {
             return {'email': e.PK.S,'name': e.NAME.S}
         })
 
+        console.log(schools.Items)
         console.info(items)
+        console.log(schools.Items.filter(e => {
+            return e.emal !== email
+        }))
         return {
             statusCode: 200,
             body: JSON.stringify({"items": items}),

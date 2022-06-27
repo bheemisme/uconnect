@@ -13,8 +13,27 @@ interface TStore {
     getWorkers(): Promise<void>,
     getSchools(): Promise<void>,
     setSchoolInfo(): Promise<void>,
-    addWorker(email: string): Promise<void>
+    addWorker(email: string): Promise<void>,
+    setWSUrl(): Promise<string>,
+    connect(): Promise<void>
 };
+
+async function getToken() {
+    const session = await Auth.currentSession()
+    const user = await Auth.currentAuthenticatedUser()
+    const res = await fetch(`${import.meta.env.VITE_API_END_POINT}/gettoken`, {
+        method: 'POST',
+        headers: {
+            'content-type': 'application/json',
+            Authorization: `${session.getAccessToken().getJwtToken()}`
+        },
+        body: JSON.stringify({
+            'email': user.attributes.email
+        })
+    })
+    const token = await res.json()
+    return token
+}
 
 export const useStore = create<TStore>()(devtools((set, get) => ({
     school: { name: '', email: '' },
@@ -93,4 +112,5 @@ export const useStore = create<TStore>()(devtools((set, get) => ({
             console.error(error)
         }
     }
+
 })))

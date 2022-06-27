@@ -100,13 +100,14 @@ export default class UconnectBackendStack extends cdk.Stack {
             table: this.uconnectTable.uconnectTable
         })
 
+
         this.uconnectTable.uconnectTable.grantReadWriteData(this.uconnectStatefullApi.customAuthorizerFunctionStatefull)
         this.uconnectTable.uconnectTable.grantReadWriteData(this.uconnectStatefullApi.connectFunction)
         this.uconnectTable.uconnectTable.grantReadWriteData(this.uconnectStatefullApi.disconnectFunction)
         this.uconnectTable.uconnectTable.grantReadWriteData(this.uconnectStatefullApi.sendMessageFunction)
         this.uconnectTable.uconnectTable.grantReadWriteData(this.uconnectStatefullApi.getThreadsFunction)
         this.uconnectTable.uconnectTable.grantReadWriteData(this.uconnectStatefullApi.terminateThreadFunction)
-        
+        this.uconnectTable.uconnectTable.grantReadWriteData(this.uconnectStatefullApi.newThreadFunction)
         
     }
 }
