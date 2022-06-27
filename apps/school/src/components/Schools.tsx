@@ -1,19 +1,26 @@
 import { useLocation, useNavigate } from "react-router-dom"
-import { useStore } from "../store"
+import { useStore,getToken } from "../store"
 import shallow from 'zustand/shallow'
-import { useEffect } from "react"
+import { useCallback, useEffect } from "react"
 import useWebSocket,{ReadyState} from 'react-use-websocket'
 export default function Schools() {
 
     const navigate = useNavigate()
     const location = useLocation()
+
+    // console.log('callback: ',location.state)
     
-    const [schools, getSchools] = useStore((state) => [state.schools, state.getSchools],shallow)
+    const [schools, getSchools,socket] = useStore((state) => [state.schools, state.getSchools,state.socket],shallow)
 
     
     useEffect(() => {
+        
         getSchools()
     }, [])
+
+    if(socket){
+        socket({'action': 'newthread','payload': {'email': ''}})
+    }
 
     return (
         <div className="flex flex-row flex-wrap">

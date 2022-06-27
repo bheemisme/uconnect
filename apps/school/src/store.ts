@@ -10,13 +10,17 @@ interface TStore {
     school: TSchool,
     workers: string[],
     schools: TSchool[],
+    sclmsg?: string,
+    socket?: Function,
+    setSocketFunction(cb: Function): void,
     getWorkers(): Promise<void>,
     getSchools(): Promise<void>,
     setSchoolInfo(): Promise<void>,
     addWorker(email: string): Promise<void>,
+    sendSclMsg(msg: string): void
 };
 
-async function getToken() {
+export async function getToken() {
     const session = await Auth.currentSession()
     const user = await Auth.currentAuthenticatedUser()
     const res = await fetch(`${import.meta.env.VITE_API_END_POINT}/gettoken`, {
@@ -37,6 +41,15 @@ export const useStore = create<TStore>()(devtools((set, get) => ({
     school: { name: '', email: '' },
     workers: [],
     schools: [],
+    sclmsg: "school message",
+    setSocketFunction(cb) {
+        set((state) => {
+            return {
+                ...state,
+                socket: cb
+            }
+        })
+    },
     getWorkers: async () => {
         try {
             const session = await Auth.currentSession()
@@ -109,6 +122,13 @@ export const useStore = create<TStore>()(devtools((set, get) => ({
         } catch (error) {
             console.error(error)
         }
-    }
-
+    },
+    sendSclMsg(msg) {
+        set((state) => {
+            return {
+                ...state,
+                sclmsg: msg
+            }
+        })
+    },
 })))
