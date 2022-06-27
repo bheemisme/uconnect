@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useEffect, useState } from "react"
+import { ChangeEvent, FormEvent, MouseEvent, useEffect, useState } from "react"
 import { Auth } from "aws-amplify"
 import { useNavigate, useLocation } from "react-router-dom"
 import { confirmSignUpState } from "../types"
@@ -41,6 +41,20 @@ export default function Confirm() {
 
     }
 
+    async function onResend(event: MouseEvent<HTMLButtonElement>){
+        event.preventDefault()
+
+        if (typeof location.state === 'string') {
+            let obj: confirmSignUpState = JSON.parse(location.state)
+            try {
+                await Auth.resendSignUp(obj.email)
+            } catch (error) {
+                navigate('/signup', { replace: true })
+            }
+        } else {
+            navigate('/signup', { replace: true })
+        }
+    }
 
     return (
         <div className="flex items-center flex-col justify-center min-h-screen bg-gray-100">
@@ -56,6 +70,7 @@ export default function Confirm() {
                     </div>
                     <div className="flex items-baseline justify-between">
                         <button type="submit" className="px-6 py-2 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-900">Confirm</button>
+                        <button className="px-6 py-2 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-900" onClick={onResend}>Resend Code</button>
                     </div>
                 </form>
             </div>

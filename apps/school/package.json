@@ -12,8 +12,9 @@
     "react-dom": "^18.0.0",
     "react-icons": "^4.4.0",
     "react-router-dom": "6",
+    "react-use-websocket": "^4.2.0",
     "rollup-plugin-node-polyfills": "^0.2.1",
-    "ws": "^8.8.0"
+    "zustand": "^4.0.0-rc.1"
   },
   "devDependencies": {
     "@types/react": "^18.0.0",

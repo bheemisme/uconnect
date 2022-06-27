@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Navigate, Route, Routes } from 'react-router-dom'
+import { BrowserRouter as Router, Navigate, Route, Routes, useNavigate } from 'react-router-dom'
 import Forgot from './components/Forgot'
 import Home from './components/Home'
 import SignIn from './components/SignIn'
@@ -12,8 +12,7 @@ import { Threads, Chat } from './components/Threads'
 import EditProfile from './components/EditProfile'
 import { Amplify, Auth } from 'aws-amplify'
 import Change from './components/Change'
-// import { useCallback, useEffect, useRef } from 'react'
-
+import { useEffect, useRef, useState } from 'react'
 Amplify.configure({
   Auth: {
     region: import.meta.env.VITE_REGION,
@@ -22,24 +21,11 @@ Amplify.configure({
     authenticationFlowType: import.meta.env.VITE_AUTH_FLOW_TYPE,
   }
 })
+
+
+
+
 function App() {
-
-  // const skt = useRef<WebSocket | null>(null)
-  
-  // const socketOpen = useCallback(() => {
-  //   console.log("connected to socket")
-  // },[])
-  // useEffect(() => {
-
-  //   Auth.currentSession().then(session => {
-  //     if (!skt.current?.OPEN) {
-  //       skt.current = new WebSocket("wss://u011tqobmd.execute-api.ap-south-1.amazonaws.com/uconnect", ['school',session.getAccessToken().getJwtToken()])
-  //       skt.current.onopen = socketOpen
-  //     }
-  //   })
-
-  // }, [])
-
 
   return (
     <Router>

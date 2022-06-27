@@ -30,9 +30,6 @@ export default function Settings() {
             <li className="py-4 px-2 w-full hover:cursor-pointer hover:text-sky-200 ">
                 <Link to="/change">Change Password</Link>
             </li>
-            <li className="py-4 px-2 w-full hover:cursor-pointer hover:text-sky-200 ">
-                <button className=" p-2 rounded-2xl text-white bg-sky-200 hover:bg-sky-400 hover:cursor-pointer" onClick={onDelete}>Delete Your Account</button>
-            </li>
             <li className="py-4 px-2 w-full ">
                 <button className=" p-2 rounded-2xl text-white bg-sky-200 hover:bg-sky-400 hover:cursor-pointer" onClick={onSignOut}>SignOut</button>
             </li>

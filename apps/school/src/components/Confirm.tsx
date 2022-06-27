@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useEffect, useState } from "react"
+import { ChangeEvent, FormEvent, MouseEvent, useEffect, useState } from "react"
 import { Auth } from "aws-amplify"
 import { useNavigate, useLocation } from "react-router-dom"
 import { confirmSignUpState } from "../types"
@@ -8,14 +8,15 @@ export default function Confirm() {
         "code": ""
     })
 
-    
+
     const navigate = useNavigate()
     const location = useLocation()
+    
     useEffect(() => {
-        if(typeof location.state !== 'string'){
-            navigate('/signup',{replace: true})
+        if (typeof location.state !== 'string') {
+            navigate('/signup', { replace: true })
         }
-    },[])
+    }, [])
 
     function onInputChange(event: ChangeEvent<HTMLInputElement>) {
         event.preventDefault()
@@ -24,7 +25,7 @@ export default function Confirm() {
 
     async function onSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault()
-        
+
         if (typeof location.state === 'string') {
             let obj: confirmSignUpState = JSON.parse(location.state)
             try {
@@ -32,8 +33,7 @@ export default function Confirm() {
                 await Auth.signIn(obj.email, obj.password)
                 navigate('/', { replace: true })
             } catch (error) {
-                console.log(error)
-                navigate('/signup', { replace: true })    
+                navigate('/signup', { replace: true })
             }
 
         } else {
@@ -43,18 +43,33 @@ export default function Confirm() {
     }
 
 
+    async function onResend(event: MouseEvent<HTMLButtonElement>){
+        event.preventDefault()
+
+        if (typeof location.state === 'string') {
+            let obj: confirmSignUpState = JSON.parse(location.state)
+            try {
+                await Auth.resendSignUp(obj.email)
+            } catch (error) {
+                navigate('/signup', { replace: true })
+            }
+        } else {
+            navigate('/signup', { replace: true })
+        }
+    }
     return (
         <div className="flex items-center flex-col justify-center min-h-screen bg-gray-100">
             <img src={ulogo} className="w-16" alt="" />
             <div className="px-8 py-6 mt-4 text-left bg-white shadow-lg">
-                <p>Please Enter confirmation code sent to your email</p>
                 <form onSubmit={onSubmit} className="mt-4">
                     <div>
                         <label htmlFor="code" className="block">Confirmation Code</label>
+                        <p className="text-sm mt-4 text-gray-400 italic lowercase">enter confirmation code sent to your email</p>
                         <input type="password" name="code" id="code" placeholder="Code" className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600" value={inputs.code} onChange={onInputChange} />
                     </div>
                     <div className="flex items-baseline justify-between">
                         <button type="submit" className="px-6 py-2 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-900">Confirm</button>
+                        <button className="px-6 py-2 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-900" onClick={onResend}>Resend Code</button>
                     </div>
                 </form>
             </div>

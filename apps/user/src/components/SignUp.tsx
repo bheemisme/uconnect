@@ -33,7 +33,7 @@ export default function SignUp() {
                 password: inputs.password,
                 attributes: {
                     name: inputs.username,
-                    'custom:type': 'school'
+                    'custom:type': 'user'
                 }
             })
             navigate('/confirm',{
@@ -72,13 +72,12 @@ export default function SignUp() {
                             <label htmlFor="username" className="block">Username</label>
                             <input type="text" name="username" placeholder="username" id="username" className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600" value={inputs.username} onChange={onInputChange} />
                         </div>
-
                         <div>
                             <label htmlFor="password" className="block">Password</label>
                             <input type="password" name="password" id="password" placeholder="password" className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600" value={inputs.password} onChange={onInputChange} />
                         </div>
                         <div className="flex items-baseline justify-between">
-                            <button type="submit" className="px-6 py-2 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-900">Sign in</button>
+                            <button type="submit" className="px-6 py-2 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-900">Sign up</button>
                         </div>
                         <div className="mt-2">
                             <Link to="/signin" className="text-sm text-blue-600 hover:underline">Already have an account? Sign In</Link>

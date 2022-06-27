@@ -24,7 +24,8 @@
       ],
       "declarationMap": false,
       "noEmit": true,
-      "esModuleInterop": true
+      "esModuleInterop": true,
+    
   
     },
     "exclude": [

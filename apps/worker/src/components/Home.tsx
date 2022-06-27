@@ -4,12 +4,13 @@ import { Auth } from "aws-amplify"
 import ulogo from '/ulogo.jpg'
 export default function Home() {
     const navigate = useNavigate()
-    // useEffect(() => {
-    //     Auth.currentSession().catch(() => {
-    //         navigate('/signin', { replace: true })
-    //     })
+    
+    useEffect(() => {
+        Auth.currentSession().catch(() => {
+            navigate('/signup', { replace: true })
+        })
+    }, [])
 
-    // }, [])
     let inactiveClassName = "p-4 hover:text-white hover:bg-sky-300 hover:cursor-pointer"
     let activeClassName = "p-4 text-white bg-sky-300 cursor-pointer"
     return (

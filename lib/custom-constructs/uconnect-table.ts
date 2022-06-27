@@ -3,7 +3,7 @@ import { Construct } from "constructs";
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb'
 import * as cdk from 'aws-cdk-lib'
 
-export class DBConstruct extends Construct {
+export class UconnectTable extends Construct {
     uconnectTable: dynamodb.Table;
     account: string;
     region: string;
@@ -14,7 +14,8 @@ export class DBConstruct extends Construct {
             partitionKey: {name: 'PK',type: dynamodb.AttributeType.STRING},
             sortKey: {name: 'SK',type: dynamodb.AttributeType.STRING},
             billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
-            removalPolicy: cdk.RemovalPolicy.DESTROY
+            removalPolicy: cdk.RemovalPolicy.DESTROY,
+            timeToLiveAttribute: 'TTL'
         })
         new cdk.CfnOutput(this,"UconnectTableArn",{value: this.uconnectTable.tableArn})
     }

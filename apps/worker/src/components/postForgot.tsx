@@ -9,7 +9,7 @@ export default function PostForgot() {
 
     useEffect(() => {
         if(email == 'null'){
-            navigate('/signin',{replace: true})
+            navigate('/signup',{replace: true})
         }    
     },[])
     

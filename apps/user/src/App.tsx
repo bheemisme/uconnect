@@ -12,6 +12,7 @@ import {Threads,Chat} from './components/Threads'
 import Delete from './components/Delete'
 import {Amplify} from 'aws-amplify'
 import EditProfile from './components/EditProfile'
+import Change from './components/Change'
 
 Amplify.configure({
   Auth: {
@@ -39,6 +40,7 @@ function App() {
           <Route path='threads' element={<Threads />} >
               <Route path=':tid' element={<Chat  />} />
           </Route>
+          <Route path='change' element={<Change />} />
           <Route path='delete' element={<Delete />} />
           <Route path='edit' element={<EditProfile />} />
           <Route path='*' element={<Navigate replace to="/"/>} />
