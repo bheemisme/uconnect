@@ -14,8 +14,6 @@ interface TStore {
     getSchools(): Promise<void>,
     setSchoolInfo(): Promise<void>,
     addWorker(email: string): Promise<void>,
-    setWSUrl(): Promise<string>,
-    connect(): Promise<void>
 };
 
 async function getToken() {

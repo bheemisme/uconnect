@@ -10,18 +10,11 @@ import shallow from 'zustand/shallow'
 export default function Home() {
     const navigate = useNavigate()
 
-    const [connect] = useStore((state) => [state.connect],shallow)    
     useEffect(() => {
-
         Auth.currentSession().catch(() => {
             navigate('/signin', { replace: true })
         })
-
-        connect()
-
     }, [])
-
-
 
 
 

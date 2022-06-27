@@ -1,7 +1,6 @@
 import * as lambda from 'aws-lambda'
 import * as dynamodb from '@aws-sdk/client-dynamodb'
 import { APIGatewayAuthorizerResult } from 'aws-lambda';
-import * as cognito from '@aws-sdk/client-cognito-identity-provider'
 
 function generatePolicy(principalId: string, effect: 'Allow' | 'Deny', resource: string, context?: lambda.APIGatewayAuthorizerResultContext): APIGatewayAuthorizerResult {
     // Required output:
@@ -20,47 +19,61 @@ function generatePolicy(principalId: string, effect: 'Allow' | 'Deny', resource:
     return authResponse;
 }
 
-export async function handler(event: any): Promise<any> {
-    const [proto, token] = event.headers['Sec-WebSocket-Protocol'].split(', ')
+export async function handler(event: lambda.APIGatewayRequestAuthorizerEvent): Promise<APIGatewayAuthorizerResult> {
+
     try {
-        const client = new cognito.CognitoIdentityProviderClient({
-            region: process.env.POOL_REGION,
+        console.log(event)
+        
+        if(!event.headers){
+            throw new Error("no headers");
+        }
+        if(!event.queryStringParameters){throw new Error("invalid queryString");
+        }
+        if(!event.queryStringParameters['token']){throw new Error("invalid queryString");
+        }
+        if (!event.headers['Sec-WebSocket-Protocol']) {
+            throw new Error('invalid protocol')
+        }
+
+        const proto = event.headers['Sec-WebSocket-Protocol']
+        const token = event.queryStringParameters['token']
+        const client = new dynamodb.DynamoDBClient({region: process.env.TABLE_REGION})
+        console.info("token: ",token)
+        const command= new dynamodb.GetItemCommand({
+            TableName: process.env.TABLE_NAME,
+            Key: {
+                'PK': {'S': token },
+                'SK': {'S': token }
+            }
         })
-        const user = await client.send(new cognito.GetUserCommand({
-            AccessToken: token
+
+        const item = await client.send(command)
+        if(!item.Item){
+            throw new Error("invalid token");
+        }
+
+        const TYPE = item.Item['TOKEN_TYPE'].S
+        const EMAIL = item.Item['TOKEN_EMAIL'].S
+        const SEMAIL = item.Item['TOKEN_SEMAIL'].S
+        if(TYPE?.toUpperCase() !== proto.toUpperCase()){
+            throw new Error("invalid protocol");
+        }
+        await client.send(new dynamodb.DeleteItemCommand({
+            TableName: process.env.TABLE_NAME,
+            Key: {
+                'PK': {'S': token },
+                'SK': {'S': token }
+            }
         }))
-        if(!user || !user.UserAttributes){
-            throw new Error('no user found')
-        }
-        const item = user.UserAttributes.find((val) => {
-            if(val.Name === 'custom:type' && val.Value === proto){
-                return true
-            }
-            return false
-        })
-        const email = user.UserAttributes.find((val) => {
-            if(val.Name === 'email'){
-                return true
-            }
-            return false
-        })
-        const semail = user.UserAttributes.find((val) => {
-            if(val.Name === 'custom:semail'){
-                return true
-            }
-            return false
+
+        return generatePolicy(proto,'Allow',event.methodArn,{
+            'SK': EMAIL,
+            'PK': TYPE === 'WORKER' ? SEMAIL : EMAIL,
+            'TYPE': TYPE
         })
         
-        
-        if(!item){
-            throw new Error('invalid request')
-        }
-        return generatePolicy(proto, 'Allow', event.methodArn, {
-            'TYPE': proto,
-            'SK': email?.Value,
-            'PK': proto === 'worker' ? semail?.Value : email?.Value
-        })
-    } catch (err) {
-        return generatePolicy(proto, 'Deny', event.methodArn)
+    } catch (error) {
+        console.error(error)
+        return generatePolicy('invalid','Deny',event.methodArn)
     }
 }
