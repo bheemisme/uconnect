@@ -6,18 +6,46 @@ interface TSchool {
     name: string,
     email: string
 }
+
+
+export interface Thread {
+    tid: string,
+    name: string,
+    messages: Message[],
+    from: string,
+    fromtype: string,
+    to: string,
+    allocated: string,
+    allocated_type: string,
+    terminated: boolean,
+}
+export interface Message {
+    timestamp: string,
+    message: string,
+    owner: string,
+    tid: string,
+    from: string,
+    to: string,
+    allocated: string
+}
 interface TStore {
     school: TSchool,
     workers: string[],
     schools: TSchool[],
-    sclmsg?: string,
-    socket?: Function,
-    setSocketFunction(cb: Function): void,
+    sendJsonMessage?: Function,
+    threads: Thread[],
+    fetchedThreads: boolean,
+    fetchedSchools: boolean,
+    setSendJsonMessageFunction(cb: Function): void,
     getWorkers(): Promise<void>,
-    getSchools(): Promise<void>,
+    getSchools(again: boolean): Promise<void>,
     setSchoolInfo(): Promise<void>,
     addWorker(email: string): Promise<void>,
-    sendSclMsg(msg: string): void
+    getThreads(again: boolean): Promise<void>,
+    addThread(thread: Thread): void,
+    addMessage(message: Message): void
+    terminateThread(threadId: string): void,
+    deleteThread(threadId: string): void
 };
 
 export async function getToken() {
@@ -42,11 +70,14 @@ export const useStore = create<TStore>()(devtools((set, get) => ({
     workers: [],
     schools: [],
     sclmsg: "school message",
-    setSocketFunction(cb) {
+    threads: [],
+    fetchedThreads: false,
+    fetchedSchools: false,
+    setSendJsonMessageFunction(cb) {
         set((state) => {
             return {
                 ...state,
-                socket: cb
+                sendJsonMessage: cb
             }
         })
     },
@@ -74,21 +105,24 @@ export const useStore = create<TStore>()(devtools((set, get) => ({
             // console.log(error)
         }
     },
-    getSchools: async () => {
+    getSchools: async (again: boolean) => {
         try {
-            const session = await Auth.currentSession()
-            const res = await (await fetch(`${import.meta.env.VITE_API_END_POINT}/getschools`, {
-                method: 'POST',
-                headers: {
-                    'authorization': session.getAccessToken().getJwtToken()
-                }
-            })).json()
-            set((state) => {
-                return {
-                    ...state,
-                    schools: res.items
-                }
-            })
+            if (!get().fetchedSchools || again) {
+                const session = await Auth.currentSession()
+                const res = await (await fetch(`${import.meta.env.VITE_API_END_POINT}/getschools`, {
+                    method: 'POST',
+                    headers: {
+                        'authorization': session.getAccessToken().getJwtToken()
+                    }
+                })).json()
+                set((state) => {
+                    return {
+                        ...state,
+                        fetchedSchools: true,
+                        schools: res.items
+                    }
+                })
+            }
         } catch (error) {
             console.log(error)
         }
@@ -123,12 +157,88 @@ export const useStore = create<TStore>()(devtools((set, get) => ({
             console.error(error)
         }
     },
-    sendSclMsg(msg) {
+    async getThreads(again: boolean) {
+        try {
+            if (again || !get().fetchedThreads) {
+                const session = await Auth.currentSession()
+                const token = session.getAccessToken().getJwtToken()
+                const threads = await (await fetch(`${import.meta.env.VITE_API_END_POINT}/getthreads`, {
+                    method: 'POST',
+                    headers: {
+                        'authorization': token,
+                    }
+                })).json()
+
+                set((state) => {
+                    return {
+                        ...state,
+                        fetchedThreads: true,
+                        threads: threads.threads
+                    }
+                })
+            }
+
+        } catch (err) {
+            throw err;
+        }
+    },
+    addThread(thread: Thread) {
+
+        console.log(thread)
+        try {
+            set((state) => {
+                let current: Thread[] = []
+                if (state.threads) {
+                    current = state.threads.slice()
+                }
+
+                current.push(thread)
+                return {
+                    ...state,
+                    threads: current
+                }
+            })
+        } catch (error) {
+            throw error
+        }
+    },
+    addMessage(message: Message) {
+        let clone = get().threads.slice()
+        clone.forEach((th: Thread) => {
+            if (th.tid === message.tid) {
+                if (!th.messages) {
+                    th.messages = []
+                }
+                th.messages.push(message)
+            }
+        })
         set((state) => {
             return {
                 ...state,
-                sclmsg: msg
+                threads: clone
             }
         })
     },
+    terminateThread(threadId) {
+        let clone = get().threads.slice()
+        clone.forEach((th: Thread) => {
+            if (th.tid === threadId) {
+                th.terminated = true
+            }
+        })
+        set((state) => {
+            return {
+                ...state,
+                threads: clone
+            }
+        })
+    },
+    deleteThread(threadId: string){
+        let clone = get().threads.slice()
+        clone.forEach((th: Thread) => {
+            if (th.tid === threadId) {
+                th.terminated = true
+            }
+        })
+    }
 })))

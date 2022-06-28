@@ -1,51 +1,74 @@
 import { BsArrowRightCircleFill } from 'react-icons/bs'
 import { IconContext } from 'react-icons'
 import { useEffect, useState } from 'react'
-import { NavLink, Outlet, useParams,useNavigate } from 'react-router-dom'
-import {ImCross} from 'react-icons/im'
+import { NavLink, Outlet, useParams, useNavigate, Navigate } from 'react-router-dom'
+import { ImCross } from 'react-icons/im'
+import { useStore, Thread, Message } from '../store'
+import shallow from 'zustand/shallow'
+import { Auth } from 'aws-amplify'
+
 
 function ThreadList() {
-    // any new threads should be added
-    // if any terminated threads should be removed
-    // fetch from data
     const navigate = useNavigate()
-    const [threads, addThread] = useState([] as string[])
+    const [threads, getThreads,sendJsonMessage] = useStore((state) => [state.threads, state.getThreads,state.sendJsonMessage], shallow)
+    useEffect(() => {
+        getThreads(false).catch(err => {
+            if (err === 'No current user' || err === 'The user is not authenticated') {
+                navigate('/signin', { replace: true })
+            }
+        })
+
+    },[])
     const ActiveStyle = 'border-2 rounded-2xl p-2 hover:cursor-pointer text-white bg-sky-400 mb-4 flex flex-row justify-between items-center'
     const InactiveStyle = 'border-2 rounded-2xl p-2 hover:cursor-pointer hover:text-white hover:bg-sky-400 mb-4 flex flex-row justify-between items-center'
-    const threadItems = threads.map((th: string, index: number) => {
-        return <NavLink className={({ isActive }) => {
-            return isActive ? ActiveStyle : InactiveStyle
-        }} key={index} to={`${index}`} replace={false}>
-            <span>{th}</span>
-            <IconContext.Provider value={{className: "inline"}} >
+   let threadItems: any[] = []
+    if(threads){
+        threadItems = threads.filter((th: Thread) => !th.terminated).map((th: Thread, index: number) => {
+            return <NavLink className={({ isActive }) => {
+                return isActive ? ActiveStyle : InactiveStyle
+            }} key={index} to={`${index}`} replace={false}>
+                <span>{th.name}</span>
+                <IconContext.Provider value={{ className: "inline" }} >
                     <ImCross onClick={(e) => {
                         e.preventDefault()
-                        // first update the database and then n
-                        navigate('/threads',{replace: true})
+                        if(sendJsonMessage){
+                            sendJsonMessage({'action': 'terminatethread','threadId': th.tid})
+                        }
                     }} />
-            </IconContext.Provider>
-        </NavLink>
-    })
+                </IconContext.Provider>
+            </NavLink>
+        })
+   }
 
     return (
         <div className="border-2 p-2  w-[20%] rounded-2xl mr-4 overflow-y-auto h-full flex flex-col">
+            <button className='rounded-xl bg-blue-400 text-white mb-4' onClick={(e) => {
+                getThreads(true)
+            }}>Refresh</button>
             {threadItems}
         </div>
     )
 }
 
-function Display(props: { messages: { msg: string, from: boolean }[] }) {
-    let messageitems = props.messages.map((message: { msg: string, from: boolean }, index: number) => {
-        if (message.from) {
+function Display() {
+
+    const params = useParams()
+    const [threads,scl] = useStore((state) => [state.threads,state.school],shallow)
+    let messages: Message[] = []
+    if(params.tid && threads[Number(params.tid)] && threads[Number(params.tid)].messages){
+        messages = threads[Number(params.tid)].messages
+    }
+    let messageitems = messages.map((message: Message, index: number) => {
+        if (scl.email === message.owner) {
             return (
                 <div key={index} className='text-right mt-6'>
-                    <div className='inline bg-sky-400 text-white p-2 rounded-2xl'>{message.msg}</div>
+                    <div className='inline bg-sky-400 text-white p-2 rounded-2xl'>{message.message}</div>
                 </div>
             )
         }
         return (
             <div key={index} className='text-left mt-6'>
-                <div className='inline bg-slate-500 text-white p-2 rounded-2xl'>{message.msg}</div>
+                <div className='inline bg-slate-500 text-white p-2 rounded-2xl'>{message.message}</div>
             </div>
         )
 
@@ -57,19 +80,31 @@ function Display(props: { messages: { msg: string, from: boolean }[] }) {
     )
 }
 
-function Input(props: { addMessages: Function }) {
+function Input() {
     const params = useParams()
-
+    const [threads,sendJsonMessage,scl] = useStore((state) => [state.threads,state.sendJsonMessage,state.school],shallow)
     const [input, setInput] = useState("")
     useEffect(() => {
         setInput('')
-    },[params])
+    }, [params])
 
     return (
         <form onSubmit={(e) => {
             e.preventDefault()
-            props.addMessages(input)
-            setInput("")
+            
+            // timestamp: string,
+            // tid: string,
+            // message: string,
+            // owner: boolean
+            if(sendJsonMessage){
+                sendJsonMessage({'action':'sendmessage','message': {
+                    timestamp: new Date().toISOString(),
+                    tid: threads[Number(params.tid)].tid,
+                    message: input,
+                    owner: scl.email
+                }})
+            }
+            
         }} className="w-full border-2 border-sky-300 rounded-3xl p-2 flex flex-row justify-between">
             <input type="text" value={input} className="focus:outline-none px-4 w-full" placeholder="enter message" onChange={(e) => {
                 e.preventDefault()
@@ -85,23 +120,11 @@ function Input(props: { addMessages: Function }) {
 }
 
 export function Chat() {
-    // make request and get all messages
-    //
-    const params = useParams()
     
-    let arr: { from: boolean, msg: string }[] = []
-    const [messages, addMessages] = useState(arr)
-    
-    useEffect(() => {
-        addMessages([])
-    },[params])
     return (
         <div className="border-2 p-2 w-[80%] flex flex-col-reverse rounded-2xl">
-            <Input addMessages={(msg: string) => {
-                messages.push({ from: true, msg: msg })
-                addMessages([...messages])
-            }} />
-            <Display messages={messages} />
+            <Input  />
+            <Display />
         </div>
     )
 }
