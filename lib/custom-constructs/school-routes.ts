@@ -15,7 +15,7 @@ export class SchoolRoutes extends Construct {
         api: cdk.aws_apigatewayv2.CfnApi,
         school_pool: cdk.aws_cognito.UserPool,
         school_pool_client: cdk.aws_cognito.UserPoolClient;
-
+        worker_pool: cdk.aws_cognito.UserPool
     }
     deleteWorker: nodeLambda.NodejsFunction;
     deleteWorkerIntegration: cdk.aws_apigatewayv2.CfnIntegration;
@@ -23,7 +23,13 @@ export class SchoolRoutes extends Construct {
     getWorkers: cdk.aws_lambda_nodejs.NodejsFunction
     getWorkersIntegration: cdk.aws_apigatewayv2.CfnIntegration;
     getWorkersRoute: cdk.aws_apigatewayv2.CfnRoute;
-    
+    getSchool: nodeLambda.NodejsFunction;
+    getSchoolIntegration: cdk.aws_apigatewayv2.CfnIntegration;
+    getSchoolRoute: cdk.aws_apigatewayv2.CfnRoute;
+    deleteSchool: nodeLambda.NodejsFunction;
+    deleteSchoolIntegration: cdk.aws_apigatewayv2.CfnIntegration;
+    deleteSchoolRoute: cdk.aws_apigatewayv2.CfnRoute;
+
     constructor(scope: Construct, id: string, props: {
         table: cdk.aws_dynamodb.Table,
         api: cdk.aws_apigatewayv2.CfnApi,
@@ -45,27 +51,30 @@ export class SchoolRoutes extends Construct {
             name: 'school-authorizer',
         })
 
-        this.addWorker = new nodeLambda.NodejsFunction(this, "addWorkerFunction", this.lambdaConfig('./apps/backend/lambdas/add-worker.ts','add a new worker function',{
-            WORKER_POOL_ID: props.worker_pool.userPoolId,
-            WORKER_POOL_REGION: 'ap-south-1'
-        }))
-        this.addWorkerIntegration = new apigatewayv2.CfnIntegration(this, "addWorkerIntegration", this.lambdaIntegrationConfig(this.addWorker,"add worker integration"))
-        this.addWorkerRoute = new apigatewayv2.CfnRoute(this, "addWorkerRoute", this.lambdaRouteConfig(this.addWorkerIntegration,"POST /addworker"))
-        this.addWorker.addPermission("addWorkerPermission",this.lambdaPermissionConfig("addworker"))
+        this.addWorker = new nodeLambda.NodejsFunction(this, "addWorkerFunction", this.lambdaConfig('./apps/backend/lambdas/add-worker.ts', 'add a new worker function'))
+        this.addWorkerIntegration = new apigatewayv2.CfnIntegration(this, "addWorkerIntegration", this.lambdaIntegrationConfig(this.addWorker, "add worker integration"))
+        this.addWorkerRoute = new apigatewayv2.CfnRoute(this, "addWorkerRoute", this.lambdaRouteConfig(this.addWorkerIntegration, "POST /addworker"))
+        this.addWorker.addPermission("addWorkerPermission", this.lambdaPermissionConfig("addworker"))
 
-        this.deleteWorker= new nodeLambda.NodejsFunction(this,"deletWorkerFunction",this.lambdaConfig('./apps/backend/lambdas/delete-worker.ts',"delete a new worker function"))
-        this.deleteWorkerIntegration = new apigatewayv2.CfnIntegration(this,"deleteWorkerIntegration",this.lambdaIntegrationConfig(this.deleteWorker,"delete worker integration"))
-        this.deleteWorkerRoute = new apigatewayv2.CfnRoute(this,"deleteWorkerRoute",this.lambdaRouteConfig(this.deleteWorkerIntegration,"POST /deleteworker"))
-        this.deleteWorker.addPermission("deleteWorkerPermission",this.lambdaPermissionConfig("deleteworker"))
+        this.deleteWorker = new nodeLambda.NodejsFunction(this, "deletWorkerFunction", this.lambdaConfig('./apps/backend/lambdas/delete-worker.ts', "delete worker function"))
+        this.deleteWorkerIntegration = new apigatewayv2.CfnIntegration(this, "deleteWorkerIntegration", this.lambdaIntegrationConfig(this.deleteWorker, "delete worker integration"))
+        this.deleteWorkerRoute = new apigatewayv2.CfnRoute(this, "deleteWorkerRoute", this.lambdaRouteConfig(this.deleteWorkerIntegration, "POST /deleteworker"))
+        this.deleteWorker.addPermission("deleteWorkerPermission", this.lambdaPermissionConfig("deleteworker"))
 
-        this.getWorkers = new nodeLambda.NodejsFunction(this,"getWorkerFunction",this.lambdaConfig('./apps/backend/lambdas/get-workers.ts',"get all workers function"))
-        this.getWorkersIntegration = new apigatewayv2.CfnIntegration(this,"getWorkersIntegration",this.lambdaIntegrationConfig(this.getWorkers,"get workers integration"))
-        this.getWorkersRoute = new apigatewayv2.CfnRoute(this,"getWorkersRoute",this.lambdaRouteConfig(this.getWorkersIntegration,"POST /getworkers"))
-        this.getWorkers.addPermission("getWorkersPermission",this.lambdaPermissionConfig("getworkers"))
+        this.getWorkers = new nodeLambda.NodejsFunction(this, "getWorkerFunction", this.lambdaConfig('./apps/backend/lambdas/get-workers.ts', "get workers function"))
+        this.getWorkersIntegration = new apigatewayv2.CfnIntegration(this, "getWorkersIntegration", this.lambdaIntegrationConfig(this.getWorkers, "get workers integration"))
+        this.getWorkersRoute = new apigatewayv2.CfnRoute(this, "getWorkersRoute", this.lambdaRouteConfig(this.getWorkersIntegration, "POST /getworkers"))
+        this.getWorkers.addPermission("getWorkersPermission", this.lambdaPermissionConfig("getworkers"))
+
+        this.deleteSchool = new nodeLambda.NodejsFunction(this, "deleteSchoolFunction", this.lambdaConfig('./apps/backend/lambdas/delete-school.ts', "delete school function"))
+        this.deleteSchoolIntegration = new apigatewayv2.CfnIntegration(this, "deleteSchoolIntegration", this.lambdaIntegrationConfig(this.deleteSchool, "delete school integration"))
+        this.deleteSchoolRoute = new apigatewayv2.CfnRoute(this, "deleteSchoolRoute", this.lambdaRouteConfig(this.deleteSchoolIntegration, "POST /deleteschool"))
+        this.deleteSchool.addPermission("deleteSchoolPermission", this.lambdaPermissionConfig("deleteschool"))
+
 
     }
 
-    lambdaConfig(entry: string,description: string,env?: {[key: string]: string}): nodeLambda.NodejsFunctionProps {
+    lambdaConfig(entry: string, description: string, env?: { [key: string]: string }): nodeLambda.NodejsFunctionProps {
         return {
             runtime: cdk.aws_lambda.Runtime.NODEJS_16_X,
             handler: 'handler',
@@ -78,6 +87,11 @@ export class SchoolRoutes extends Construct {
                 ...env,
                 'TABLE_NAME': this.props.table.tableName,
                 'TABLE_REGION': this.props.table.tableArn.split(':')[3],
+                'WORKER_POOL_ID': this.props.worker_pool.userPoolId,
+                'WORKER_POOL_REGION': 'ap-south-1',
+                'ENTITIES_INDEX': 'entities',
+                'FROM_THREADS_INDEX': 'from_threads',
+                'TO_THREADS_INDEX': 'to_threads'
             },
             bundling: {
                 externalModules: ['aws-sdk'],
@@ -93,7 +107,7 @@ export class SchoolRoutes extends Construct {
         }
     }
 
-    lambdaIntegrationConfig(fn: cdk.aws_lambda_nodejs.NodejsFunction,description: string){
+    lambdaIntegrationConfig(fn: cdk.aws_lambda_nodejs.NodejsFunction, description: string) {
         return {
             apiId: this.props.api.ref,
             connectionType: "INTERNET",
@@ -106,7 +120,7 @@ export class SchoolRoutes extends Construct {
         }
     }
 
-    lambdaRouteConfig(integration: cdk.aws_apigatewayv2.CfnIntegration,routeKey: string){
+    lambdaRouteConfig(integration: cdk.aws_apigatewayv2.CfnIntegration, routeKey: string) {
         return {
             apiId: this.props.api.ref, // Required
             authorizationType: "JWT",
@@ -116,7 +130,7 @@ export class SchoolRoutes extends Construct {
         }
     }
 
-    lambdaPermissionConfig(route: string){
+    lambdaPermissionConfig(route: string) {
         return {
             principal: new iam.ServicePrincipal('apigateway.amazonaws.com'),
             action: 'lambda:InvokeFunction',

@@ -1,6 +1,8 @@
 import * as lambda from 'aws-lambda'
 import * as dynamodb from '@aws-sdk/client-dynamodb'
 import { APIGatewayAuthorizerResult } from 'aws-lambda';
+import { marshall, unmarshall } from '@aws-sdk/util-dynamodb';
+import { token_schema } from '../schemas';
 
 function generatePolicy(principalId: string, effect: 'Allow' | 'Deny', resource: string, context?: lambda.APIGatewayAuthorizerResultContext): APIGatewayAuthorizerResult {
     // Required output:
@@ -35,41 +37,35 @@ export async function handler(event: lambda.APIGatewayRequestAuthorizerEvent): P
             throw new Error('invalid protocol')
         }
 
-        const proto = event.headers['Sec-WebSocket-Protocol']
+        const proto = event.headers['Sec-WebSocket-Protocol'].toLowerCase()
+        
         const token = event.queryStringParameters['token']
         const client = new dynamodb.DynamoDBClient({region: process.env.TABLE_REGION})
         console.info("token: ",token)
-        const command= new dynamodb.GetItemCommand({
-            TableName: process.env.TABLE_NAME,
-            Key: {
-                'PK': {'S': token },
-                'SK': {'S': token }
-            }
-        })
 
-        const item = await client.send(command)
-        if(!item.Item){
+        const command = await client.send(new dynamodb.DeleteItemCommand({
+            'TableName': process.env.TABLE_NAME,
+            'Key': marshall({
+                pk: token,
+                sk: token
+            }),
+            'ReturnValues': 'ALL_OLD' 
+        }))
+
+        if(!command.Attributes){
             throw new Error("invalid token");
         }
 
-        const TYPE = item.Item['TOKEN_TYPE'].S
-        const EMAIL = item.Item['TOKEN_EMAIL'].S
-        const SEMAIL = item.Item['TOKEN_SEMAIL'].S
-        if(TYPE?.toUpperCase() !== proto.toUpperCase()){
+        const token_item = token_schema.parse(unmarshall(command.Attributes))
+        console.log(token_item)
+        if(token_item.token_type !== proto){
             throw new Error("invalid protocol");
         }
-        await client.send(new dynamodb.DeleteItemCommand({
-            TableName: process.env.TABLE_NAME,
-            Key: {
-                'PK': {'S': token },
-                'SK': {'S': token }
-            }
-        }))
-
+        console.info('sucessfully authorized')
         return generatePolicy(proto,'Allow',event.methodArn,{
-            'SK': EMAIL,
-            'PK': TYPE === 'WORKER' ? SEMAIL : EMAIL,
-            'TYPE': TYPE
+            'sk': token_item.token_email,
+            'pk': token_item.token_type === 'worker' ? token_item.token_semail : token_item.token_email,
+            'type': token_item.token_type
         })
         
     } catch (error) {

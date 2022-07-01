@@ -1,7 +1,7 @@
 
 import * as events from 'aws-lambda'
 import * as dynamodb from '@aws-sdk/client-dynamodb'
-
+import * as dbutils from '@aws-sdk/util-dynamodb'
 import process from 'process'
 /**
  * checks the existence of email in the database, before signup and approves the signup
@@ -20,26 +20,23 @@ export async function handler(event: events.PreSignUpTriggerEvent): Promise<even
         const db_client = new dynamodb.DynamoDBClient({
             region: process.env.TABLE_REGION
         })
-        const school =await db_client.send(new dynamodb.GetItemCommand({
+        
+        const entities = await db_client.send(new dynamodb.QueryCommand({
             TableName: process.env.TABLE_NAME,
-            Key: {
-                'PK': {
-                    S: email
-                },
-                'SK': {
-                    S: email
-                }
-            }
+            IndexName: process.env.ENTITIES_INDEX,
+            KeyConditionExpression: "#email = :email",
+            'ExpressionAttributeNames': {'#email': 'email'},
+            'ExpressionAttributeValues': {':email': {'S': email}}
         }))
 
-        if(school.Item){
-            throw new Error("school has already existed")
+        if(entities.Count && entities.Count > 0){
+            throw new Error("entities already exist with email name");
+            
         }
 
         return event
     }catch(err){
         console.log(err)
-        
         return null
     }
     

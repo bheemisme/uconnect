@@ -17,22 +17,20 @@ export async function handler(event: events.PreSignUpTriggerEvent): Promise<even
             region: process.env.TABLE_REGION
         })
         const email: string = event.request.userAttributes['email']
-        const school =await db_client.send(new dynamodb.GetItemCommand({
+    
+        const entities = await db_client.send(new dynamodb.QueryCommand({
             TableName: process.env.TABLE_NAME,
-            Key: {
-                'PK': {
-                    S: email
-                },
-                'SK': {
-                    S: email
-                }
-            },
-            
+            'IndexName': process.env.ENTITIES_INDEX,
+            'KeyConditionExpression': '#email = :email',
+            'ExpressionAttributeNames': {'#email': 'email'},
+            'ExpressionAttributeValues': {':email': {'S': email}}
         }))
 
-        if(school.Item){
-            throw new Error("user has already existed")
+        if(entities.Count && entities.Count > 0){
+            throw new Error("some entitiy already exists");
+            
         }
+
 
         return event
     }catch(err){

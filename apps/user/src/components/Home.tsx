@@ -1,7 +1,10 @@
-import { useEffect } from "react"
+import { useCallback, useEffect } from "react"
 import { NavLink, Outlet, useNavigate } from "react-router-dom"
 import { Auth } from "aws-amplify"
 import ulogo from '/ulogo.jpg'
+import shallow from "zustand/shallow"
+import useWebSocket from "react-use-websocket"
+import { getToken, useStore } from "../store"
 export default function Home() {
     const navigate = useNavigate()
     useEffect(() => {
@@ -9,6 +12,59 @@ export default function Home() {
             navigate('/signin', { replace: true })
         })
     }, [])
+
+    const getUrl = useCallback(async () => {
+        const token = (await getToken()).token
+        return `${import.meta.env.VITE_SOCKET_END_POINT}?token=${token}`
+    }, [])
+
+
+    const [socketFunction,addThread,setUserInfo,addMessage,terminateThread,getThreads] = useStore((state) => [state.setSendJsonMessageFunction,state.addThread,state.setUserInfo,state.addMessage,state.terminateThread,state.getThreads],shallow)
+
+    const socket =  useWebSocket(getUrl,{
+        protocols: ['user'],
+        retryOnError: true,
+        reconnectAttempts: 5,
+        onOpen(e){
+            console.log('connected')
+        },
+        onClose(){
+            console.log('closed')
+        },
+        onError(e){
+            console.log(e)
+            console.log('error')
+        },
+        shouldReconnect(event) {
+            return true
+        },
+        onMessage(event){
+            const data = JSON.parse(event.data)
+            console.log(event)
+            if(data.event == 'newthread' && !data.error){
+                console.log(data.payload)
+                addThread(data.payload)
+            }
+
+            if(data.event == 'sendmessage' && !data.error){
+                console.log(data.payload)
+                addMessage(data.payload)
+            }
+
+            if(data.event == 'terminatethread' && !data.error){
+                console.log(data.payload)
+                terminateThread(data.payload.threadId)
+                navigate('/threads',{replace: true})
+            }
+        }
+    })
+    
+    useEffect(() => {
+        socketFunction(socket.sendJsonMessage)
+        setUserInfo()
+        getThreads(false)
+    }, [])
+
     let inactiveClassName = "p-4 hover:text-white hover:bg-sky-300 hover:cursor-pointer"
     let activeClassName = "p-4 text-white bg-sky-300 cursor-pointer"
     return (

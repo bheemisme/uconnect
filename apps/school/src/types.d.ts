@@ -1,59 +1,55 @@
-import { useReducer } from "react"
+
 
 export type confirmSignUpState = {
     email: string,
     password: string
 }
 
-type message = {
-    msg: string,
+
+interface School {
+    name: string,
+    email: string
+}
+
+
+
+export interface Thread {
     tid: string,
+    name: string,
+    messages: Map<string,Message>,
     from: string,
-    to: string
+    fromtype: string,
+    to: string,
+    allocated: string,
+    allocated_type: string,
+    terminated: boolean,
 }
-type  worker = {}
-type thread = {}
-type school = {}
-type State = {
-    threads: Map<thread,message[]>,
-    workers: Array<worker>,
-    schools: Array<school>,
-}
-
-
-let initialState: State = {
-    threads: new Map<thread,message[]>(),
-    workers: new Array<worker>(),
-    schools: new Array<school>()
+export interface Message {
+    timestamp: string,
+    message: string,
+    owner: string,
+    tid: string,
+    mid: string
 }
 
-enum actionType {
-    NEWTHREAD,
-    TERMINATETHREAD,
-    NEWWORKER,
-    NEWSCHOOL,
-    NEWMESSAGE,
-    DELETEWORKER,
-    DELETESCHOOL
-}
-
-type NEWTHREAD = {
-    type: 'NEWTHREAD',
-    payload: thread
-}
-
-type TERMINATETHREAD = {
-    type: 'TERMINATETHREAD',
-    payload: thread
-}
-
-type NEWWORKER = {
-    type: 'NEWWORKER',
-    payload: worker
-}
-
-type NEWMESSAGE = {
-    type: 'NEWMESSAGE',
-    payload: message
-}
+interface Store {
+    school: School,
+    workers: string[],
+    schools: School[],
+    sendJsonMessage?: Function,
+    threads: Map<string,Thread>,
+    fetchedThreads: boolean,
+    fetchedSchools: boolean,
+    setSendJsonMessageFunction(cb: Function): void,
+    getWorkers(): Promise<void>,
+    getSchools(again: boolean): Promise<void>,
+    setSchoolInfo(): Promise<void>,
+    addWorker(email: string): Promise<void>,
+    getThreads(again: boolean): Promise<void>,
+    addThread(thread: Thread): void,
+    addMessage(message: Message): void
+    terminateThread(threadId: string): void,
+    deleteThread(threadId: string): void
+    deleteStore(): void
+};
 

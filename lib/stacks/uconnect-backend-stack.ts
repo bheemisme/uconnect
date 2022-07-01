@@ -11,6 +11,7 @@ import { CommonRoutesStateless } from '../custom-constructs/common-routes-statel
 import { SchoolRoutes } from '../custom-constructs/school-routes'
 import {WorkerAuthTriggers} from '../custom-constructs/worker-auth-triggers'
 import * as iam from 'aws-cdk-lib/aws-iam'
+import { UserRoutes } from '../custom-constructs/user-routes'
 
 export default class UconnectBackendStack extends cdk.Stack {
     uconnectStatelessapi: StatelessApi;
@@ -23,6 +24,7 @@ export default class UconnectBackendStack extends cdk.Stack {
     commonRoutesStateless: CommonRoutesStateless;
     schoolRoutes: SchoolRoutes;
     workerAuthTriggers: WorkerAuthTriggers
+    userRoutes: UserRoutes
     
     constructor(scope: Construct, id: string, props: cdk.StackProps) {
         super(scope, id, props)
@@ -52,6 +54,8 @@ export default class UconnectBackendStack extends cdk.Stack {
         this.uconnectTable.uconnectTable.grantReadWriteData(this.userAuthTriggers.preAuthTrigger)
         this.uconnectTable.uconnectTable.grantReadWriteData(this.userAuthTriggers.postConfirmTrigger)
         this.uconnectTable.uconnectTable.grantReadWriteData(this.workerAuthTriggers.postAuthTrigger)
+
+        
         
         this.userPools.schoolUserPool.addTrigger(cdk.aws_cognito.UserPoolOperation.PRE_SIGN_UP,this.schoolAuthTriggers.preSignUpTrigger)
         this.userPools.schoolUserPool.addTrigger(cdk.aws_cognito.UserPoolOperation.POST_CONFIRMATION,this.schoolAuthTriggers.postConfirmTrigger)
@@ -89,12 +93,21 @@ export default class UconnectBackendStack extends cdk.Stack {
             worker_pool: this.userPools.workerUserPool
         })
 
+        this.userRoutes = new UserRoutes(this,"UserRoute",{
+            table: this.uconnectTable.uconnectTable,
+            api: this.uconnectStatelessapi.uconnectApi,
+            user_pool: this.userPools.userUserPool,
+            user_pool_client: this.userPools.userUserPoolClient
+        })
+        this.userPools.workerUserPool.grant(this.schoolRoutes.deleteWorker,'cognito-idp:*')
         this.userPools.workerUserPool.grant(this.schoolRoutes.addWorker,'cognito-idp:*')
         this.uconnectTable.uconnectTable.grantReadWriteData(this.commonRoutesStateless.getTokenFunction)
         this.uconnectTable.uconnectTable.grantReadWriteData(this.commonRoutesStateless.getSchools)
         this.uconnectTable.uconnectTable.grantReadWriteData(this.schoolRoutes.addWorker)
         this.uconnectTable.uconnectTable.grantReadWriteData(this.schoolRoutes.deleteWorker)
         this.uconnectTable.uconnectTable.grantReadWriteData(this.schoolRoutes.getWorkers)
+        this.uconnectTable.uconnectTable.grantReadWriteData(this.schoolRoutes.deleteSchool)
+        this.uconnectTable.uconnectTable.grantReadWriteData(this.userRoutes.deleteUser)
 
         this.uconnectStatefullApi = new StatefullApi(this, "UconnectStatefullApi",{
             table: this.uconnectTable.uconnectTable
@@ -105,9 +118,15 @@ export default class UconnectBackendStack extends cdk.Stack {
         this.uconnectTable.uconnectTable.grantReadWriteData(this.uconnectStatefullApi.connectFunction)
         this.uconnectTable.uconnectTable.grantReadWriteData(this.uconnectStatefullApi.disconnectFunction)
         this.uconnectTable.uconnectTable.grantReadWriteData(this.uconnectStatefullApi.sendMessageFunction)
-        this.uconnectTable.uconnectTable.grantReadWriteData(this.uconnectStatefullApi.getThreadsFunction)
         this.uconnectTable.uconnectTable.grantReadWriteData(this.uconnectStatefullApi.terminateThreadFunction)
         this.uconnectTable.uconnectTable.grantReadWriteData(this.uconnectStatefullApi.newThreadFunction)
+
+        this.uconnectTable.uconnectTable.grantReadWriteData(this.commonRoutesStateless.deleteThread)
+        this.uconnectTable.uconnectTable.grantReadWriteData(this.commonRoutesStateless.getMessages)
+        this.uconnectTable.uconnectTable.grantReadWriteData(this.commonRoutesStateless.getThreads)
+
+        
+        this.commonRoutesStateless.getThreads.addToRolePolicy(this.uconnectStatefullApi.uconnectStatefullApiExecuteStatement)
         
     }
 }

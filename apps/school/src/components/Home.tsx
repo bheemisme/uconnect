@@ -5,7 +5,7 @@ import ulogo from '/ulogo.jpg'
 import useWebSocket, { ReadyState } from 'react-use-websocket'
 import { useStore, getToken } from "../store"
 import shallow from 'zustand/shallow'
-import { WebSocketHook, WebSocketLike } from "react-use-websocket/dist/lib/types"
+
 
 
 export default function Home() {
@@ -21,7 +21,7 @@ export default function Home() {
         return `${import.meta.env.VITE_SOCKET_END_POINT}?token=${token}`
     }, [])
 
-    const [socketFunction,addThread,setSchoolInfo,addMessage,terminateThread] = useStore((state) => [state.setSendJsonMessageFunction,state.addThread,state.setSchoolInfo,state.addMessage,state.terminateThread],shallow)
+    const [socketFunction,addThread,setSchoolInfo,addMessage,terminateThread,getThreads] = useStore((state) => [state.setSendJsonMessageFunction,state.addThread,state.setSchoolInfo,state.addMessage,state.terminateThread,state.getThreads],shallow)
     const socket =  useWebSocket(getUrl,{
         protocols: ['school'],
         retryOnError: true,
@@ -43,6 +43,7 @@ export default function Home() {
             const data = JSON.parse(event.data)
             console.log(event)
             if(data.event == 'newthread' && !data.error){
+                console.log(data.payload)
                 addThread(data.payload)
             }
 
@@ -54,6 +55,7 @@ export default function Home() {
             if(data.event == 'terminatethread' && !data.error){
                 console.log(data.payload)
                 terminateThread(data.payload.threadId)
+                navigate('/threads',{replace: true})
             }
         }
     })
@@ -61,6 +63,7 @@ export default function Home() {
     useEffect(() => {
         socketFunction(socket.sendJsonMessage)
         setSchoolInfo()
+        getThreads(false)
     }, [])
 
     let inactiveClassName = "p-4 hover:text-white hover:bg-sky-300 hover:cursor-pointer"

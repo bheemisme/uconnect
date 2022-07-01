@@ -54,7 +54,7 @@ export class UserAuthTriggers extends Construct {
             environment: {
                 'TABLE_NAME': this.props.table.tableName,
                 'TABLE_REGION': this.props.table.tableArn.split(':')[3],
-              
+                'ENTITIES_INDEX': 'entities'
             },
             bundling: {
                 externalModules: ['aws-sdk'],

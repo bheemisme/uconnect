@@ -1,6 +1,9 @@
 import process from 'process'
 import * as dynamodb from '@aws-sdk/client-dynamodb'
 import * as lambda from 'aws-lambda'
+import { worker_schema } from '../schemas'
+import { z } from 'zod'
+import { unmarshall } from '@aws-sdk/util-dynamodb'
 export async function handler(event: lambda.APIGatewayProxyEventV2WithJWTAuthorizer): Promise<any>{
     try {
         console.log(event)
@@ -20,17 +23,18 @@ export async function handler(event: lambda.APIGatewayProxyEventV2WithJWTAuthori
         const db_client = new dynamodb.DynamoDBClient({region: process.env.TABLE_REGION})
         const workers = await db_client.send(new dynamodb.QueryCommand({
             TableName: process.env.TABLE_NAME,
-            KeyConditionExpression: "PK = :email",
-            ExpressionAttributeValues: {':email': {'S':email},':wrk': {'S':'WORKER'}},
-            ExpressionAttributeNames: {'#type': 'TYPE'},
+            KeyConditionExpression: "pk = :email",
+            ExpressionAttributeValues: {':email': {'S':email},':wrk': {'S':'worker'}},
+            ExpressionAttributeNames: {'#type': 'type'},
             FilterExpression: "#type = :wrk",
-            ProjectionExpression: 'SK'
+            ProjectionExpression: 'sk'
         }))
         
+        console.log(workers)
         const emails = workers.Items?.map((e) => {
-            return e.SK.S
+            return z.object({sk: z.string().email()}).parse(unmarshall(e)).sk
         })
-        
+
         console.info(workers.Items)
         return {
             statusCode: 200,

@@ -19,8 +19,8 @@ export default function Dashboard(){
     return (
         <div>
             <h1>Dashboard</h1>
-            <h2>{worker.email}</h2>
-            <h2>{worker.semail}</h2>
+            <h2>{worker?.email}</h2>
+            <h2>{worker?.semail}</h2>
         </div>
     )
 }

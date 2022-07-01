@@ -12,7 +12,6 @@ export class WorkerAuthTriggers extends Construct {
     }){
         super(scope,id)
         this.props = props
-
         this.postAuthTrigger = new nodeLambda.NodejsFunction(this,"postAuthWorkerTrigger",this.lambdaConfig("./apps/backend/lambdas/post-auth-worker.ts","post authentication worker"))
     }
 
@@ -28,7 +27,7 @@ export class WorkerAuthTriggers extends Construct {
             environment: {
                 'TABLE_NAME': this.props.table.tableName,
                 'TABLE_REGION': this.props.table.tableArn.split(':')[3],
-              
+                'ENTITIES_INDEX': 'entities'
             },
             bundling: {
                 externalModules: ['aws-sdk'],

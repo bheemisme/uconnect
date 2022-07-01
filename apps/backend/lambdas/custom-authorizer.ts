@@ -2,84 +2,63 @@ import * as lambda from 'aws-lambda'
 import * as cognito from '@aws-sdk/client-cognito-identity-provider'
 import process from 'process'
 import { CognitoJwtVerifier } from "aws-jwt-verify";
+import { marshall, unmarshall } from '@aws-sdk/util-dynamodb';
+import { z } from 'zod'
 export async function handler(event: lambda.APIGatewayRequestAuthorizerEventV2): Promise<lambda.APIGatewaySimpleAuthorizerWithContextResult<lambda.APIGatewayAuthorizerResultContext>> {
 
     try {
 
         console.log(event)
-
-        if(!event.headers?.authorization){
-            throw new Error("no auth token preset")
+        if (!event.headers?.authorization) {
+            throw new Error("no auth token present")
         }
-
-        
         const client = new cognito.CognitoIdentityProviderClient({
             region: process.env.POOL_REGION
         })
 
-
-        const jwt= event.headers.authorization
+        const jwt = event.headers.authorization
         const user = await client.send(new cognito.GetUserCommand({
             AccessToken: jwt
         }))
-
-        if (!user) {
-            throw new Error("no user exists")
+        console.info(user)
+        if (!user.UserAttributes) {
+            throw new Error("invalid user");
         }
 
-        const type = user.UserAttributes?.find((e) => {
-            return e.Name === 'custom:type'
+        let userobj: {[name: string]: string | undefined} = {}
+
+        user.UserAttributes.forEach((e) => {
+            if(e.Name){
+                userobj[e.Name] = e.Value
+            }
         })
 
-        const email = user.UserAttributes?.find((e) => {
-            return e.Name === 'email'
+        const parsed_user = z.object({
+            'custom:type':z.enum(['worker','user','school']),
+            'email': z.string().email(),
+            'custom:semail': z.string().email().optional()
+        }).parse(userobj)
+
+        const pools = {
+            'user': {'poolid': process.env.USER_POOL_ID,'client': process.env.USER_POOL_CLIENT_ID},
+            'worker': {'poolid': process.env.WORKER_POOL_ID,'client': process.env.WORKER_POOL_CLIENT_ID},
+            'school': {'poolid': process.env.SCHOOL_POOL_ID,'client': process.env.SCHOOL_POOL_CLIENT_ID}
+        }
+        
+
+        const userVerifier = CognitoJwtVerifier.create({
+            userPoolId: `${pools[parsed_user['custom:type']].poolid}`,
+            tokenUse: "access",
+            clientId: `${pools[parsed_user['custom:type']].client}`,
         })
-
-        const semail = user.UserAttributes?.find((e) => {
-            return e.Name === 'custom:semail'
-        })
-
-        if(!type || !email){
-            throw new Error("invalid requst");
-        }
-        if(type.Value === 'worker' && !semail){
-            throw new Error("invalid request");
-            
-        }
-        if(type.Value == 'user'){
-            const userVerifier = CognitoJwtVerifier.create({
-                userPoolId: `${process.env.USER_POOL_ID}`,
-                tokenUse: "access",
-                clientId: `${process.env.USER_POOL_CLIENT_ID}`,
-            })
-            await userVerifier.verify(jwt);
-            
-        }
-        if(type.Value == 'school'){
-            const schoolVerifier = CognitoJwtVerifier.create({
-                userPoolId: `${process.env.SCHOOL_POOL_ID}`,
-                tokenUse: "access",
-                clientId: `${process.env.SCHOOL_POOL_CLIENT_ID}`,
-            });
-    
-            await schoolVerifier.verify(jwt)
-        }
-
-        if(type.Value == 'worker'){
-            const workerVerifier = CognitoJwtVerifier.create({
-                userPoolId: `${process.env.WORKER_POOL_ID}`,
-                tokenUse: "access",
-                clientId: `${process.env.WORKER_POOL_CLIENT_ID}`,
-            });
-
-            await workerVerifier.verify(jwt)
-        }
+        await userVerifier.verify(jwt);
+        
         return {
             isAuthorized: true,
             context: {
-                'EMAIL': email?.Value,
-                'SEMAIL': semail?.Value,
-                'TYPE': type?.Value
+                'email': parsed_user.email,
+                'semail': parsed_user['custom:type'] === 'worker' ? parsed_user['custom:semail'] : parsed_user.email,
+                'type': parsed_user['custom:type']
             }
         }
 

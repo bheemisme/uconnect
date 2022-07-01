@@ -13,6 +13,7 @@ import EditProfile from './components/EditProfile'
 import { Amplify, Auth } from 'aws-amplify'
 import Change from './components/Change'
 import { useEffect, useRef, useState } from 'react'
+
 Amplify.configure({
   Auth: {
     region: import.meta.env.VITE_REGION,
@@ -35,6 +36,7 @@ function App() {
         <Route path='forgot' element={<Forgot />} />
         <Route path='confirm' element={<Confirm />} />
         <Route path='postforgot' element={<PostForgot />} />
+        
         <Route path='/' element={<Home />}>
           <Route index element={<Dashboard />} />
           <Route path='settings' element={<Settings />} />
@@ -44,6 +46,7 @@ function App() {
           </Route>
           <Route path='edit' element={<EditProfile />} />
           <Route path='change' element={<Change />} />
+
           <Route path='*' element={<Navigate replace to="/" />} />
         </Route>
       </Routes>

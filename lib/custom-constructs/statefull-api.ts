@@ -30,8 +30,8 @@ export class StatefullApi extends Construct {
     sendMessageIntegration: apiv2.CfnIntegration;
     sendMessageRoute: apiv2.CfnRoute;
     getThreadsFunction: cdk.aws_lambda_nodejs.NodejsFunction;
-    getThreadsIntegration: apiv2.CfnIntegration;
     getThreadsRoute: apiv2.CfnRoute;
+    uconnectStatefullApiExecuteStatement: iam.PolicyStatement;
     constructor(scope: Construct, id: string, props: {
         table: cdk.aws_dynamodb.Table
     }) {
@@ -106,7 +106,7 @@ export class StatefullApi extends Construct {
         })
 
         
-        const uconnectStatefullApiExecuteStatement = new iam.PolicyStatement({
+        this.uconnectStatefullApiExecuteStatement = new iam.PolicyStatement({
             effect: iam.Effect.ALLOW,
             actions: ['execute-api:Invoke','execute-api:ManageConnections'],
             resources: [`arn:aws:execute-api:ap-south-1:750330112562:${this.uconnectStatefullApi.ref}/${this.uconnectStatefullStage.ref}/POST/@connections/*`]
@@ -133,29 +133,21 @@ export class StatefullApi extends Construct {
         this.newThreadIntegration = new apiv2.CfnIntegration(this,'newThreadIntegration',this.lambdaIntegrationConfig(this.newThreadFunction,'new thread integration'))
         this.newThreadRoute = new apiv2.CfnRoute(this,'new Thread Route',this.lambdaRouteConfig('newthread',this.newThreadIntegration))
         this.newThreadFunction.addPermission('newThreadFunctionPermission',this.lambdaPermissionConfig(this.newThreadRoute))
-        
-        this.newThreadFunction.addToRolePolicy(uconnectStatefullApiExecuteStatement)
+        this.newThreadFunction.addToRolePolicy(this.uconnectStatefullApiExecuteStatement)
 
-        
-        
         this.terminateThreadFunction = new nodeLambda.NodejsFunction(this,"terminateThreadFunction",this.lambdaConfig('./apps/backend/lambdas/terminate-thread.ts','terminate thread lambda function'))
         this.terminateThreadIntegration = new apiv2.CfnIntegration(this,'terminateThreadIntegration',this.lambdaIntegrationConfig(this.terminateThreadFunction,'terminate thread integration'))
         this.terminateThreadRoute = new apiv2.CfnRoute(this,'terminateThreadRoute',this.lambdaRouteConfig('terminatethread',this.terminateThreadIntegration))
         this.terminateThreadFunction.addPermission('terminateThreadFunctionPermission',this.lambdaPermissionConfig(this.terminateThreadRoute))
-        this.terminateThreadFunction.addToRolePolicy(uconnectStatefullApiExecuteStatement)
+        this.terminateThreadFunction.addToRolePolicy(this.uconnectStatefullApiExecuteStatement)
 
         this.sendMessageFunction = new nodeLambda.NodejsFunction(this,"sendMessageFunction",this.lambdaConfig('./apps/backend/lambdas/send-message.ts','send message lambda function'))
         this.sendMessageIntegration = new apiv2.CfnIntegration(this,'sendMessageIntegration',this.lambdaIntegrationConfig(this.sendMessageFunction,'send message integration'))
         this.sendMessageRoute = new apiv2.CfnRoute(this,'sendMessageThreadRoute',this.lambdaRouteConfig('sendmessage',this.sendMessageIntegration))
         this.sendMessageFunction.addPermission('sendMessageFunctionPermission',this.lambdaPermissionConfig(this.sendMessageRoute))
-        this.sendMessageFunction.addToRolePolicy(uconnectStatefullApiExecuteStatement)
+        this.sendMessageFunction.addToRolePolicy(this.uconnectStatefullApiExecuteStatement)
         
-        this.getThreadsFunction = new nodeLambda.NodejsFunction(this,"getThreadsFunction",this.lambdaConfig('./apps/backend/lambdas/get-threads.ts','get threads lambda function'))
-        this.getThreadsIntegration = new apiv2.CfnIntegration(this,'getThreadsIntegration',this.lambdaIntegrationConfig(this.getThreadsFunction,'get threads integration'))
-        this.getThreadsRoute = new apiv2.CfnRoute(this,'getThreadsThreadRoute',this.lambdaRouteConfig('getthreads',this.getThreadsIntegration))
-        this.getThreadsFunction.addPermission('getThreadsFunctionPermission',this.lambdaPermissionConfig(this.getThreadsRoute))
-        this.getThreadsFunction.addToRolePolicy(uconnectStatefullApiExecuteStatement)
-
+        
     }
 
     lambdaConfig(entry: string, description: string) {

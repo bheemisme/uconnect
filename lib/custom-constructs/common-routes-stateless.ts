@@ -19,6 +19,15 @@ export class CommonRoutesStateless extends Construct{
     getSchools: cdk.aws_lambda_nodejs.NodejsFunction;
     getSchoolsIntegration: cdk.aws_apigatewayv2.CfnIntegration;
     getSchoolsRoute: cdk.aws_apigatewayv2.CfnRoute;
+    getThreads: nodeLambda.NodejsFunction;
+    getThreadsIntegration: cdk.aws_apigatewayv2.CfnIntegration;
+    getThreadsRoute: cdk.aws_apigatewayv2.CfnRoute;
+    getMessages: nodeLambda.NodejsFunction;
+    getMessagesIntegration: cdk.aws_apigatewayv2.CfnIntegration;
+    getMessagesRoute: cdk.aws_apigatewayv2.CfnRoute;
+    deleteThread: nodeLambda.NodejsFunction;
+    deleteThreadIntegration: cdk.aws_apigatewayv2.CfnIntegration;
+    deleteThreadRoute: cdk.aws_apigatewayv2.CfnRoute;
 
     constructor(scope: Construct,id: string,props: {
         table: cdk.aws_dynamodb.Table;
@@ -39,6 +48,20 @@ export class CommonRoutesStateless extends Construct{
         this.getTokenRoute = new apigatewayv2.CfnRoute(this, "getTokenRoute", this.lambdaRouteConfig(this.getTokenIntegration,"POST /gettoken"))
         this.getTokenFunction.addPermission("getTokenPermission",this.lambdaPermissionConfig("gettoken"))
 
+        this.getThreads = new nodeLambda.NodejsFunction(this,"getThreadsFunction",this.lambdaConfig("./apps/backend/lambdas/get-threads.ts","get threads function"))
+        this.getThreadsIntegration = new apigatewayv2.CfnIntegration(this,"getThreadsIntegration",this.lambdaIntegrationConfig(this.getThreads,"get threads function"))
+        this.getThreadsRoute = new apigatewayv2.CfnRoute(this,"getThreadsRoute",this.lambdaRouteConfig(this.getThreadsIntegration,"POST /getthreads"))
+        this.getThreads.addPermission("getThreadsPermission",this.lambdaPermissionConfig("getthreads"))
+
+        this.getMessages = new nodeLambda.NodejsFunction(this,"getMessagesFunction",this.lambdaConfig('./apps/backend/lambdas/get-messages.ts','get messages function'))
+        this.getMessagesIntegration = new apigatewayv2.CfnIntegration(this,'getMessagesIntegration',this.lambdaIntegrationConfig(this.getMessages,'get messages integration'))
+        this.getMessagesRoute = new apigatewayv2.CfnRoute(this,'getMessageRoute',this.lambdaRouteConfig(this.getMessagesIntegration,'POST /getmessages'))
+        this.getMessages.addPermission('getMessagesPermission',this.lambdaPermissionConfig('getthreads'))
+
+        this.deleteThread = new nodeLambda.NodejsFunction(this,'deleteThreadFunction',this.lambdaConfig('./apps/backend/lambdas/delete-thread.ts','delete thread function'))
+        this.deleteThreadIntegration = new apigatewayv2.CfnIntegration(this,'deleteThreadIntegration',this.lambdaIntegrationConfig(this.deleteThread,'delete thread integration'))
+        this.deleteThreadRoute = new apigatewayv2.CfnRoute(this,'deleteThreadRoute',this.lambdaRouteConfig(this.deleteThreadIntegration,'POST /deletethread'))
+        this.deleteThread.addPermission('deleteThreadPermission',this.lambdaPermissionConfig('deletethread'))
 
     }
 
@@ -54,7 +77,9 @@ export class CommonRoutesStateless extends Construct{
             timeout: cdk.Duration.seconds(25),
             environment: {
                 'TABLE_NAME': this.props.table.tableName,
-                'TABLE_REGION': this.props.table.tableArn.split(':')[3]
+                'TABLE_REGION': this.props.table.tableArn.split(':')[3],
+                'FROM_INDEX_NAME': 'from_threads',
+                'TO_INDEX_NAME': 'to_threads'
             },
             bundling: {
                 externalModules: ['aws-sdk'],

@@ -7,16 +7,16 @@ export default function Schools() {
     // fetch all schools
     // 
     const navigate = useNavigate()
-    const [schools, getSchools] = useStore((state) => [state.schools, state.getSchools])
+    const [schools, getSchools,sendJsonMessage] = useStore((state) => [state.schools, state.getSchools,state.sendJsonMessage],shallow)
     useEffect(() => {
-        getSchools()
+        getSchools(false)
     }, [])
 
     return (
         <div className="flex flex-row flex-wrap">
             <button className="block" onClick={(e) => {
                 e.preventDefault()
-                getSchools().catch(err => {
+                getSchools(true).catch(err => {
                     if(err === 'No current user' || err === 'The user is not authenticated'){
                         navigate('/signin',{replace: true})
                     }
@@ -28,7 +28,10 @@ export default function Schools() {
                     return (
                         <button key={index} onClick={(e) => {
                             e.preventDefault()
-                            // add the new thread from our school to this school
+                            const name = prompt('enter thread name')
+                            if(sendJsonMessage && name!='' && name != null){
+                                sendJsonMessage({'action': 'newthread','payload': {email: scl.email,name: name,tid: crypto.randomUUID()}})
+                            }
                         }} className="border-2 rounded-2xl p-2 ml-4 mb-4 w-30 hover:cursor-pointer hover:text-white hover:bg-sky-400">
                             {scl.name}
                         </button>

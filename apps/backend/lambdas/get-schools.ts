@@ -1,14 +1,14 @@
 import process from 'process'
 import * as dynamodb from '@aws-sdk/client-dynamodb'
 import { v4 as uuid } from 'uuid'
+import { school_schema, stateless_authorizer_schema } from '../schemas'
+import { unmarshall } from '@aws-sdk/util-dynamodb'
 export async function handler(event: any): Promise<any> {
     try {
         console.log(event)
-        const type = event.requestContext.authorizer.lambda.TYPE
-        const email = event.requestContext.authorizer.lambda.EMAIL
+        const authorizer = stateless_authorizer_schema.parse(event.requestContext.authorizer.lambda)
         
-        if (type == 'worker') {
-            console.error('workers are not allowed')
+        if (authorizer.type === 'worker') {
             throw new Error('workers are not allowed')
         }
         const client = new dynamodb.DynamoDBClient({
@@ -18,26 +18,26 @@ export async function handler(event: any): Promise<any> {
         const schools = await client.send(new dynamodb.ScanCommand({
             TableName: process.env.TABLE_NAME,
             FilterExpression: '#type = :scl',
-            ExpressionAttributeValues: {':scl': {'S': 'SCHOOL'} },
-            ExpressionAttributeNames: {'#type': 'TYPE'},
+            ExpressionAttributeValues: {':scl': {'S': 'school'} },
+            ExpressionAttributeNames: {'#type': 'type'},
         }))
 
         if (!schools.Items) {
             throw new Error("invalid request");
         }
         
-        const items = schools.Items.filter((e) => e.email !== email).map((e) => {
-            return {'email': e.PK.S,'name': e.NAME.S}
-        })
-
         console.log(schools.Items)
-        console.info(items)
-        console.log(schools.Items.filter(e => {
-            return e.emal !== email
-        }))
+        const school_items = schools.Items.filter((e) => e.pk?.S !== authorizer.email).map((e) => {
+            const scl = school_schema.parse(unmarshall(e))
+            return {'email': scl.email,'name': scl.name}
+        })
+        console.info(school_items)
+
+        
+
         return {
             statusCode: 200,
-            body: JSON.stringify({"items": items}),
+            body: JSON.stringify({"schools": school_items}),
             headers: {
                 'content-type': 'application/json'
             }

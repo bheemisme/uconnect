@@ -1,21 +1,26 @@
 import process from 'process'
 import * as dynamodb from '@aws-sdk/client-dynamodb'
+import { statefull_authorizer_schema } from '../schemas'
+import { marshall } from '@aws-sdk/util-dynamodb'
 
 export async function handler(event: any): Promise<any>{
     try {
         console.info(event)
-        console.info(event.requestContext.authorizer)
+
+        const authorizer = statefull_authorizer_schema.parse(event.requestContext.authorizer)
+        console.info(authorizer)
         const client = new dynamodb.DynamoDBClient({
             region: process.env.TABLE_REGION
         })
         
+        
         await client.send(new dynamodb.UpdateItemCommand({
             TableName: process.env.TABLE_NAME,
-            Key: {
-                PK: {'S': event.requestContext.authorizer.PK},
-                SK: {'S': event.requestContext.authorizer.SK}
-            },
-            UpdateExpression: 'DELETE CONNECTIONS :conid',
+            Key: marshall({
+                pk: authorizer.pk,
+                sk: authorizer.sk
+            }),
+            UpdateExpression: 'DELETE connections :conid',
             ExpressionAttributeValues: {
                 ':conid': {'SS':[event.requestContext.connectionId]}
             },

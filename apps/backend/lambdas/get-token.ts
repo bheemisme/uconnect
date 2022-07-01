@@ -2,44 +2,45 @@ import process from 'process'
 import * as dynamodb from '@aws-sdk/client-dynamodb'
 import {v4 as uuid} from 'uuid'
 import * as lambda from 'aws-lambda'
-export async function handler(event: lambda.APIGatewayProxyEventV2WithLambdaAuthorizer<{TYPE: string,EMAIL: string,SEMAIL?: string}>): Promise<any>{
+import { marshall } from '@aws-sdk/util-dynamodb'
+import { stateless_authorizer_schema, token_schema } from '../schemas'
+import { z } from 'zod'
+export async function handler(event: lambda.APIGatewayProxyEventV2WithLambdaAuthorizer<{type: string,email: string,semail?: string}>): Promise<any>{
     try {
 
         console.log(event)
-        console.log(event.requestContext.authorizer.lambda)
-
-        const token = uuid()
-
-        const type: string = event.requestContext.authorizer.lambda.TYPE
-        const email: string = event.requestContext.authorizer.lambda.EMAIL
-        const semail: string | undefined = event.requestContext.authorizer.lambda.SEMAIL
+        const authorizer = stateless_authorizer_schema.parse(event.requestContext.authorizer.lambda)
         const client = new dynamodb.DynamoDBClient({
             region: process.env.TABLE_REGION
         })
+        
+        
+        let tkn = uuid()
+        const token = token_schema.passthrough().parse({
+            type: 'token',
+            token_type: authorizer.type,
+            token_email: authorizer.email,
+            token_semail: authorizer.semail ? authorizer.semail : authorizer.email,
+            TTL: Math.floor((Date.now() / 1000) + 30),
+            token: tkn,
+            pk: tkn,
+            sk: tkn,
+        })
 
+        console.log('token: ', token)
         const command = new dynamodb.PutItemCommand({
             TableName: process.env.TABLE_NAME,
-            Item: {
-                'PK': {S: token},
-                'SK': {S: token},
-                'TYPE': {S: 'TOKEN'},
-                'TOKEN_TYPE': {S: type},
-                'TOKEN_EMAIL': {S: email},
-                'TOKEN_SEMAIL': {S: semail ? semail : ""},
-                'TTL': {
-                    N: `${Math.floor((Date.now() / 1000) + 300)}`
-                }
-            }
+            Item: marshall(token)
         })
-        await client.send(command)
-        
+        const output = await client.send(command)
+        console.log(output)
         return{
             statusCode: 200,
             headers: {
                 'content-type': 'applicaton/json'
             },
             body: JSON.stringify({
-                token
+                token: token.token
             })
         }
     } catch (error) {

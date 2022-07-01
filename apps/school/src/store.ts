@@ -1,53 +1,10 @@
 import create from 'zustand'
 import { devtools } from 'zustand/middleware'
 import { Auth } from 'aws-amplify'
+import produce, { enableMapSet } from 'immer'
+import { Message, Thread, Store } from './types'
 
-interface TSchool {
-    name: string,
-    email: string
-}
-
-
-export interface Thread {
-    tid: string,
-    name: string,
-    messages: Message[],
-    from: string,
-    fromtype: string,
-    to: string,
-    allocated: string,
-    allocated_type: string,
-    terminated: boolean,
-}
-export interface Message {
-    timestamp: string,
-    message: string,
-    owner: string,
-    tid: string,
-    from: string,
-    to: string,
-    allocated: string
-}
-interface TStore {
-    school: TSchool,
-    workers: string[],
-    schools: TSchool[],
-    sendJsonMessage?: Function,
-    threads: Thread[],
-    fetchedThreads: boolean,
-    fetchedSchools: boolean,
-    setSendJsonMessageFunction(cb: Function): void,
-    getWorkers(): Promise<void>,
-    getSchools(again: boolean): Promise<void>,
-    setSchoolInfo(): Promise<void>,
-    addWorker(email: string): Promise<void>,
-    getThreads(again: boolean): Promise<void>,
-    addThread(thread: Thread): void,
-    addMessage(message: Message): void
-    terminateThread(threadId: string): void,
-    deleteThread(threadId: string): void
-};
-
+enableMapSet()
 export async function getToken() {
     const session = await Auth.currentSession()
     const user = await Auth.currentAuthenticatedUser()
@@ -65,21 +22,17 @@ export async function getToken() {
     return token
 }
 
-export const useStore = create<TStore>()(devtools((set, get) => ({
+export const useStore = create<Store>()(devtools((set, get) => ({
     school: { name: '', email: '' },
     workers: [],
     schools: [],
-    sclmsg: "school message",
-    threads: [],
+    threads: new Map<string, Thread>(),
     fetchedThreads: false,
     fetchedSchools: false,
-    setSendJsonMessageFunction(cb) {
-        set((state) => {
-            return {
-                ...state,
-                sendJsonMessage: cb
-            }
-        })
+    setSendJsonMessageFunction(cb: Function) {
+        set(produce((draft: Store) => {
+            draft.sendJsonMessage = cb
+        }))
     },
     getWorkers: async () => {
         try {
@@ -94,15 +47,12 @@ export const useStore = create<TStore>()(devtools((set, get) => ({
                     'email': get().school.email
                 })
             })).json()
-            set((state) => {
-                return {
-                    ...state,
-                    workers: res.emails
-                }
-            })
+
+            set(produce((draft: Store) => {
+                draft.workers = res.emails
+            }))
         } catch (error) {
             throw error
-            // console.log(error)
         }
     },
     getSchools: async (again: boolean) => {
@@ -115,13 +65,10 @@ export const useStore = create<TStore>()(devtools((set, get) => ({
                         'authorization': session.getAccessToken().getJwtToken()
                     }
                 })).json()
-                set((state) => {
-                    return {
-                        ...state,
-                        fetchedSchools: true,
-                        schools: res.items
-                    }
-                })
+                set(produce((draft: Store) => {
+                    draft.fetchedSchools = true
+                    draft.schools = res.schools
+                }))
             }
         } catch (error) {
             console.log(error)
@@ -130,9 +77,9 @@ export const useStore = create<TStore>()(devtools((set, get) => ({
     setSchoolInfo: async () => {
         try {
             const scl = await Auth.currentAuthenticatedUser()
-            set(state => ({
-                ...state,
-                school: { ...state.school, name: scl.attributes.name, email: scl.attributes.email }
+            set(produce((draft: Store) => {
+                draft.school.name = scl.attributes.name
+                draft.school.email = scl.attributes.email
             }))
         } catch (error) {
             console.log(error)
@@ -142,7 +89,7 @@ export const useStore = create<TStore>()(devtools((set, get) => ({
         try {
             const session = await Auth.currentSession()
             console.log(get().school.email)
-            await (await fetch(`${import.meta.env.VITE_API_END_POINT}/addworker`, {
+            const res = await (await fetch(`${import.meta.env.VITE_API_END_POINT}/addworker`, {
                 method: 'POST',
                 headers: {
                     'content-type': 'application/json',
@@ -168,77 +115,64 @@ export const useStore = create<TStore>()(devtools((set, get) => ({
                         'authorization': token,
                     }
                 })).json()
-
-                set((state) => {
-                    return {
-                        ...state,
-                        fetchedThreads: true,
-                        threads: threads.threads
+                set(produce((draft: Store) => {
+                    draft.fetchedThreads = true
+                    draft.fetchedThreads = true
+                    for(let th of threads.threads){
+                        let msgs = new Map<string,Message>()
+                        for(let msg of th.messages){
+                            msgs.set(msg.mid,msg)
+                        }
+                        th.messages = msgs
+                        draft.threads.set(th.tid,th)
                     }
-                })
+                }))
             }
-
         } catch (err) {
             throw err;
         }
     },
     addThread(thread: Thread) {
+        set(
+            produce((draft: Store) => {
 
-        console.log(thread)
-        try {
-            set((state) => {
-                let current: Thread[] = []
-                if (state.threads) {
-                    current = state.threads.slice()
-                }
-
-                current.push(thread)
-                return {
-                    ...state,
-                    threads: current
-                }
+                thread.messages = new Map<string, Message>()
+                // draft.threads[thread.tid] = thread?
+                draft.threads.set(thread.tid, thread)
             })
-        } catch (error) {
-            throw error
-        }
+        )
     },
     addMessage(message: Message) {
-        let clone = get().threads.slice()
-        clone.forEach((th: Thread) => {
-            if (th.tid === message.tid) {
-                if (!th.messages) {
-                    th.messages = []
-                }
-                th.messages.push(message)
-            }
-        })
-        set((state) => {
-            return {
-                ...state,
-                threads: clone
-            }
-        })
+        set(produce((draft: Store) => {
+            draft.threads.get(message.tid)?.messages.set(message.mid, message)
+        }))
     },
     terminateThread(threadId) {
-        let clone = get().threads.slice()
-        clone.forEach((th: Thread) => {
-            if (th.tid === threadId) {
-                th.terminated = true
+        set(produce((draft: Store) => {
+            let thread = draft.threads.get(threadId)
+            if (thread) {
+                thread.terminated = true
+                if (thread.from !== draft.school.email) {
+                    draft.threads.delete(threadId)
+                }
             }
-        })
-        set((state) => {
-            return {
-                ...state,
-                threads: clone
-            }
-        })
+        }))
     },
-    deleteThread(threadId: string){
-        let clone = get().threads.slice()
-        clone.forEach((th: Thread) => {
-            if (th.tid === threadId) {
-                th.terminated = true
-            }
-        })
+
+    deleteThread(threadId: string) {
+        set(produce((draft: Store) => {
+            draft.threads.delete(threadId)
+        }))
+    },
+    deleteStore(){
+        set(produce((draft: Store) => {
+            draft.threads.clear()
+            draft.schools = []
+            draft.school = {'email': '','name': ''}
+            draft.fetchedSchools = false
+            draft.fetchedThreads = false
+            draft.sendJsonMessage = undefined
+            draft.workers = []
+        }))
     }
 })))

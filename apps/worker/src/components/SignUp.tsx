@@ -21,10 +21,12 @@ export default function SignUp() {
     async function onSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault()
         try {
+            console.log(inputs)
             let user = await Auth.signIn(inputs.email, inputs.temppassword)
             await Auth.completeNewPassword(user, inputs.password)
             navigate('/', { replace: true })
         } catch (err) {
+            console.log(err)
             setErrorMessage("email or password might be incorrect")
         }
     }

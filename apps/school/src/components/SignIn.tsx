@@ -10,8 +10,8 @@ export default function SignIn() {
     useEffect(() => {
         Auth.currentSession().then(() => {
             navigate('/')
-        }).catch(() => {
-            // console.log("please authenticate")
+        }).catch(err => {
+            console.log("please authenticate")
          })
     }, [])
     const [errorMessage, setErrorMessage] = useState("")

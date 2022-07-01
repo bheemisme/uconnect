@@ -11,8 +11,8 @@ export class UconnectTable extends Construct {
         super(scope,id)
         this.uconnectTable = new dynamodb.Table(this,`UconnectTable`,{
             tableName: `uconnect-table`,
-            partitionKey: {name: 'PK',type: dynamodb.AttributeType.STRING},
-            sortKey: {name: 'SK',type: dynamodb.AttributeType.STRING},
+            partitionKey: {name: 'pk',type: dynamodb.AttributeType.STRING},
+            sortKey: {name: 'sk',type: dynamodb.AttributeType.STRING},
             billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
             removalPolicy: cdk.RemovalPolicy.DESTROY,
             timeToLiveAttribute: 'TTL'
@@ -21,11 +21,11 @@ export class UconnectTable extends Construct {
         this.uconnectTable.addGlobalSecondaryIndex({
             indexName: 'from_threads',
             'partitionKey' : {
-                'name': 'FROM',
+                'name': 'from',
                 'type': dynamodb.AttributeType.STRING
             },
             'sortKey' : {
-                'name': 'TID',
+                'name': 'tid',
                 'type' : dynamodb.AttributeType.STRING
             }
         })
@@ -33,13 +33,25 @@ export class UconnectTable extends Construct {
         this.uconnectTable.addGlobalSecondaryIndex({
             indexName: 'to_threads',
             'partitionKey' : {
-                'name': 'TO',
+                'name': 'allocated',
                 'type': dynamodb.AttributeType.STRING
             },
             'sortKey' : {
-                'name': 'TID',
+                'name': 'tid',
                 'type' : dynamodb.AttributeType.STRING
             }
+        })
+        
+        this.uconnectTable.addGlobalSecondaryIndex({
+            indexName: 'entities',
+            'partitionKey': {
+                'name': 'email',
+                'type': dynamodb.AttributeType.STRING
+            },
+            'sortKey': {
+                'name': 'type',
+                'type': dynamodb.AttributeType.STRING
+            },
         })
         
         new cdk.CfnOutput(this,"UconnectTableArn",{value: this.uconnectTable.tableArn})

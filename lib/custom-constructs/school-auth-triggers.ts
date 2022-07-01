@@ -35,8 +35,7 @@ export class SchoolAuthTriggers extends Construct {
 
         this.preAuthTrigger = new nodeLambda.NodejsFunction(this,"preAuthSchoolTrigger",
         this.lambdaConfig("./apps/backend/lambdas/pre-auth-school.ts","pre auth school trigger"))
-        
-        
+           
 
     }
 
@@ -51,7 +50,8 @@ export class SchoolAuthTriggers extends Construct {
             timeout: cdk.Duration.seconds(25),
             environment: {
                 'TABLE_NAME': this.props.table.tableName,
-                'TABLE_REGION': this.props.table.tableArn.split(':')[3]
+                'TABLE_REGION': this.props.table.tableArn.split(':')[3],
+                'ENTITIES_INDEX': 'entities'
             },
             bundling: {
                 externalModules: ['aws-sdk'],

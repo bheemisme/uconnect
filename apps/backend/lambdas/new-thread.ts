@@ -1,7 +1,15 @@
 import { APIGatewayProxyWebsocketEventV2, Context } from 'aws-lambda'
 import * as dynamodb from '@aws-sdk/client-dynamodb'
 import * as gateway from '@aws-sdk/client-apigatewaymanagementapi'
+import * as dbutils from '@aws-sdk/util-dynamodb'
+import { z } from 'zod'
 import { v4 as uuid } from 'uuid'
+import * as schemas from '../schemas'
+import * as utils from '../utils'
+import { Message, Thread } from '../types'
+import { marshall } from '@aws-sdk/util-dynamodb'
+
+
 export async function handler(event: any): Promise<any> {
     console.info(event)
     console.info(event.requestContext)
@@ -15,207 +23,95 @@ export async function handler(event: any): Promise<any> {
 
     try {
 
-        if (event.requestContext.authorizer.TYPE === 'worker') {
+        const db_client = new dynamodb.DynamoDBClient({ region: process.env.TABLE_REGION })
+
+        const authorizer = schemas.statefull_authorizer_schema.parse(event.requestContext.authorizer)
+        if (authorizer.type === 'worker') {
             throw new Error("workers are not allowed");
         }
 
+        const body = JSON.parse(event.body)
+        const payload = z.object({
+            'tid': z.string().uuid(),
+            'email': z.string().email(),
+            'name': z.string()
+        }).parse(body.payload)
 
-
-        if (!event.body) {
-            throw new Error("no body")
-        }
-        const payload: {
-            semail: string,
-            tname: string
-        } = JSON.parse(event.body).payload
-        if (!payload) { throw new Error("no payload"); }
-
-        const db_client = new dynamodb.DynamoDBClient({ region: process.env.TABLE_REGION })
-        const to_school = await db_client.send(new dynamodb.GetItemCommand({
-            TableName: process.env.TABLE_NAME,
-            Key: {
-                'PK': { 'S': payload.semail },
-                'SK': { 'S': payload.semail }
-            }
-        }))
-
-        if (!to_school.Item) {
-            throw new Error("no school exists");
-        }
-
-        if (to_school.Item.TYPE.S === 'school') {
-            throw new Error('it is not a school')
-        }
-
-        const semail = to_school.Item.PK.S
-        if (!semail) {
-            throw new Error("no school exists");
+        if (authorizer.type.toLowerCase() == 'school' && authorizer.pk === payload.email) {
+            throw new Error("self thread raise is not supported");
         }
 
         const workers = await db_client.send(new dynamodb.QueryCommand({
             TableName: process.env.TABLE_NAME,
-            KeyConditionExpression: "PK = :pk",
-            ExpressionAttributeValues: { ':pk': { 'S': semail } },
-            ProjectionExpression: 'SK'
+            KeyConditionExpression: "pk = :pk",
+            ExpressionAttributeValues: { ':pk': { 'S': payload.email } },
+            ExpressionAttributeNames: { '#type': 'type', '#pk': 'pk', '#sk': 'sk' },
+            ProjectionExpression: '#pk, #sk, #type'
         }))
-        let allocated_email = semail
-        let allocated_type = 'SCHOOL'
 
-        const worker_emails = workers.Items?.map((e) => {
-            return e.SK.S
+        let index = Math.floor(Math.random() * (workers.Count ? workers.Count : 0))
+        if (!workers.Items) {
+            throw new Error("workers don't exist");
+        }
+        let allocated = z.object({
+            'pk': z.string().email(),
+            'sk': z.string().email(),
+            'type': z.enum(['school', 'worker'])
+        }).parse(dbutils.unmarshall(workers.Items[index]))
+
+        const thread = schemas.thread_schema.passthrough().parse({
+            'tid': payload.tid,
+            'name': payload.name,
+            'messages': Array<Message>(),
+            'from': authorizer.pk,
+            'fromtype': authorizer.type == 'user' ? 'user' : 'school',
+            'to': allocated.pk,
+            'allocated': allocated.sk,
+            'allocated_type': allocated.type === 'school' ? 'school' : 'worker',
+            'terminated': false,
+            'pk': payload.tid,
+            'sk': payload.tid,
+            'type': 'thread',
         })
 
-        if (worker_emails) {
-            let random_email = worker_emails[(Math.random() * worker_emails.length)]
-            if (random_email) {
-                allocated_email = random_email
-                allocated_type = 'WORKER'
-            }
-        }
-
-
-        type message = {
-            timestamp: string,
-            owner: boolean,
-            msg: string,
-        }
-        const thread: {
-            tid: string,
-            name: string,
-            messages: message[],
-            from: string,
-            fromtype: string,
-            to: string,
-            allocated: string,
-            terminated: boolean,
-            allocated_type: string
-        } = {
-            tid: uuid(),
-            name: payload.tname,
-            messages: [],
-            from: event.requestContext.authorizer.PK,
-            fromtype: event.requestContext.authorizer.TYPE,
-            to: semail,
-            allocated: allocated_email,
-            allocated_type: allocated_type,
-            terminated: false
-        }
-
-        await db_client.send(new dynamodb.PutItemCommand({
-            TableName: process.env.TABLE_NAME,
-            Item: {
-                PK: { 'S': thread.tid },
-                SK: { 'S': thread.tid },
-                TID: { 'S': thread.tid },
-                TYPE: { 'S': 'THREAD' },
-                NAME: { 'S': thread.name },
-                MESSAGES: { 'L': [] },
-                FROM: { 'S': thread.from },
-                FROMTYPE: { 'S': thread.fromtype },
-                TO: { 'S': thread.to },
-                ALLOCATED: { 'S': thread.allocated },
-                ALLOCATED_TYPE: { 'S': thread.allocated_type },
-                TERMINATED: { 'BOOL': thread.terminated }
-            },
-            ConditionExpression: 'attribute_not_exists(PK)'
+        await db_client.send(new dynamodb.TransactWriteItemsCommand({
+            'TransactItems': [
+                {
+                    'Update': {
+                        'TableName': process.env.TABLE_NAME,
+                        'Key': marshall({
+                            'pk': authorizer.pk,
+                            'sk': authorizer.sk
+                        }),
+                        'UpdateExpression': 'ADD #limit :n',
+                        'ExpressionAttributeNames': { '#limit': 'thread_limit' },
+                        'ExpressionAttributeValues': { ':n': { 'N': '-1' },':a': {'N': '0'}},
+                        'ConditionExpression': 'attribute_exists(pk) and (#limit > :a)'
+                    }
+                },
+                {
+                    'Put': {
+                        TableName: process.env.TABLE_NAME,
+                        Item: marshall(thread),
+                        ConditionExpression: 'attribute_not_exists(pk)'
+                    }
+                }
+            ]
         }))
 
         console.info('new thread created')
-        console.info('thread: ',thread)
-        const from_connections = await db_client.send(new dynamodb.GetItemCommand({
-            TableName: process.env.TABLE_NAME,
-            Key: {
-                'PK': { 'S': thread.from },
-                'SK': { 'S': thread.from }
-            },
-            ProjectionExpression: 'CONNECTIONS'
-        }))
+        console.info('thread: ', thread)
 
-        const to_connections = await db_client.send(new dynamodb.GetItemCommand({
-            TableName: process.env.TABLE_NAME,
-            Key: {
-                'PK': { 'S': thread.to },
-                'SK': { 'S': thread.allocated }
-            },
-            ProjectionExpression: 'CONNECTIONS'
-        }))
+        const from_connections = await utils.getConnections(db_client, thread.from, thread.from)
+        const to_connections = await utils.getConnections(db_client, thread.to, thread.allocated)
 
-        
-        console.info(to_connections)
-        const from_stale_connections: string[] = []
-        const to_stale_connections: string[] = []
-        from_connections.Item?.CONNECTIONS.SS?.forEach(async (conid) => {
-            try {
-                await client.postToConnection({
-                    ConnectionId: conid,
-                    Data: Buffer.from(JSON.stringify({
-                        'thread': {
-                            tid: thread.tid,
-                            name: thread.name,
-                            from: thread.from,
-                            fromtype: thread.fromtype,
-                            to: thread.to,
-                            allocated: thread.allocated,
-                            allocated_type: thread.allocated_type,
-                            terminated: thread.terminated
-                        }, 'event': 'newthread'
-                    }), 'utf-8')
-                })
-            } catch (error) {
-                console.error(error)
-                from_stale_connections.push(conid)
-            }
-        })
+        console.log('from_connections: ', from_connections)
+        console.log('to_connections: ', to_connections)
+        const from_stale_connections: string[] = await utils.postToConnections(client, from_connections, thread, event.requestContext.routeKey)
+        const to_stale_connections: string[] = await utils.postToConnections(client, to_connections, thread, event.requestContext.routeKey)
 
-        to_connections.Item?.CONNECTIONS.SS?.forEach(async (conid) => {
-            try {
-                await client.postToConnection({
-                    ConnectionId: conid,
-                    Data: Buffer.from(JSON.stringify({
-                        'thread': {
-                            tid: thread.tid,
-                            name: thread.name,
-                            from: thread.from,
-                            fromtype: thread.fromtype,
-                            to: thread.to,
-                            allocated: thread.allocated,
-                            allocated_type: thread.allocated_type,
-                            terminated: thread.terminated
-                        }, 'event': 'newthread'
-                    }), 'utf-8')
-                })
-            } catch (error) {
-                console.error(error)
-                to_stale_connections.push(conid)
-            }
-        })
-
-        console.info('from stale connections',from_stale_connections)
-        console.info('to stale connections',to_stale_connections)
-        if (from_stale_connections.length > 0) {
-            await db_client.send(new dynamodb.UpdateItemCommand({
-                TableName: process.env.TABLE_NAME,
-                Key: {
-                    'PK': { 'S': thread.from },
-                    'SK': { 'S': thread.from },
-                },
-                UpdateExpression: 'DELETE CONNECTIONS :conns',
-                ExpressionAttributeValues: { ':conns': { 'SS': from_stale_connections } }
-            }))
-        }
-
-        
-        if (to_stale_connections.length > 0) {
-            await db_client.send(new dynamodb.UpdateItemCommand({
-                TableName: process.env.TABLE_NAME,
-                Key: {
-                    'PK': { 'S': thread.to },
-                    'SK': { 'S': thread.allocated },
-                },
-                UpdateExpression: 'DELETE CONNECTIONS :to_connections',
-                ExpressionAttributeValues: { ':to_connections': { 'SS': to_stale_connections } }
-            }))
-        }
+        await utils.deleteStaleConnections(db_client, from_stale_connections, thread.from, thread.from)
+        await utils.deleteStaleConnections(db_client, to_stale_connections, thread.to, thread.allocated)
 
         return {
             body: JSON.stringify({ "message": "new thread created", }),
@@ -230,7 +126,7 @@ export async function handler(event: any): Promise<any> {
             ConnectionId: event.requestContext.connectionId,
             Data: Buffer.from(JSON.stringify({
                 'event': 'newthread',
-                'payload': { 'error': 'failed to create the thread' }
+                'error': 'failed to create the thread'
             }))
         })
 
@@ -244,3 +140,5 @@ export async function handler(event: any): Promise<any> {
     }
 
 }
+
+

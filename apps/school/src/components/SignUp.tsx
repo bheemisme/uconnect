@@ -4,11 +4,14 @@ import { Link, useNavigate } from "react-router-dom"
 import {ImCross} from 'react-icons/im'
 import {IconContext} from 'react-icons'
 import ulogo from '/ulogo.jpg'
+
 export default function SignUp() {
     useEffect(() => {
         Auth.currentSession().then(() => {
             navigate('/')
-        }).catch(() => {})
+        }).catch(() => {
+            console.log('please authenticate')
+        })
     },[])
 
     const [errorMessage,setErrorMessage] = useState("")
@@ -36,13 +39,27 @@ export default function SignUp() {
                     'custom:type': 'school'
                 }
             })
+
+            
             navigate('/confirm',{
                 replace: true,
                 state: JSON.stringify({'email': inputs.email,'password': inputs.password})
             })    
         }catch(err){
+            
             console.log(err)
-            setErrorMessage("Error Creating account")
+            try {
+                await Auth.resendSignUp(inputs.email)
+                navigate('/confirm',{
+                    replace: true,
+                    state: JSON.stringify({'email': inputs.email,'password': inputs.password})
+                })
+            } catch (error) {
+                setErrorMessage("Error Creating account")
+            }
+
+            
+            
         }
         
         

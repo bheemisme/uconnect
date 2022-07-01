@@ -4,6 +4,8 @@ import { Link, useNavigate } from "react-router-dom"
 import {ImCross} from 'react-icons/im'
 import {IconContext} from 'react-icons'
 import ulogo from '/ulogo.jpg'
+// import * as cognito from '@aws-sdk/client-cognito-identity-provider'
+import * as cognito from 'amazon-cognito-identity-js'
 export default function SignUp() {
     useEffect(() => {
         Auth.currentSession().then(() => {
@@ -42,7 +44,18 @@ export default function SignUp() {
             })    
         }catch(err){
             console.log(err)
-            setErrorMessage("Error Creating account")
+
+            try {
+                await Auth.resendSignUp(inputs.email)
+                navigate('/confirm',{
+                    replace: true,
+                    state: JSON.stringify({'email': inputs.email,'password': inputs.password})
+                })
+            } catch (error) {
+                setErrorMessage("Error Creating account")
+            }
+
+            
         }
         
         
