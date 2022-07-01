@@ -8,8 +8,8 @@ const app = new cdk.App()
 
 new UconnectBackendStack(app, `UconnectBackendStack`, {
   env: {
-    account: "750330112562",
-    region: "ap-south-1",
+    account: "<account-no>",
+    region: "<region>",
   },
   stackName: `uconnect-backend-stack`
 })
@@ -18,8 +18,8 @@ new UconnectBackendStack(app, `UconnectBackendStack`, {
 
 new UconnectWebStack(app,"UconnectWebStack",{
   env: {
-    account: "750330112562",
-    region: "ap-south-1",
+    account: "<account-no>",
+    region: "<region>",
   },
   stackName: `uconnect-web-stack`
 })

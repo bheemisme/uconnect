@@ -41,7 +41,7 @@ export class CustomAuthorizers extends Construct {
             apiId: props.api.ref, // Required
             authorizerPayloadFormatVersion: "2.0",
             authorizerType: "REQUEST", // Required
-            authorizerUri: `arn:aws:apigateway:ap-south-1:lambda:path/2015-03-31/functions/arn:aws:lambda:ap-south-1:750330112562:function:${this.customAuthorizerFunction.functionName}/invocations`,
+            authorizerUri: `arn:aws:apigateway:<region>:lambda:path/2015-03-31/functions/arn:aws:lambda:<region>:<account-no>:function:${this.customAuthorizerFunction.functionName}/invocations`,
             enableSimpleResponses: true,
             name: "custom-lambda-authorizer-stateless", // Required
         })
@@ -49,10 +49,10 @@ export class CustomAuthorizers extends Construct {
         
         
         this.customAuthorizerFunction.addPermission("customAuthorizerInovke", {
-            sourceArn: `arn:aws:execute-api:ap-south-1:750330112562:${props.api.ref}/authorizers/${this.customAuthorizer.ref}`,
+            sourceArn: `arn:aws:execute-api:<region>:<account-no>:${props.api.ref}/authorizers/${this.customAuthorizer.ref}`,
             action: 'lambda:InvokeFunction',
             principal: new iam.ServicePrincipal('apigateway.amazonaws.com'),
-            sourceAccount: '750330112562'
+            sourceAccount: '<account-no>'
         })
 
         
@@ -68,7 +68,7 @@ export class CustomAuthorizers extends Construct {
             memorySize: cdk.Size.mebibytes(512).toMebibytes(),
             timeout: cdk.Duration.seconds(25),
             environment: {
-                'POOL_REGION': 'ap-south-1',
+                'POOL_REGION': '<region>',
                 'USER_POOL_ID': this.props.user_pool.userPoolId,
                 'SCHOOL_POOL_ID': this.props.school_pool.userPoolId,
                 'WORKER_POOL_ID': this.props.worker_pool.userPoolId,

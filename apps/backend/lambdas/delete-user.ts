@@ -67,12 +67,12 @@ export async function handler(event: any) {
             })
             let output = await client.send(new dynamodb.BatchWriteItemCommand({
                 'RequestItems': {
-                    "uconnect-table": requestItems
+                    "<table-name>": requestItems
                 }
             }))
 
             console.log(output.UnprocessedItems)
-            if(output.UnprocessedItems && output.UnprocessedItems['uconnect-table']){
+            if(output.UnprocessedItems && output.UnprocessedItems['<table-name>']){
                 throw new Error("retry attempts are exhausted");           
             }
 

@@ -27,7 +27,7 @@ export async function handler(event: any): Promise<any> {
         const message = message_schema.parse(body.message)
         console.info(message)
         const thread_info = (await db_client.send(new dynamodb.GetItemCommand({
-            TableName: 'uconnect-table',
+            TableName: '<table-name>',
             Key: marshall({
                 pk: message.tid,
                 sk: message.tid
@@ -54,7 +54,7 @@ export async function handler(event: any): Promise<any> {
         }        
         
         const command = new dynamodb.UpdateItemCommand({
-            TableName: 'uconnect-table',
+            TableName: '<table-name>',
             Key: marshall({
                 pk: message.tid,
                 sk: message.tid

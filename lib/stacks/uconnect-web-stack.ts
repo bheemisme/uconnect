@@ -16,7 +16,7 @@ export default class UconnectWebStack extends cdk.Stack{
             repository: codecommit.Repository.fromRepositoryArn(
                 this, 
                 "uconnectRepository", 
-                "arn:aws:codecommit:ap-south-1:750330112562:uconnect"
+                "<codecommit-arn>"
             )
         })
 

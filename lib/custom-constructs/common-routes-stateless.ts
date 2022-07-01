@@ -102,7 +102,7 @@ export class CommonRoutesStateless extends Construct{
             description,
             integrationMethod: "POST",
             integrationType: "AWS_PROXY",
-            integrationUri: `arn:aws:apigateway:ap-south-1:lambda:path/2015-03-31/functions/arn:aws:lambda:ap-south-1:750330112562:function:${fn.functionName}/invocations`,
+            integrationUri: `arn:aws:apigateway:<api-region>:lambda:path/2015-03-31/functions/arn:aws:lambda:<function-region>:<account-no>:function:${fn.functionName}/invocations`,
             payloadFormatVersion: "2.0",
             timeoutInMillis: cdk.Duration.seconds(25).toMilliseconds(),
         }
@@ -122,8 +122,8 @@ export class CommonRoutesStateless extends Construct{
         return {
             principal: new iam.ServicePrincipal('apigateway.amazonaws.com'),
             action: 'lambda:InvokeFunction',
-            sourceArn: `arn:aws:execute-api:ap-south-1:750330112562:${this.props.api.ref}/$default/POST/${route}`,
-            sourceAccount: '750330112562'
+            sourceArn: `arn:aws:execute-api:<function-region>:<account-no>:${this.props.api.ref}/$default/POST/${route}`,
+            sourceAccount: '<account>'
         }
     }
 }

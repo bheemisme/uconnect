@@ -44,7 +44,7 @@ export class SchoolRoutes extends Construct {
             apiId: props.api.ref,
             jwtConfiguration: {
                 audience: [props.school_pool_client.userPoolClientId],
-                issuer: `https://cognito-idp.ap-south-1.amazonaws.com/${props.school_pool.userPoolId}`
+                issuer: `https://cognito-idp.<region>.amazonaws.com/${props.school_pool.userPoolId}`
             },
             identitySource: ["$request.header.Authorization"],
             authorizerType: 'JWT',
@@ -88,10 +88,10 @@ export class SchoolRoutes extends Construct {
                 'TABLE_NAME': this.props.table.tableName,
                 'TABLE_REGION': this.props.table.tableArn.split(':')[3],
                 'WORKER_POOL_ID': this.props.worker_pool.userPoolId,
-                'WORKER_POOL_REGION': 'ap-south-1',
-                'ENTITIES_INDEX': 'entities',
-                'FROM_THREADS_INDEX': 'from_threads',
-                'TO_THREADS_INDEX': 'to_threads'
+                'WORKER_POOL_REGION': '<region>',
+                'ENTITIES_INDEX': '<entities_index>',
+                'FROM_THREADS_INDEX': '<from_threads_index>',
+                'TO_THREADS_INDEX': '<to_threads_index>'
             },
             bundling: {
                 externalModules: ['aws-sdk'],
@@ -114,7 +114,7 @@ export class SchoolRoutes extends Construct {
             description,
             integrationMethod: "POST",
             integrationType: "AWS_PROXY",
-            integrationUri: `arn:aws:apigateway:ap-south-1:lambda:path/2015-03-31/functions/arn:aws:lambda:ap-south-1:750330112562:function:${fn.functionName}/invocations`,
+            integrationUri: `arn:aws:apigateway:<region>:lambda:path/2015-03-31/functions/arn:aws:lambda:<region>:<account-no>:function:${fn.functionName}/invocations`,
             payloadFormatVersion: "2.0",
             timeoutInMillis: cdk.Duration.seconds(25).toMilliseconds(),
         }
@@ -134,8 +134,8 @@ export class SchoolRoutes extends Construct {
         return {
             principal: new iam.ServicePrincipal('apigateway.amazonaws.com'),
             action: 'lambda:InvokeFunction',
-            sourceArn: `arn:aws:execute-api:ap-south-1:750330112562:${this.props.api.ref}/$default/POST/${route}`,
-            sourceAccount: '750330112562'
+            sourceArn: `arn:aws:execute-api:<region>:<account-no>:${this.props.api.ref}/$default/POST/${route}`,
+            sourceAccount: '<account-no>'
         }
     }
 }

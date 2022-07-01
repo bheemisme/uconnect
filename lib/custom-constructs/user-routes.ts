@@ -29,7 +29,7 @@ export class UserRoutes extends Construct {
             apiId: props.api.ref,
             jwtConfiguration: {
                 audience: [props.user_pool_client.userPoolClientId],
-                issuer: `https://cognito-idp.ap-south-1.amazonaws.com/${props.user_pool.userPoolId}`
+                issuer: `https://cognito-idp.<region>.amazonaws.com/${props.user_pool.userPoolId}`
             },
             identitySource: ["$request.header.Authorization"],
             authorizerType: 'JWT',
@@ -58,8 +58,8 @@ export class UserRoutes extends Construct {
                 'TABLE_NAME': this.props.table.tableName,
                 'TABLE_REGION': this.props.table.tableArn.split(':')[3],
                 'ENTITIES_INDEX': 'entities',
-                'FROM_THREADS_INDEX': 'from_threads',
-                'TO_THREADS_INDEX': 'to_threads'
+                'FROM_THREADS_INDEX': '<from_threads_index>',
+                'TO_THREADS_INDEX': '<to_threads_name>'
             },
             bundling: {
                 externalModules: ['aws-sdk'],
@@ -82,7 +82,7 @@ export class UserRoutes extends Construct {
             description,
             integrationMethod: "POST",
             integrationType: "AWS_PROXY",
-            integrationUri: `arn:aws:apigateway:ap-south-1:lambda:path/2015-03-31/functions/arn:aws:lambda:ap-south-1:750330112562:function:${fn.functionName}/invocations`,
+            integrationUri: `arn:aws:apigateway:<region>:lambda:path/2015-03-31/functions/arn:aws:lambda:<region>:<account>:function:${fn.functionName}/invocations`,
             payloadFormatVersion: "2.0",
             timeoutInMillis: cdk.Duration.seconds(25).toMilliseconds(),
         }
@@ -102,8 +102,8 @@ export class UserRoutes extends Construct {
         return {
             principal: new iam.ServicePrincipal('apigateway.amazonaws.com'),
             action: 'lambda:InvokeFunction',
-            sourceArn: `arn:aws:execute-api:ap-south-1:750330112562:${this.props.api.ref}/$default/POST/${route}`,
-            sourceAccount: '750330112562'
+            sourceArn: `arn:aws:execute-api:<region>:<account>:${this.props.api.ref}/$default/POST/${route}`,
+            sourceAccount: '<account>'
         }
     }
 }

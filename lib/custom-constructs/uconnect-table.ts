@@ -10,7 +10,7 @@ export class UconnectTable extends Construct {
     constructor(scope: Construct, id: string){
         super(scope,id)
         this.uconnectTable = new dynamodb.Table(this,`UconnectTable`,{
-            tableName: `uconnect-table`,
+            tableName: `<table-name>`,
             partitionKey: {name: 'pk',type: dynamodb.AttributeType.STRING},
             sortKey: {name: 'sk',type: dynamodb.AttributeType.STRING},
             billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
@@ -19,7 +19,7 @@ export class UconnectTable extends Construct {
         })
 
         this.uconnectTable.addGlobalSecondaryIndex({
-            indexName: 'from_threads',
+            indexName: '<from_threads_name>',
             'partitionKey' : {
                 'name': 'from',
                 'type': dynamodb.AttributeType.STRING
@@ -31,7 +31,7 @@ export class UconnectTable extends Construct {
         })
 
         this.uconnectTable.addGlobalSecondaryIndex({
-            indexName: 'to_threads',
+            indexName: '<to_threads_index>',
             'partitionKey' : {
                 'name': 'allocated',
                 'type': dynamodb.AttributeType.STRING

@@ -94,22 +94,22 @@ export class StatefullApi extends Construct {
         this.customAuthorizerStatefull = new apiv2.CfnAuthorizer(this, "customAuthorizerStatefull", {
             apiId: this.uconnectStatefullApi.ref, // Required
             authorizerType: "REQUEST", // Required
-            authorizerUri: `arn:aws:apigateway:ap-south-1:lambda:path/2015-03-31/functions/arn:aws:lambda:ap-south-1:750330112562:function:${this.customAuthorizerFunctionStatefull.functionName}/invocations`,
+            authorizerUri: `arn:aws:apigateway:<region>:lambda:path/2015-03-31/functions/arn:aws:lambda:<region>:<account>:function:${this.customAuthorizerFunctionStatefull.functionName}/invocations`,
             name: "custom-lambda-authorizer-statefull", // Required
         })
 
         this.customAuthorizerFunctionStatefull.addPermission("customAuthorizerStatefullInovke", {
-            sourceArn: `arn:aws:execute-api:ap-south-1:750330112562:${this.uconnectStatefullApi.ref}/authorizers/${this.customAuthorizerStatefull.ref}`,
+            sourceArn: `arn:aws:execute-api:<region>:<region>:${this.uconnectStatefullApi.ref}/authorizers/${this.customAuthorizerStatefull.ref}`,
             action: 'lambda:InvokeFunction',
             principal: new iam.ServicePrincipal('apigateway.amazonaws.com'),
-            sourceAccount: '750330112562'
+            sourceAccount: '<region>'
         })
 
         
         this.uconnectStatefullApiExecuteStatement = new iam.PolicyStatement({
             effect: iam.Effect.ALLOW,
             actions: ['execute-api:Invoke','execute-api:ManageConnections'],
-            resources: [`arn:aws:execute-api:ap-south-1:750330112562:${this.uconnectStatefullApi.ref}/${this.uconnectStatefullStage.ref}/POST/@connections/*`]
+            resources: [`arn:aws:execute-api:<region>:<region>:${this.uconnectStatefullApi.ref}/${this.uconnectStatefullStage.ref}/POST/@connections/*`]
         })
 
         this.connectFunction = new nodeLambda.NodejsFunction(this, "connectFunction", this.lambdaConfig('./apps/backend/lambdas/connect.ts', 'connect route lambda function'))
@@ -162,7 +162,7 @@ export class StatefullApi extends Construct {
             environment: {
                 'TABLE_REGION': this.props.table.tableArn.split(':')[3],
                 'TABLE_NAME': this.props.table.tableName,
-                'POOL_REGION': 'ap-south-1'
+                'POOL_REGION': '<region>'
             },
             bundling: {
                 externalModules: ['aws-sdk'],
@@ -184,7 +184,7 @@ export class StatefullApi extends Construct {
             connectionType: 'INTERNET',
             description,
             integrationType: "AWS_PROXY",
-            integrationUri: `arn:aws:apigateway:ap-south-1:lambda:path/2015-03-31/functions/arn:aws:lambda:ap-south-1:750330112562:function:${fn.functionName}/invocations`,
+            integrationUri: `arn:aws:apigateway:<region>:lambda:path/2015-03-31/functions/arn:aws:lambda:<region>:<account>:function:${fn.functionName}/invocations`,
             timeoutInMillis: cdk.Duration.minutes(1).toSeconds()
         }
     }
@@ -202,8 +202,8 @@ export class StatefullApi extends Construct {
         return {
             principal: new iam.ServicePrincipal('apigateway.amazonaws.com'),
             action: 'lambda:InvokeFunction',
-            sourceAccount: '750330112562',
-            sourceArn: `arn:aws:execute-api:ap-south-1:750330112562:${this.uconnectStatefullApi.ref}/${this.uconnectStatefullStage.ref}/${route.routeKey}`
+            sourceAccount: '<account>',
+            sourceArn: `arn:aws:execute-api:<region>:<account>:${this.uconnectStatefullApi.ref}/${this.uconnectStatefullStage.ref}/${route.routeKey}`
         }
     }
 }

@@ -21,7 +21,7 @@ export async function handler(event: lambda.APIGatewayProxyEventV2WithLambdaAuth
         
         
         const thread_info = (await client.send(new dynamodb.GetItemCommand({
-            TableName: 'uconnect-table',
+            TableName: '<table-name>',
             Key: marshall({
                 'pk': threadId,
                 'sk': threadId
