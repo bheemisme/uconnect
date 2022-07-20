@@ -11,6 +11,10 @@
 
 _this repository dosen't contain entire code it is clone of original repository which is deployed to AWS CodeCommit_
 
+
+_code is not documented_
+
+
 ### What UCONNECT aims to solve?
 
 Assume a scenario, where there are institutions and users, user wants to query a institution about any issue he has with it, uconnect introduces its way of establishing the communication between two entities
