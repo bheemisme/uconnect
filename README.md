@@ -46,9 +46,9 @@ this prototype, implements the above concept to a university where schools are d
 
 - for chatting, apigateway websocket api is used
 
-1. [school site](https://master.dp4ksuwwexl7j.amplifyapp.com)
-2. [user site](https://master.d2kevnxbb0nual.amplifyapp.com )
-3. [worker site](https://master.dgow0197axz5x.amplifyapp.com)
+1. [school site](https://master.d25yzlzn3fs7ma.amplifyapp.com)
+2. [user site](https://master.d2fdc1jzmeij6d.amplifyapp.com)
+3. [worker site](https://master.d2zeox2kful1jl.amplifyapp.com)
 
 
 ![as](./photos/Screenshot%20(43).png)
